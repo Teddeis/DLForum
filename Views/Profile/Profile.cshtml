@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Профиль";
+}
+<div class="d-flex">
+    <div class="d-flex">
+        @inject IHttpContextAccessor HttpContextAccessor
+        <div class="d-flex align-items-center">
+            <span class="navbar-text mx-2">Привет, @HttpContextAccessor.HttpContext.Session.GetString("UserName")!</span>
+
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                <button type="submit" class="btn btn-link text-dark nav-link p-0">Выйти</button>
+            </form>
+        </div>
+    </div>
+</div>
