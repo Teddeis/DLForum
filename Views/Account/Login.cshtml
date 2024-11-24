@@ -2,7 +2,9 @@
     ViewData["Title"] = "Вход в аккаунт";
 }
 <form method="post">
-<div class="row">
+    <div class="row d-flex justify-content-center align-items-center vh-100" style="background-color: white;">
+        <div class="card shadow-lg p-4" style="width: 400px; border-radius: 25px; background-color: white;">
+
     <div class="col-md-6 offset-md-3">
         <h2 class="text-center mb-4">Вход</h2>
         <form asp-action="Login" asp-controller="Auth" method="post">
@@ -25,5 +27,6 @@
             </div>
         </form>
     </div>
+        </div>
 </div>
 </form>

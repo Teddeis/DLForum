@@ -2,7 +2,9 @@
     ViewData["Title"] = "Форум";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-center align-items-center vh-100 rounded" style="background-color: white;">
+    <div class="card shadow-pl p-3" style="width: 1000px; border-radius: 15px; background-color: white;">
+        @inject IHttpContextAccessor HttpContextAccessor
+        <h2>Добро пожаловать к нам =D</h2>
+    </div>
 </div>
