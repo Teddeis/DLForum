@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Supabase;
 using System.Threading.Tasks;
 
@@ -59,8 +61,10 @@ public class AccountController : Controller
             }
 
             // Сохранение данных пользователя в сессию
+            HttpContext.Session.SetInt32("ID", user.Id);
             HttpContext.Session.SetString("Email", user.email);
             HttpContext.Session.SetString("UserName", user.username);
+            HttpContext.Session.SetString("Role", user.role);
 
             // Редирект на главную страницу
             return RedirectToAction("Index", "Home");
@@ -71,5 +75,18 @@ public class AccountController : Controller
             ModelState.AddModelError("", "Произошла ошибка. Попробуйте позже.");
             return View();
         }
+    }
+
+    // Метод для выхода из аккаунта
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Очистка данных сессии
+        HttpContext.Session.Clear();
+
+        return RedirectToAction("Index", "Home");
     }
 }
