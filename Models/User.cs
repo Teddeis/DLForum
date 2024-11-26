@@ -1,7 +1,10 @@
-﻿using Supabase.Postgrest.Models;
+﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 public class users : BaseModel
 {
+    [PrimaryKey("id", true)] // Укажите true для автоинкрементного ключа
+    public int Id { get; set; }
     public string username { get; set; }
     public string email { get; set; }
     public string password_hash { get; set; }
