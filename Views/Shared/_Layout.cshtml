@@ -36,6 +36,9 @@
                         Поиск
                     </a>
                 </strong>
+
+
+
                     <div class="d-flex">
                         <div class="d-flex">
                             @inject IHttpContextAccessor HttpContextAccessor
@@ -49,7 +52,7 @@
                                     <div class="d-flex">
                                         <div class="d-flex align-items-center">
                                             <form>
-                                                <a class="nav-link text-light" asp-area="" asp-controller="Profile" asp-action="Profile">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Profile">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
                                             </form>
                                         </div>
                                     </div>

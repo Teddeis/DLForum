@@ -5,6 +5,7 @@ public class UserService
 {
     private readonly Client _client;
 
+
     public UserService(SupabaseClientService clientService)
     {        
         _client = clientService.Client;
