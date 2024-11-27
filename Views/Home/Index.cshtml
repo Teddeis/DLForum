@@ -25,7 +25,9 @@
         {
             <div class="d-flex justify-content-start align-items-start rounded" style="background-color: white;">
                 <strong>
-                    <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #5a4bf1;" asp-area="" asp-controller="Topic" asp-action="Topic">
+                    <a class="btn btn-light text-lg-center text-center text-white mx-1"
+                       style="border-radius: 10px; background-color: #5a4bf1;"
+                       asp-area="" asp-controller="Topic" asp-action="Topic">
                         <i class="bi bi-pencil-square" style="font-size: 18px; margin-right: 5px;"></i>
                         Создать тему
                     </a>
@@ -35,75 +37,89 @@
     </div>
 </div>
 <h2></h2>
-<h2>Список тем форума</h2>
+<h2></h2>
 
 
 
 
-<div class="container mt-4">
+
+<div class="container m-1">
     <div class="row">
-        @foreach (var topic in Model)
+        @if (Model.Any())
         {
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card" style="border-radius: 10px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-                    <div class="card-body">
+            @foreach (var topic in Model)
+            {
+                <div class="col-12 mb-4">
+                    <div class="card" style="border-radius: 20px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                        <div class="card-body">
+                            <!-- Ссылка на страницу с деталями темы -->
+                            <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="card-title-link" style="text-decoration: none; color: inherit;">
+                                <h5 class="card-title text-black">@topic.Title.Substring(0, Math.Min(50, topic.Title.Length))</h5>
+                            </a>
 
-                        <a href="@Url.Action("Details", "Topic", new { id = topic.Id })" class="card-title-link">
-                            <h5 class="card-title text-black">@topic.Title</h5>
-                        </a>
-
-                        <style>
-                            .card-title-link {
-                                text-decoration: none; /* Убираем стандартное подчеркивание для ссылки */
-                            }
-
-                            .card-title {
-                                position: relative;
-                                display: inline-block;
-                                font-size: 1.5rem;
-                                cursor: pointer;
-                            }
-
-                                .card-title::after {
-                                    content: '';
-                                    position: absolute;
-                                    bottom: 0;
-                                    left: 0;
-                                    width: 0;
-                                    height: 2px;
-                                    background-color: black;
-                                    transition: width 0.3s ease;
+                            <style>
+                                .card-title-link {
+                                    text-decoration: none; /* Убираем стандартное подчеркивание для ссылки */
                                 }
 
-                                .card-title:hover::after {
-                                    width: 100%;
+                                .card-title {
+                                    position: relative;
+                                    display: inline-block;
+                                    font-size: 1.5rem;
+                                    cursor: pointer;
                                 }
-                        </style>
 
-                        <!-- Превью контента -->
-                        <p class="card-text text-muted">@topic.Content.Substring(0, Math.Min(100, topic.Content.Length))...</p> 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="text-muted">
-                                <span><i class="bi bi-eye"></i> @topic.ViewsCount</span>
-                                <span><i class="bi bi-heart"></i> @topic.LikesCount</span>
+                                    .card-title::after {
+                                        content: '';
+                                        position: absolute;
+                                        bottom: 0;
+                                        left: 0;
+                                        width: 0;
+                                        height: 2px;
+                                        background-color: black;
+                                        transition: width 0.3s ease;
+                                    }
+
+                                    .card-title:hover::after {
+                                        width: 100%;
+                                    }
+                            </style>
+
+                            <!-- Превью контента -->
+                            <p class="card-text text-muted">@topic.Content.Substring(0, Math.Min(150, topic.Content.Length))...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted">
+                                    <span><i class="bi bi-eye"></i> @topic.ViewsCount</span>
+                                    <span><i class="bi bi-heart"></i> @topic.LikesCount</span>
+                                </div>
+                                <small class="text-muted">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
                             </div>
-                            <small class="text-muted">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+        }
+        else
+        {
+            <a>Тем для обсуждения нет.</a>
         }
     </div>
 </div>
 
-<!-- Нагинация -->
+
+<!-- Навигация -->
 <div class="d-flex justify-content-center mt-4">
-    @if (ViewBag.CurrentPage > 1)
+    @if (ViewBag.TotalPages > 1)
     {
-        <a href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage - 1 })" class="btn btn-outline-primary mx-1">« Предыдущая</a>
-    }
-    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-    {
-        <a href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 1 })" class="btn btn-outline-primary mx-1">Следующая »</a>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     }
 </div>

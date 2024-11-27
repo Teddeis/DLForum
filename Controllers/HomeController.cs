@@ -21,7 +21,7 @@ namespace DLForum.Controllers
         {
             try
             {
-                int pageSize = 13; // Число тем на одной странице
+                int pageSize = 10; // Число тем на одной странице
 
                 // Получаем темы и общее количество с пагинацией
                 var (topics, totalCount) = await _topicService.GetTopicsByPageAsync(pageNumber, pageSize);

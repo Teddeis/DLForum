@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DLForum.Service;
+using Microsoft.AspNetCore.Mvc;
 
 public class TopicController : Controller
 {
     private readonly TopicService _supabaseService;
+    private readonly CommentService _commentService;
 
-    public TopicController(TopicService supabaseService)
+
+    public TopicController(TopicService supabaseService, CommentService commentService)
     {
         _supabaseService = supabaseService;
+        _commentService = commentService;
     }
 
     // Метод для отображения всех тем
@@ -43,9 +47,11 @@ public class TopicController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTopic(string title, string content)
+    public async Task<IActionResult> CreateTopic(string title, string content,string author)
     {
         var userId = HttpContext.Session.GetInt32("ID");
+        author = HttpContext.Session.GetString("UserName");
+
 
         if (userId == null)
         {
@@ -53,8 +59,86 @@ public class TopicController : Controller
         }
 
         // Добавляем новую тему в Supabase
-        await _supabaseService.AddTopicAsync(userId.Value, title, content);
+        await _supabaseService.AddTopicAsync(userId.Value, title, content, author);
 
         return RedirectToAction("Index", "Home"); // Перенаправляем на главную страницу после добавления
+    }
+
+    // Метод для обновления статуса темы на true (Принять тему)
+    [HttpPost]
+    public async Task<IActionResult> UpdateStatusToTrue(int topicId)
+    {
+        try
+        {
+            // Обновляем статус темы на true
+            var updatedTopic = await _supabaseService.UpdateTopicStatusAsync(topicId, true);
+
+            if (updatedTopic == null)
+            {
+                // Если тема не была обновлена (не найдена), возвращаем ошибку
+                ViewBag.ErrorMessage = "Тема не найдена!";
+                return View("Error");
+            }
+
+            // Перенаправляем на страницу темы после обновления статуса
+            return RedirectToAction("Topic", new { id = topicId });
+        }
+        catch (Exception ex)
+        {
+            // В случае ошибки выводим сообщение
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+        }
+    }
+
+    // Метод для отмены статуса темы (Отменить тему)
+    [HttpPost]
+    public async Task<IActionResult> UpdateStatusToNone(int topicId)
+    {
+        try
+        {
+            // Обновляем статус темы на false
+            var updatedTopic = await _supabaseService.DeleteTopicStatusAsync(topicId, false);
+
+            if (updatedTopic == null)
+            {
+                // Если тема не была обновлена (не найдена), возвращаем ошибку
+                ViewBag.ErrorMessage = "Тема не найдена!";
+                return View("Error");
+            }
+
+            // Перенаправляем на страницу темы после отмены статуса
+            return RedirectToAction("TopicList", new { id = topicId });
+        }
+        catch (Exception ex)
+        {
+            // В случае ошибки выводим сообщение
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+        }
+    }
+
+    // В контроллере:
+    [HttpPost]
+    public async Task<IActionResult> Delete(int topicId)
+    {
+        try
+        {
+            var updatedTopic = await _supabaseService.Delete(topicId);
+
+            if (updatedTopic == null)
+            {
+                ViewBag.ErrorMessage = "Тема не найдена!";
+                return View("Error");
+            }
+
+            // Исправленный редирект
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+        }
     }
 }

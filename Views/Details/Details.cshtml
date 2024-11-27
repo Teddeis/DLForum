@@ -1,0 +1,229 @@
+﻿@model Topic
+
+@{
+    ViewData["Title"] = "Список тем";
+    @inject IHttpContextAccessor HttpContextAccessor
+    bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == @Model.UserId; // Проверка, является ли текущий пользователь владельцем темы
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .back-link {
+        font-size: 16px;
+        color: black;
+        text-decoration: none;
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .main-content {
+        max-width: 2000px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .content-info {
+        margin-bottom: 20px; /* Отступ между информацией и комментариями */
+    }
+
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+    }
+
+    .description {
+        font-size: 16px;
+        line-height: 1.5;
+        color: #555;
+        word-wrap: break-word;
+    }
+
+    .author {
+        font-size: 14px;
+        color: #007BFF; /* Цвет для ссылки на автора */
+        margin-bottom: 10px; /* Отступ между автором и заголовком */
+    }
+
+    .likes-and-comments {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .answers {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 80px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        resize: none;
+    }
+
+    .post-answer {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .post-answer:hover {
+            background-color: #0056b3;
+        }
+
+    .delete-topic-btn {
+        padding: 6px 12px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 14px;
+    }
+
+        .delete-topic-btn:hover {
+            background-color: #c82333;
+        }
+
+    .views-count {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .comments-section {
+        margin-top: 30px;
+        padding: 20px;
+        border-top: 1px solid #ccc;
+    }
+
+    .comments-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .comment-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .comment-header {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .comment-body {
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <nav>
+            <a href="@Url.Action("Index", "Home")" class="back-link">← Назад</a>
+            <div class="nav-right">
+                @if (isOwner)
+                {
+                    <form method="post" asp-controller="Topic" asp-action="Delete"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить эту тему?');"
+                          class="delete-topic-form">
+                        <input type="hidden" name="topicId" value="@Model.Id" />
+                        <button type="submit" class="delete-topic-btn">
+                            <i class="bi bi-trash"></i> Удалить
+                        </button>
+                    </form>
+                }
+            </div>
+        </nav>
+
+        <!-- Заголовок, описание, автор, лайки и комментарии -->
+        <div class="main-content">
+            <div class="content-info">
+                <!-- Имя автора -->
+                <div>
+                    <p class="author">Автор: @Model.Author</p>
+                    <p class="views-count"><i class="bi bi-eye"></i> @Model.ViewsCount</p>
+                </div>
+
+                <h1 class="title">@Model.Title</h1>
+                <p class="description">@Model.Content</p>
+            </div>
+            <div class="interactions">
+                <span class="likes"><i class="bi bi-heart"></i> @Model.LikesCount</span>
+            </div>
+        </div>
+        <!-- Форма добавления комментария -->
+        <div class="post-comment">
+            <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
+                <textarea name="comment" placeholder="Добавить новый ответ..."></textarea>
+                <input type="hidden" name="id_topic" value="@Model.Id" />
+                <button class="post-answer" type="submit">Ответить</button>
+            </form>
+        </div>
+</body>
+<h1></h1>
+<!-- Секция комментариев -->
+    <h6>Ответы</h6>
+
+    @if (ViewBag.Comments != null && ViewBag.Comments.Count > 0)
+    {
+        <ul class="comments-list">
+            @foreach (var comment in ViewBag.Comments)
+            {
+                <li class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">@comment.author</span> <!-- Имя автора -->
+                    </div>
+                    <div class="comment-body">
+                        <p>@comment.comments</p> <!-- Текст комментария -->
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Комментариев пока нет. Будьте первым!</p>
+    }

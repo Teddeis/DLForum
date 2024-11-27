@@ -1,3 +1,4 @@
+using DLForum.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 internal class Program
@@ -16,6 +17,9 @@ internal class Program
         // Регистрация пользовательских сервисов
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<TopicService>();
+        builder.Services.AddScoped<CommentService>();
+        builder.Services.AddScoped<DetailsService>();
+
 
 
         // Подключение сессий

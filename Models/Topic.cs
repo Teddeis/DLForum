@@ -30,4 +30,6 @@ public class Topic : BaseModel
     public int LikesCount { get; set; }
     [Column("status")]
     public string Status { get; set; }
+    [Column("author")]
+    public string Author { get; set; }
 }

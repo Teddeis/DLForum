@@ -1,4 +1,7 @@
-﻿using Supabase;
+﻿using DLForum.Models;
+using DLForum.Service;
+using Microsoft.AspNetCore.Mvc;
+using Supabase;
 using Supabase.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,13 +12,15 @@ public class TopicService
 {
     private readonly Client _client;
 
+
     public TopicService(SupabaseClientService clientService)
     {
         _client = clientService.Client;
+
     }
 
     // Метод для добавления новой записи в таблицу "topics"
-    public async Task<Topic?> AddTopicAsync(int userId, string title, string content)
+    public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author)
     {
         var topic = new Topic
         {
@@ -25,7 +30,9 @@ public class TopicService
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             ViewsCount = 0,
-            LikesCount = 0
+            LikesCount = 0,
+            Status = "false",
+            Author = author
         };
 
         var response = await _client.From<Topic>().Insert(topic);
@@ -74,4 +81,69 @@ public class TopicService
         // Возвращаем список тем и общее количество для пагинации
         return (response.Models.ToList(), totalCountResponse.Models.Count);
     }
+
+    // Метод для обновления статуса темы
+    public async Task<Topic?> UpdateTopicStatusAsync(int topicId, bool newStatus)
+    {
+        // Ищем тему по ID
+        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+
+        // Если тема не найдена
+        if (!topic.Models.Any())
+        {
+            return null;
+        }
+
+        var topicToUpdate = topic.Models.First();
+        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
+
+        // Обновляем тему в базе данных
+        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Update(topicToUpdate);
+
+        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+    }
+
+
+    // Метод для обновления статуса темы
+    public async Task<Topic?> DeleteTopicStatusAsync(int topicId, bool newStatus)
+    {
+        // Ищем тему по ID
+        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+
+        // Если тема не найдена
+        if (!topic.Models.Any())
+        {
+            return null;
+        }
+
+        var topicToUpdate = topic.Models.First();
+        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
+
+        // Обновляем тему в базе данных
+        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
+
+        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+    }
+
+
+    // Метод для обновления статуса темы
+    public async Task<Topic?> Delete(int topicId)
+    {
+        // Ищем тему по ID
+        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+
+        // Если тема не найдена
+        if (!topic.Models.Any())
+        {
+            return null;
+        }
+
+        var topicToUpdate = topic.Models.First();
+        // Обновляем тему в базе данных
+        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
+
+        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+    }
+
+
 }
