@@ -5,7 +5,6 @@
     @inject IHttpContextAccessor HttpContextAccessor
     bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == @Model.UserId; // Проверка, является ли текущий пользователь владельцем темы
 }
-
 <style>
     * {
         margin: 0;
@@ -15,7 +14,7 @@
 
     body {
         font-family: Arial, sans-serif;
-        background-color: #f7f7f7;
+        background-color: white;
         color: #333;
     }
 
@@ -158,6 +157,7 @@
     }
 </style>
 
+
 <body>
     <div class="container">
         <!-- Навигация -->
@@ -202,28 +202,30 @@
                 <button class="post-answer" type="submit">Ответить</button>
             </form>
         </div>
+        </div>
 </body>
 <h1></h1>
 <!-- Секция комментариев -->
     <h6>Ответы</h6>
 
-    @if (ViewBag.Comments != null && ViewBag.Comments.Count > 0)
-    {
-        <ul class="comments-list">
-            @foreach (var comment in ViewBag.Comments)
-            {
-                <li class="comment-item">
-                    <div class="comment-header">
-                        <span class="comment-author">@comment.author</span> <!-- Имя автора -->
-                    </div>
-                    <div class="comment-body">
-                        <p>@comment.comments</p> <!-- Текст комментария -->
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>Комментариев пока нет. Будьте первым!</p>
-    }
+@if (ViewBag.Comments != null && ViewBag.Comments.Count > 0)
+{
+    <ul class="comments-list">
+        @foreach (var comment in ViewBag.Comments)
+        {
+            <li class="comment-item">
+                <div class="comment-header d-flex align-items-center">
+                    <img src="@Url.Content(@comment.avatar)" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
+                    <span class="comment-author">@comment.author</span> <!-- Имя автора -->
+                </div>
+                <div class="comment-body">
+                    <p>@comment.comments</p> <!-- Текст комментария -->
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Комментариев пока нет. Будьте первым!</p>
+}

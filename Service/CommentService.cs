@@ -15,13 +15,14 @@ public class CommentService
     }
 
     // Метод для добавления комментария
-    public async Task<comment?> AddCommentAsync(int userId, int topicId, string author, string content)
+    public async Task<comment?> AddCommentAsync(int userId, int topicId, string author,string avatar, string content)
     {
         var comment = new comment
         {
             id_users = userId,
             id_topics = topicId,
             author = author,
+            avatar = avatar,
             comments = content,
         };
 
@@ -35,6 +36,17 @@ public class CommentService
     {
         var response = await _client.From<comment>().Where(x => x.id_topics == topicId).Get();
         return response.Models.ToList();
+    }
+
+    // Метод для получения количества комментариев для темы
+    public async Task<int> GetCommentsCountByTopicIdAsync(int topicId)
+    {
+        var response = await _client.From<comment>()
+                                     .Select("id") // Выбираем только id комментариев
+                                     .Where(x => x.id_topics == topicId)
+                                     .Get(); // Получаем количество
+
+        return response.Models.Count; // Возвращаем количество комментариев
     }
 
 

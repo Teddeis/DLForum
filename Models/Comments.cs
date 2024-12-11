@@ -9,5 +9,6 @@ public class comment : BaseModel
     public int id_users { get; set; }
     public int id_topics { get; set; }
     public string author { get; set; }
+    public string avatar {  get; set; }
     public string comments { get; set; }
 }

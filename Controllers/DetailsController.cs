@@ -80,6 +80,8 @@ public class DetailsController : Controller
     {
         var userId = HttpContext.Session.GetInt32("ID");
         var userName = HttpContext.Session.GetString("UserName");
+        var avatar = HttpContext.Session.GetString("AvatarUrl");
+
 
         if (userId == null)
         {
@@ -88,8 +90,16 @@ public class DetailsController : Controller
 
         try
         {
-            await _commentService.AddCommentAsync(userId.Value, id_topic, userName, comment);
-            TempData["SuccessMessage"] = "Комментарий успешно добавлен!";
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ModelState.AddModelError("Comment", "Комментарий не может быть пустым.");
+            }
+            else
+            {
+                await _commentService.AddCommentAsync(userId.Value, id_topic, userName, avatar, comment);
+                TempData["SuccessMessage"] = "Комментарий успешно добавлен!";
+            }
+
         }
         catch (Exception ex)
         {

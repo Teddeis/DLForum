@@ -50,51 +50,90 @@
             @foreach (var topic in Model)
             {
                 <div class="col-12 mb-4">
-                    <div class="card" style="border-radius: 20px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <div class="card-container" style="border-radius: 20px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                        <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="card-link" style="text-decoration: none; color: inherit;">
                         <div class="card-body">
                             <!-- Ссылка на страницу с деталями темы -->
-                            <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="card-title-link" style="text-decoration: none; color: inherit;">
-                                <h5 class="card-title text-black">@topic.Title.Substring(0, Math.Min(50, topic.Title.Length))</h5>
-                            </a>
-
-                            <style>
-                                .card-title-link {
-                                    text-decoration: none; /* Убираем стандартное подчеркивание для ссылки */
-                                }
-
-                                .card-title {
-                                    position: relative;
-                                    display: inline-block;
-                                    font-size: 1.5rem;
-                                    cursor: pointer;
-                                }
-
-                                    .card-title::after {
-                                        content: '';
-                                        position: absolute;
-                                        bottom: 0;
-                                        left: 0;
-                                        width: 0;
-                                        height: 2px;
-                                        background-color: black;
-                                        transition: width 0.3s ease;
-                                    }
-
-                                    .card-title:hover::after {
-                                        width: 100%;
-                                    }
-                            </style>
-
-                            <!-- Превью контента -->
-                            <p class="card-text text-muted">@topic.Content.Substring(0, Math.Min(150, topic.Content.Length))...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="text-muted">
-                                    <span><i class="bi bi-eye"></i> @topic.ViewsCount</span>
-                                    <span><i class="bi bi-heart"></i> @topic.LikesCount</span>
+                                    <h5 class="card-title text-black">
+                                        @topic.Title.Substring(0, Math.Min(50, topic.Title.Length))
+                                    </h5>
+                                    <!-- Превью контента -->
+                                    <p class="card-text text-muted">
+                                        @topic.Content.Substring(0, Math.Min(150, topic.Content.Length))...
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-muted">
+                                        <span><i class="bi bi-eye" style="color: cornflowerblue"></i> @topic.ViewsCount</span>
+                                        <span><i class="bi bi-heart" style="color: red;"></i> @topic.LikesCount</span>
+                                        <span><i class="bi bi-chat" style="color: green;"></i> @topic.CommentsCount</span>
+                                        </div>
+                                        <small class="text-muted">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
                                 </div>
-                                <small class="text-muted">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
-                            </div>
+                            
                         </div>
+                        </a>
+                        <style>
+                            .card-link {
+                                text-decoration: none; /* Убираем стандартное подчеркивание для ссылки */
+                            }
+                            .card-container {
+                                position: relative;
+                                display: inline-block;
+                                padding: 15px;
+                                margin: 10px;
+                                border: 1px solid #ddd;
+                                border-radius: 8px;
+                                background-color: #fff;
+                                width: 100%;
+                                cursor: pointer;
+                                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            }
+
+                                /* Эффект увеличения и тени при наведении */
+                                .card-container:hover {
+                                    transform: scale(1.05);
+                                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                                }
+
+                            .card-title {
+                                font-size: 1.5rem;
+                                position: relative;
+                                display: inline-block;
+                                margin-bottom: 10px;
+                            }
+
+                                .card-title::after {
+                                    content: '';
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    width: 0;
+                                    height: 2px;
+                                    background-color: black;
+                                    transition: width 0.3s ease;
+                                }
+
+                                .card-title:hover::after {
+                                    width: 100%;
+                                }
+
+                            /* Добавим эффект для текста */
+                            .card-text {
+                                margin-bottom: 15px;
+                            }
+
+                            /* Добавление эффекта для элементов статистики */
+                            .d-flex span {
+                                margin-right: 15px;
+                            }
+
+                            /* Плавная анимация на карточке */
+                            .card-container a {
+                                display: block;
+                                width: 100%;
+                                height: 100%;
+                            }
+                        </style>
                     </div>
                 </div>
             }

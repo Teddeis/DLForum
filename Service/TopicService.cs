@@ -145,5 +145,4 @@ public class TopicService
         return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
     }
 
-
 }

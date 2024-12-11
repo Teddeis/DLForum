@@ -65,6 +65,7 @@ public class AccountController : Controller
             HttpContext.Session.SetString("Email", user.email);
             HttpContext.Session.SetString("UserName", user.username);
             HttpContext.Session.SetString("Role", user.role);
+            HttpContext.Session.SetString("AvatarUrl", user.avatar_url);
 
             // Редирект на главную страницу
             return RedirectToAction("Index", "Home");

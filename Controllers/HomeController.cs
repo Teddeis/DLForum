@@ -9,11 +9,13 @@ namespace DLForum.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly TopicService _topicService;
+        private readonly CommentService _commentService;
 
-        public HomeController(ILogger<HomeController> logger, TopicService topicService)
+        public HomeController(ILogger<HomeController> logger, TopicService topicService, CommentService commentService)
         {
             _logger = logger;
             _topicService = topicService;
+            _commentService = commentService;
         }
 
         // ћетод дл€ отображени€ главной страницы с пагинацией
@@ -25,6 +27,8 @@ namespace DLForum.Controllers
 
                 // ѕолучаем темы и общее количество с пагинацией
                 var (topics, totalCount) = await _topicService.GetTopicsByPageAsync(pageNumber, pageSize);
+
+
 
                 // –ассчитываем количество страниц
                 int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);

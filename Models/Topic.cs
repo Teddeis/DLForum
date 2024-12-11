@@ -32,4 +32,6 @@ public class Topic : BaseModel
     public string Status { get; set; }
     [Column("author")]
     public string Author { get; set; }
+    [Column("comments_count")]
+    public int CommentsCount { get; set; }
 }
