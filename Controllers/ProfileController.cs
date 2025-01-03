@@ -8,5 +8,10 @@ namespace DLForum.Controllers
         {
             return View();
         }
+
+        public IActionResult Settings()
+        {
+            return View();
+        }
     }
 }

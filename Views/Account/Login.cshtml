@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Вход в аккаунт";
+    ViewData["HideSidebar"] = true;
 }
+
 <form method="post">
     <div class="row d-flex justify-content-center align-items-center vh-100" style="background-color: white;">
         <div class="card shadow-lg p-4" style="width: 400px; border-radius: 25px; background-color: white;">
@@ -27,7 +29,7 @@
                 <p>Нет аккаунта? <a asp-controller="Account" asp-action="Register">Зарегистрируйтесь</a></p>
             </div>
         </form>
-    </div>
+            </div>
         </div>
-</div>
+    </div>
 </form>

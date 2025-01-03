@@ -1,29 +1,142 @@
-﻿@{
+﻿@model List<Topic>
+
+@{
     ViewData["Title"] = "Профиль";
 }
 
-<div class="d-flex justify-content-center align-items-center vh-100 rounded" style="background-color: white;">
-            <div class="card shadow-lg p-4" style="width: 1000px; border-radius: 15px; background-color: white;">
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" id="banner" style="width: 1000px; height: 400px; border-radius: 15px; background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")'); background-size: cover; background-position: center; position: relative; transition: all 0.3s ease;">
         @inject IHttpContextAccessor HttpContextAccessor
-        @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "moderator")
-        {
-            <h2>Привет, @HttpContextAccessor.HttpContext.Session.GetString("UserName")!</h2>
-            <div class="d-flex justify-content-start align-items-start rounded" style="background-color: white;">
-                <strong>
+
+        <!-- Стрелочка для сужения баннера -->
+        <button id="collapseBtn" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: transparent; border: none; cursor: pointer;">
+            <i class="bi bi-chevron-down" style="font-size: 24px; color: #6c757d;"></i>
+        </button>
+
+        <!-- Основной блок с информацией о пользователе (аватар, ник, роль, настройки) -->
+        <div id="userInfo" class="d-flex align-items-center justify-content-between" style="position: absolute; bottom: 0; width: 100%; padding: 20px; background-color: white; border-radius: 15px; transition: all 0.3s ease;">
+            <!-- Аватар, Ник и Роль -->
+            <div class="d-flex align-items-center">
+                <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; margin-right: 15px;" />
+                <div>
+                    <h2>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</h2>
+                    <p>Роль: @HttpContextAccessor.HttpContext.Session.GetString("Role")</p>
+                </div>
+            </div>
+
+            <!-- Кнопка настроек -->
+            <a class="btn btn-light d-flex align-items-center justify-content-center" href="@Url.Action("Settings", "Profile")" style="width: 50px; height: 50px; border-radius: 50%; background-color: #f8f9fa;">
+                <i class="bi bi-gear-fill" style="font-size: 24px; color: #6c757d;"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Блок "Пол" и "О себе" -->
+<div class="d-flex justify-content-center align-items-center mt-4">
+    <div class="card shadow-lg p-4" style="width: 1000px; border-radius: 15px; background-color: white;">
+        <h4>Информация о себе</h4>
+        <div class="mt-3">
+            <p><strong>Пол:</strong> @HttpContextAccessor.HttpContext.Session.GetString("Gender")</p>
+            <p><strong>О себе:</strong> @HttpContextAccessor.HttpContext.Session.GetString("About")</p>
+        </div>
+    </div>
+</div>
+
+<!-- Вкладки (Ваши темы, Комментарии, Друзья, Избранное, Проверка тем для модераторов) -->
+<div class="d-flex justify-content-center align-items-center rounded mt-3" style="background-color: white;">
+    <div class="card shadow-lg p-4" style="width: 1000px; border-radius: 15px; background-color: white;">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="your-topics-tab" data-bs-toggle="tab" href="#your-topics" role="tab">Ваши темы</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments" role="tab">Комментарии</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="friends-tab" data-bs-toggle="tab" href="#friends" role="tab">Друзья</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="favorites-tab" data-bs-toggle="tab" href="#favorites" role="tab">Избранное</a>
+            </li>
+            @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "moderator")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" id="moderation-tab" data-bs-toggle="tab" href="#moderation" role="tab">Проверка тем</a>
+                </li>
+            }
+        </ul>
+
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="your-topics" role="tabpanel" aria-labelledby="your-topics-tab">
+                <h3>Список ваших тем</h3>
+                <p>Тут будет отображаться список ваших тем.</p>
+            </div>
+            <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                <h3>Список комментариев</h3>
+                <p>Тут будет отображаться список ваших комментариев.</p>
+            </div>
+            <div class="tab-pane fade" id="friends" role="tabpanel" aria-labelledby="friends-tab">
+                <h3>Список друзей</h3>
+                <p>Тут будет отображаться список ваших друзей.</p>
+            </div>
+            <div class="tab-pane fade" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
+                <h3>Избранное</h3>
+                <p>Тут будет отображаться список избранных элементов.</p>
+            </div>
+            @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "moderator")
+            {
+                <div class="tab-pane fade" id="moderation" role="tabpanel" aria-labelledby="moderation-tab">
                     <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #5a4bf1;" asp-area="" asp-controller="Topic" asp-action="TopicList">
                         <i class="bi bi-pencil-square" style="font-size: 18px; margin-right: 5px;"></i>
                         Проверить тему
                     </a>
-                </strong>
-            </div>
-        }
-        else
-        {
-           <h2>Привет, @HttpContextAccessor.HttpContext.Session.GetString("UserName")!</h2>
-        }
-
-        <form asp-controller="Account" asp-action="Logout" method="post">
-            <button type="submit" class="btn btn-outline-dark mt-3">Выйти</button>
-        </form>
+                </div>
+            }
         </div>
     </div>
+</div>
+
+<script>
+       // Получаем ссылку на баннер, кнопку и блок с информацией
+    const banner = document.getElementById('banner');
+    const collapseBtn = document.getElementById('collapseBtn');
+    const userInfo = document.getElementById('userInfo');
+
+    // Загружаем сохранённое состояние из localStorage (по умолчанию развернут)
+    let isCollapsed = localStorage.getItem('bannerState') === 'true';
+
+    // Устанавливаем начальное состояние баннера при загрузке страницы
+    if (isCollapsed) {
+        banner.style.height = '200px';
+        userInfo.style.display = 'none';
+        banner.style.backgroundColor = '#e0e0e0';
+        collapseBtn.innerHTML = '<i class="bi bi-chevron-up" style="font-size: 24px; color: #6c757d;"></i>';
+    } else {
+        banner.style.height = '400px';
+        userInfo.style.display = 'flex';
+        banner.style.backgroundColor = '';
+        collapseBtn.innerHTML = '<i class="bi bi-chevron-down" style="font-size: 24px; color: #6c757d;"></i>';
+    }
+
+    // Добавляем обработчик события на кнопку
+    collapseBtn.addEventListener('click', function() {
+        if (isCollapsed) {
+            // Восстановление исходного состояния баннера
+            banner.style.height = '400px';
+            userInfo.style.display = 'flex';  // Возвращаем блок с информацией
+            banner.style.backgroundColor = ''; // Убираем серый фон
+            collapseBtn.innerHTML = '<i class="bi bi-chevron-down" style="font-size: 24px; color: #6c757d;"></i>';
+        } else {
+            // Сужение баннера и изменение фона
+            banner.style.height = '200px'; // Сужаем по высоте
+            userInfo.style.display = 'none';  // Скрываем блок с информацией
+            banner.style.backgroundColor = '#e0e0e0'; // Сероватый фон
+            collapseBtn.innerHTML = '<i class="bi bi-chevron-up" style="font-size: 24px; color: #6c757d;"></i>';
+        }
+
+        // Переключаем флаг и сохраняем новое состояние в localStorage
+        isCollapsed = !isCollapsed;
+        localStorage.setItem('bannerState', isCollapsed.toString()); // Сохраняем состояние
+    });
+</script>

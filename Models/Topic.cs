@@ -34,4 +34,7 @@ public class Topic : BaseModel
     public string Author { get; set; }
     [Column("comments_count")]
     public int CommentsCount { get; set; }
+    [Column("topic_image")]
+    public string ImageUrl { get; set; } = "https://polinka.top/uploads/posts/2023-06/1685998252_polinka-top-p-kartinka-chernii-kvadrat-foto-instagram-25.png";
+
 }

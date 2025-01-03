@@ -18,25 +18,19 @@ public class TopicController : Controller
     {
         try
         {
-            int pageSize = 10; // Число тем на одной странице
+            // Здесь вы можете задать максимально возможное количество тем для подгрузки.
+            int pageSize = 100;  // или другой подходящий лимит
 
-            // Получаем темы и общее количество с пагинацией
-            var (topics, totalCount) = await _supabaseService.GetTopicsByPageAsyncAdmin(pageNumber, pageSize);
+            // Получаем все темы с пагинацией
+            var (topics, totalCount) = await _supabaseService.GetTopicsByPageAsyncAdmin(1, pageSize);
 
-            // Рассчитываем количество страниц
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-            // Передаем данные в представление
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = totalPages;
-
+            // Возвращаем темы в формате JSON
             return View(topics);
         }
         catch (Exception ex)
         {
-            // В случае ошибки, можно отобразить сообщение
             ViewBag.ErrorMessage = ex.Message;
-            return View("Error");
+            return View(new { error = ex.Message });
         }
     }
 
@@ -81,7 +75,7 @@ public class TopicController : Controller
             }
 
             // Перенаправляем на страницу темы после обновления статуса
-            return RedirectToAction("Topic", new { id = topicId });
+            return RedirectToAction("TopicList", new { id = topicId });
         }
         catch (Exception ex)
         {

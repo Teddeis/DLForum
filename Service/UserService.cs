@@ -11,7 +11,7 @@ public class UserService
     }
 
     // Регистрация
-    public async Task<users?> RegisterAsync(string username, string email, string password)
+    public async Task<users?> RegisterAsync(string email, string password)
     {
         // Проверка на существование пользователя
         var existingUser = await _client.From<users>()
@@ -31,7 +31,6 @@ public class UserService
             // Добавляем пользователя
             var newUser = new users
             {
-                username = username,
                 email = email,
                 password_hash = hashedPassword
             };

@@ -21,9 +21,9 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(string username, string email, string password)
+    public async Task<IActionResult> Register(string email, string password)
     {
-        var user = await _authService.RegisterAsync(username, email, password);
+        var user = await _authService.RegisterAsync(email, password);
 
         if (user == null)
         {
@@ -65,7 +65,10 @@ public class AccountController : Controller
             HttpContext.Session.SetString("Email", user.email);
             HttpContext.Session.SetString("UserName", user.username);
             HttpContext.Session.SetString("Role", user.role);
+            HttpContext.Session.SetString("Gender", user.gender);
+            HttpContext.Session.SetString("About", user.about);
             HttpContext.Session.SetString("AvatarUrl", user.avatar_url);
+            HttpContext.Session.SetString("Background", user.you_background);
 
             // Редирект на главную страницу
             return RedirectToAction("Index", "Home");

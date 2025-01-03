@@ -1,29 +1,77 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿<html lang="en">
 <head>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> @ViewData["Title"] - DLForum</title>
+    <title>@ViewData["Title"] - DLForum</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DLForum.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Добавим кастомные стили для фиксированных отступов -->
+    <style>
+        /* Фиксируем отступы между элементами в навигации */
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px; /* Установим фиксированное расстояние между элементами */
+        }
+
+        /* Убираем нежелательные маргины для навигационных элементов */
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            font-size: 16px;
+            transition: transform 0.3s, color 0.3s;
+            padding: 5px 10px; /* Добавим небольшой паддинг для кнопок */
+        }
+
+        /* Изменяем стиль самой навигационной панели, чтобы ее элементы не сжимались */
+        .navbar {
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Убираем излишние отступы внутри контейнера */
+        .container {
+            padding: 0;
+        }
+
+        /* Фиксируем размеры и отступы для заголовка */
+        .navbar-brand {
+            font-size: 28px;
+            color: white;
+            margin-right: 20px;
+            transition: transform 0.3s;
+        }
+
+        /* Подгоняем иконку поиска */
+        .bi-search {
+            font-size: 18px;
+            margin-right: 5px;
+            transition: transform 0.3s;
+        }
+
+        /* Для элементов пользователя */
+        .dropdown-menu {
+            margin-top: 10px; /* Чтобы не прилипало к кнопке */
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow mb-3" style="background-color: #5a4bf1; color: white;">
+    <header style="position: center">
+        <nav class="navbar navbar-expand-lg navbar-light border-bottom box-shadow mb-3" style="background-color: #5a4bf1; color: white;">
             <div class="container">
                 <div class="d-flex justify-content-center w-100">
-                    <a style="font-size: 24px; color: white; margin-right: 20px; transition: transform 0.3s;" class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
-                        DLForum
+                    <a style="font-size: 28px; color: white; margin-right: 20px; transition: transform 0.3s;" class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                        <strong>DLForum</strong>
                     </a>
 
                     <div class="d-flex align-items-center mx-3">
                         <a class="nav-link text-white d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#searchModal" style="cursor: pointer;">
-                            <i class="bi bi-search" style="font-size: 18px; margin-right: 5px; transition: transform 0.3s;"
-                               onmouseover="this.style.transform='scale(1.2)';"
-                               onmouseout="this.style.transform='scale(1)';"></i>
+                            <i class="bi bi-search" style="font-size: 18px; margin-right: 5px; transition: transform 0.3s;"></i>
                             <span class="nav-text" style="transition: color 0.3s;">Поиск</span>
                         </a>
                     </div>
@@ -32,17 +80,13 @@
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a asp-controller="Home" asp-action="Index" class="nav-link text-white d-flex align-items-center mx-3" style="font-size: 16px;">
-                                    <i class="bi bi-chat" style="font-size: 18px; margin-right: 5px; transition: transform 0.3s;"
-                                       onmouseover="this.style.transform='scale(1.2)';"
-                                       onmouseout="this.style.transform='scale(1)';"></i>
+                                    <i class="bi bi-chat" style="font-size: 18px; margin-right: 5px; "></i>
                                     <span class="nav-text" style="transition: color 0.3s;">Форум</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a asp-controller="Rules" asp-action="Index" class="nav-link text-white d-flex align-items-center mx-3" style="font-size: 16px;">
-                                    <i class="bi bi-file-earmark-text" style="font-size: 18px; margin-right: 5px; transition: transform 0.3s;"
-                                       onmouseover="this.style.transform='scale(1.2)';"
-                                       onmouseout="this.style.transform='scale(1)';"></i>
+                                <a asp-controller="Home" asp-action="Rules" class="nav-link text-white d-flex align-items-center mx-3" style="font-size: 16px;">
+                                    <i class="bi bi-file-earmark-text" style="font-size: 18px; margin-right: 5px; transition: transform 0.3s;"></i>
                                     <span class="nav-text" style="transition: color 0.3s;">Правила</span>
                                 </a>
                             </li>
@@ -53,9 +97,7 @@
                         @inject IHttpContextAccessor HttpContextAccessor
                         @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
                         {
-                            <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 15px; background-color: #5a4bf1; transition: background-color 0.3s;"
-                               onmouseover="this.style.backgroundColor='#4a3cbb';"
-                               onmouseout="this.style.backgroundColor='#5a4bf1';" asp-controller="Account" asp-action="Login">
+                            <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 15px; background-color: #5a4bf1; transition: background-color 0.3s;" asp-controller="Account" asp-action="Login">
                                 Вход | Регистрация
                             </a>
                         }
@@ -70,6 +112,9 @@
                                         <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Profile">Профиль</a>
                                     </li>
                                     <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Settings">Настройки</a>
+                                    </li>
+                                    <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post">
                                             <button type="submit" class="dropdown-item">Выйти</button>
                                         </form>
@@ -81,29 +126,29 @@
                 </div>
             </div>
         </nav>
-    </header>
 
-    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="searchModalLabel">Поиск</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Закрыть">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="searchForm" method="post" action="/Search">
-                        <div class="form-group">
-                            <label for="query">Введите ваш запрос</label>
-                            <input type="text" class="form-control" id="query" name="query" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-2">Найти</button>
-                    </form>
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="searchModalLabel">Поиск</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="searchForm" method="post" action="/Search">
+                            <div class="form-group">
+                                <label for="query">Введите ваш запрос</label>
+                                <input type="text" class="form-control" id="query" name="query" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Найти</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -111,11 +156,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - DLForum - <a asp-area="" asp-controller="Home" asp-action="Privacy">Соглашение</a>
-        </div>
-    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

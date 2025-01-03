@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Настройки профиля";
+    ViewData["HideSidebar"] = true;
+}
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<div class="d-flex justify-content-start">
+    <!-- Левая боковая панель -->
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="#profile-settings" class="list-group-item list-group-item-action active" id="profile-tab" data-bs-toggle="tab" role="tab">
+                Профиль
+            </a>
+            <a href="#security-settings" class="list-group-item list-group-item-action" id="security-tab" data-bs-toggle="tab" role="tab">
+                Безопасность и вход
+            </a>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="col-md-9">
+        <div class="card shadow-lg p-4" style="border-radius: 15px;">
+            <div class="tab-content mt-3">
+                <!-- Профиль -->
+                <div class="tab-pane fade show active" id="profile-settings" role="tabpanel" aria-labelledby="profile-tab">
+                    <h3>Настройки профиля</h3>
+
+                    <!-- Аватар -->
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Аватар</label>
+                        <input class="form-control" type="file" id="avatar" accept="image/*">
+                        <div class="mt-2">
+                            <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="Avatar" class="rounded-circle" style="width: 80px; height: 80px;">
+                        </div>
+                    </div>
+
+                    <!-- Баннер -->
+                    <div class="mb-3">
+                        <label for="banner" class="form-label">Баннер</label>
+                        <input class="form-control" type="file" id="banner" accept="image/*">
+                    </div>
+
+                    <!-- Информация -->
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">Никнейм</label>
+                        <input class="form-control" type="text" id="nickname" value="@HttpContextAccessor.HttpContext.Session.GetString("UserName")">
+                    </div>
+
+                    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Пол</label>
+                        <select class="form-select" id="gender" name="gender">
+                            @{
+                                var selectedGender = HttpContextAccessor.HttpContext?.Session?.GetString("Gender") ?? "Не указан";
+                            }
+                            @if (selectedGender == "Не указан")
+                            {
+                                <option value="Не указан" selected>Не указан</option>
+                                <option value="Женский">Женский</option>
+                                <option value="Мужской">Мужской</option>
+                            }
+                            else if (selectedGender == "Женский")
+                            {
+                                <option value="Не указан">Не указан</option>
+                                <option value="Женский" selected>Женский</option>
+                                <option value="Мужской">Мужской</option>
+                            }
+                            else if (selectedGender == "Мужской")
+                            {
+                                <option value="Не указан">Не указан</option>
+                                <option value="Женский">Женский</option>
+                                <option value="Мужской" selected>Мужской</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="about" class="form-label">О себе</label>
+                        <textarea class="form-control" id="about" rows="4">@HttpContextAccessor.HttpContext.Session.GetString("About")</textarea>
+                    </div>
+
+                    <!-- Кнопка для сохранения настроек -->
+                    <button class="btn btn-primary">Сохранить изменения</button>
+                </div>
+
+                <!-- Безопасность и вход -->
+                <div class="tab-pane fade" id="security-settings" role="tabpanel" aria-labelledby="security-tab">
+                    <h3>Настройки безопасности и входа</h3>
+                    <p>Тут будет отображаться информация о безопасности и методах входа.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

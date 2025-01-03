@@ -7,11 +7,13 @@ public class DetailsController : Controller
 {
     private readonly DetailsService _topicService;
     private readonly CommentService _commentService; // Assuming a CommentService for fetching comments
+    private readonly ImageService _imageService;
 
-    public DetailsController(DetailsService topicService, CommentService commentService)
+    public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService)
     {
         _topicService = topicService;
         _commentService = commentService;
+        _imageService = imageService;
     }
 
     // Метод для отображения подробной информации о теме
@@ -20,29 +22,31 @@ public class DetailsController : Controller
     {
         try
         {
-            // Получаем тему по ID
             var topic = await _topicService.GetTopicByIdAsync(id);
-
             if (topic == null)
             {
-                return NotFound(); // Возвращаем ошибку, если тема не найдена
+                return NotFound();
             }
 
-            // Получаем комментарии для этой темы
             var comments = await _commentService.GetCommentsByTopicIdAsync(id);
+            var images = await _imageService.GetImagesByTopicIdAsync(id);
 
-            // Передаем данные в представление
+            // Simplify the images data
+            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList(); // Only keep the URL
+
             ViewBag.Comments = comments;
+            ViewBag.Images = imageUrls; // Send simplified list
 
-            return View(topic); // Отправляем тему в представление
+            return View(topic);
         }
         catch (Exception ex)
         {
-            // В случае ошибки выводим сообщение
             ViewBag.ErrorMessage = ex.Message;
             return View("Error");
         }
     }
+
+
 
     // Метод для отображения подробной информации о теме для админа
     [HttpGet("/DetailsAdmin/{id}")]

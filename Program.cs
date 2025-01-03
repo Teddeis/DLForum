@@ -19,6 +19,8 @@ internal class Program
         builder.Services.AddScoped<TopicService>();
         builder.Services.AddScoped<CommentService>();
         builder.Services.AddScoped<DetailsService>();
+        builder.Services.AddScoped<ImageService>();
+
 
 
 
