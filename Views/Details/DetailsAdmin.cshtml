@@ -1,6 +1,21 @@
 ﻿@model Topic
 
 <style>
+    /* Общие переменные темы */
+    :root {
+        --background-color: #ffffff; /* Светлая тема */
+        --text-color: #333333;
+        --card-background: #f9f9f9;
+        --comment-border: #ddd;
+    }
+
+    [data-theme="dark"] {
+        --background-color: #1a1a1b; /* Тёмная тема */
+        --text-color: #d7dadc;
+        --card-background: #2a2a2b;
+        --comment-border: #444;
+    }
+
     * {
         margin: 0;
         padding: 0;
@@ -9,8 +24,9 @@
 
     body {
         font-family: Arial, sans-serif;
-        background-color: #f7f7f7;
-        color: #333;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
     }
 
     nav {
@@ -21,16 +37,28 @@
 
     .back-link {
         font-size: 16px;
-        color: #007BFF;
+        color: var(--text-color);
         text-decoration: none;
     }
 
-    .search {
-        font-size: 16px;
-        color: #555;
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
     .main-content {
+        max-width: 2000px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--card-background);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+    }
+
+    .content-info {
         margin-bottom: 20px;
     }
 
@@ -38,51 +66,51 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;
+        word-wrap: break-word;
     }
 
     .description {
         font-size: 16px;
         line-height: 1.5;
-        color: #555;
+        word-wrap: break-word;
+    }
+
+    .author {
+        font-size: 14px;
+        color: #007BFF;
+        margin-bottom: 10px;
+    }
+
+    .likes-and-comments {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .answers {
-        margin-top: 40px;
-    }
-
-    .answers-title {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
-        font-size: 18px;
-    }
-
-    .edit-button {
-        padding: 5px 10px;
-        font-size: 14px;
-        background-color: #f0f0f0;
-        border: 1px solid #ddd;
-        cursor: pointer;
-    }
-
-    .answer-input {
-        margin-top: 10px;
+        align-items: center;
+        margin-top: 20px;
     }
 
     textarea {
         width: 100%;
         height: 80px;
         padding: 10px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--comment-border);
         border-radius: 5px;
         margin-bottom: 10px;
         resize: none;
+        background-color: var(--card-background);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
     .post-answer {
         padding: 10px 20px;
         background-color: #007BFF;
-        color: white;
+        color: #fff;
         border: none;
         cursor: pointer;
         border-radius: 5px;
@@ -91,6 +119,93 @@
         .post-answer:hover {
             background-color: #0056b3;
         }
+
+    .delete-topic-btn {
+        padding: 6px 12px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 14px;
+    }
+
+        .delete-topic-btn:hover {
+            background-color: #c82333;
+        }
+
+    .views-count {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .comments-section {
+        margin-top: 30px;
+        padding: 20px;
+        border-top: 1px solid var(--comment-border);
+    }
+
+    .comments-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .comment-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid var(--comment-border);
+        border-radius: 5px;
+        background-color: var(--card-background);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .comment-header {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .comment-body {
+        font-size: 14px;
+    }
+
+    .image-gallery {
+        position: relative;
+        max-width: 100%;
+        height: 500px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .image-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .prev-btn {
+        left: 10px;
+    }
+
+    .next-btn {
+        right: 10px;
+    }
 </style>
 
 <head>
