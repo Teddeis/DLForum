@@ -4,27 +4,156 @@
 }
 
 <style>
-    .editor-toolbar {
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 5px 5px 0 0;
-        padding: 5px;
+    /* ---------------- Общие переменные ---------------- */
+    :root {
+        --background-color: #1a1a1b; /* Тёмная тема */
+        --text-color: #d7dadc;
+        --navbar-color: #272729;
+        --button-color: #424245;
+        --button-hover-color: #5a5a5b;
+        --search-bar-bg: #272729;
+        --search-bar-border: #424245;
+        --placeholder-color: #848586;
+        --card-bg: #2a2a2d; /* Темный фон карточек */
+        --link-color: #bb86fc; /* Цвет ссылок на темной теме */
     }
 
-    .editor-textarea {
-        border: 1px solid #ddd;
-        border-top: none;
-        border-radius: 0 0 5px 5px;
-        height: 200px;
-        resize: none;
+    [data-theme="light"] {
+        --background-color: #ffffff; /* Светлая тема */
+        --text-color: #333333;
+        --navbar-color: #f8f9fa;
+        --button-color: #e7e7e7;
+        --button-hover-color: #d6d6d6;
+        --search-bar-bg: #f1f3f5;
+        --search-bar-border: #cccccc;
+        --placeholder-color: #666666;
+        --card-bg: #f8f9fa; /* Светлый фон карточек */
+        --link-color: #0066cc; /* Цвет ссылок на светлой теме */
     }
+
+    /* ---------------- Глобальные стили ---------------- */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--link-color);
+        transition: color 0.3s;
+    }
+
+        a:hover {
+            color: var(--text-color);
+        }
+
+
+    /* ---------------- Кнопки ---------------- */
+    .btn {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+    }
+
+        .btn:hover {
+            background-color: var(--button-hover-color);
+        }
+
+    /* ---------------- Карточки ---------------- */
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--search-bar-border);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s, border-color 0.3s;
+    }
+
+        .card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-title {
+        color: var(--text-color);
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        color: var(--text-color);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+        .card-body p {
+            color: var(--text-color);
+        }
+
+    /* ---------------- Интерактивные элементы ---------------- */
+    .editor-toolbar {
+        background-color: var(--navbar-color);
+        border: 1px solid var(--search-bar-border);
+        border-radius: 5px 5px 0 0;
+        padding: 8px;
+    }
+
+    .mb-3 {
+        color: var(--text-color);
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    /* ---------------- Поля ввода ---------------- */
+    .editor-textarea {
+        background-color: var(--card-bg); /* Темный фон поля ввода */
+        color: var(--text-color); /* Цвет текста */
+        border: 1px solid var(--search-bar-border); /* Граница */
+        border-radius: 5px;
+        padding: 12px;
+        font-size: 1rem;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .editor-textarea::placeholder {
+            color: var(--placeholder-color); /* Цвет текста для плейсхолдера */
+            opacity: 0.7; /* Полупрозрачный */
+        }
+
+        .editor-textarea:focus {
+            border-color: var(--link-color); /* Цвет границы при фокусе */
+            outline: none; /* Убрать стандартное обводку */
+            background-color: var(--background-color); /* Более светлый фон для фокусированного состояния */
+        }
+
 
     .rules-btn {
-        font-size: 14px;
-        color: #6c757d;
-        border: 1px solid #e0e0e0;
+        font-size: 0.875rem;
+        background-color: var(--button-color);
+        color: var(--text-color);
+        border: 1px solid var(--search-bar-border);
         border-radius: 5px;
-        padding: 5px 10px;
+        padding: 6px 12px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .rules-btn:hover {
+            background-color: var(--button-hover-color);
+            border-color: var(--button-hover-color);
+        }
+
+    /* ---------------- Дополнительные классы ---------------- */
+    .text-muted {
+        color: var(--placeholder-color) !important;
+    }
+
+    .text-dark {
+        color: var(--text-color) !important;
     }
 </style>
 
@@ -39,7 +168,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <!-- Заголовок -->
                 <div class="mb-3">
-                    <input name="title" type="text" class="form-control" placeholder="Заголовок" required>
+                    <input name="title" type="text" class="editor-textarea form-control" placeholder="Заголовок" required>
                 </div>
 
                 <!-- Текстовое поле с панелью инструментов -->

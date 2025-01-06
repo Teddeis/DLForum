@@ -17,6 +17,7 @@
             --search-bar-bg: #272729;
             --search-bar-border: #424245;
             --placeholder-color: #848586;
+            --search-bar-border: #333; /* Цвет для темной темы */
         }
 
         [data-theme="light"] {
@@ -28,6 +29,7 @@
             --search-bar-bg: #f1f3f5;
             --search-bar-border: #cccccc;
             --placeholder-color: #666666;
+            --light-theme-search-bar-border: #ccc; /* Цвет для светлой темы */
         }
 
         body {
@@ -115,7 +117,65 @@
             object-fit: cover;
             cursor: pointer;
         }
-    </style>
+
+
+/* Стиль для выпадающего меню */
+.dropdown-menu {
+    background-color: var(--navbar-color); /* Темный фон для меню */
+    border: 1px solid var(--search-bar-border); /* Граница меню */
+    color: var(--text-color); /* Цвет текста */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для меню */
+    border-radius: 8px; /* Скругленные углы */
+    padding: 8px 0; /* Отступы внутри меню */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Стиль для заголовков меню */
+.dropdown-header {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--placeholder-color); /* Слегка приглушенный цвет */
+    padding: 8px 16px;
+    text-transform: uppercase;
+}
+
+/* Линия-разделитель для темной темы */
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--search-bar-border); /* Линия-разделитель */
+    margin: 8px 0;
+}
+
+/* Линия-разделитель для светлой темы */
+.light-theme .dropdown-divider {
+    height: 1px;
+    background-color: var(--light-theme-search-bar-border); /* Линия-разделитель для светлой темы */
+    margin: 8px 0;
+}
+
+/* Элементы меню */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 12px 16px;
+    gap: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    color: var(--text-color);
+}
+
+
+/* Темный фон для аватарки */
+.dropdown-item i {
+    color: var(--text-color); /* Иконки меню */
+}
+
+.dropdown-item span.badge {
+    background-color: #e74c3c; /* Красный значок уведомлений */
+    color: #fff;
+}
+</style>
 </head>
 
 <body>
@@ -144,20 +204,33 @@
                 }
                 else
                 {
-                    <div class="position-relative dropdown">
+                    <div class="dropdown">
                         <a class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="user-avatar" />
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Profile">Профиль</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Profile">
+                                    <i class="bi bi-person-circle me-2"></i> Профиль
+                                </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Settings">Настройки</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Settings">
+                                    <i class="bi bi-gear-fill me-2"></i> Настройки
+                                </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Notifications" asp-action="Index">
+                                    <i class="bi bi-bell-fill me-2"></i> Уведомления
+                                    <span class="badge bg-danger ms-auto"> </span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="dropdown-item">Выйти</button>
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Выйти
+                                    </button>
                                 </form>
                             </li>
                         </ul>

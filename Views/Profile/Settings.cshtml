@@ -3,6 +3,117 @@
     ViewData["HideSidebar"] = true;
 }
 
+<style>
+    /* Общие стили для темной и светлой тем */
+    :root {
+        --background-color: #1a1a1b; /* Тёмная тема */
+        --text-color: #d7dadc;
+        --navbar-color: #272729;
+        --button-color: #424245;
+        --button-hover-color: #5a5a5b;
+        --card-border-color: #424245;
+        --form-control-bg: #272729;
+        --form-control-border: #424245;
+        --placeholder-color: #848586;
+        --active-tab-bg: #5a5a5b;
+        --list-group-bg: #272729;
+        --list-group-hover: #3c3c3d;
+        --input-bg: #1f1f1f;
+        --input-border: #424245;
+        --input-focus-border: #5a5a5b;
+        --input-text-color: #d7dadc;
+    }
+
+    [data-theme="light"] {
+        --background-color: #ffffff; /* Светлая тема */
+        --text-color: #333333;
+        --navbar-color: #f8f9fa;
+        --button-color: #e7e7e7;
+        --button-hover-color: #d6d6d6;
+        --card-border-color: #cccccc;
+        --form-control-bg: #ffffff;
+        --form-control-border: #cccccc;
+        --placeholder-color: #666666;
+        --active-tab-bg: #d6d6d6;
+        --list-group-bg: #f8f9fa;
+        --list-group-hover: #e6e6e6;
+        --input-bg: #ffffff;
+        --input-border: #cccccc;
+        --input-focus-border: #b3b3b3;
+        --input-text-color: #333333;
+    }
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .navbar {
+        background-color: var(--navbar-color);
+        transition: background-color 0.3s;
+    }
+
+    .card {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        border: 1px solid var(--card-border-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .list-group-item {
+        background-color: var(--list-group-bg);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .list-group-item:hover {
+            background-color: var(--list-group-hover);
+        }
+
+        .list-group-item.active {
+            background-color: var(--active-tab-bg);
+            color: var(--text-color);
+        }
+
+    .form-control,
+    input,
+    select,
+    textarea {
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--input-text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+        .form-control:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--input-focus-border);
+            outline: none;
+            box-shadow: 0 0 5px var(--input-focus-border);
+        }
+
+        .form-control::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--placeholder-color);
+        }
+
+    .btn {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .btn:hover {
+            background-color: var(--button-hover-color);
+        }
+</style>
+
+
+
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <div class="d-flex justify-content-start">
