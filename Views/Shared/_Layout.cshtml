@@ -7,6 +7,32 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
 
     <style>
+
+        /* Для всех скроллбаров */
+        ::-webkit-scrollbar {
+            width: 8px; /* Узкий вертикальный скроллбар */
+            height: 8px; /* Узкий горизонтальный скроллбар */
+        }
+
+        /* Фон трека скроллбара */
+        ::-webkit-scrollbar-track {
+            background: #2a2a2a; /* Тёмный, ненавязчивый фон трека */
+            border-radius: 4px; /* Лёгкое скругление */
+        }
+
+        /* Ползунок */
+        ::-webkit-scrollbar-thumb {
+            background: #5a5a5a; /* Нейтральный цвет для ползунка */
+            border-radius: 4px; /* Скругление для минималистичного вида */
+            transition: background 0.3s ease; /* Плавный переход цвета */
+        }
+
+            /* При наведении на ползунок */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #808080; /* Более тёмный цвет для ползунка при наведении */
+            }
+
+
         /* Общие стили */
         :root {
             --background-color: #1a1a1b; /* Тёмная тема */

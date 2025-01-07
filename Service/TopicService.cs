@@ -13,7 +13,7 @@ public class TopicService
     }
 
     // Метод для добавления новой записи в таблицу "topics"
-    public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author)
+    public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author, string categories)
     {
         var topic = new Topic
         {
@@ -25,13 +25,16 @@ public class TopicService
             ViewsCount = 0,
             LikesCount = 0,
             Status = "false",
-            Author = author
+            Author = author,
+            Categories = categories
         };
 
         var response = await _client.From<Topic>().Insert(topic);
 
         return response.Models.FirstOrDefault();
     }
+
+  
 
     // Метод для получения всех записей с пагинацией
     public async Task<(List<Topic>, int)> GetTopicsByPageAsync(int pageNumber, int pageSize)
@@ -136,6 +139,5 @@ public class TopicService
         var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
 
         return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
-    }
-
+    }    
 }

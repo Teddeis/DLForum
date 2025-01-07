@@ -112,7 +112,7 @@
     /* ---------------- Поля ввода ---------------- */
     .editor-textarea {
         background-color: var(--card-bg); /* Темный фон поля ввода */
-        color: var(--text-color); /* Цвет текста */
+        color: var(--text-color) !important; /* Принудительно устанавливаем цвет текста */
         border: 1px solid var(--search-bar-border); /* Граница */
         border-radius: 5px;
         padding: 12px;
@@ -127,8 +127,9 @@
 
         .editor-textarea:focus {
             border-color: var(--link-color); /* Цвет границы при фокусе */
-            outline: none; /* Убрать стандартное обводку */
+            outline: none; /* Убрать стандартную обводку */
             background-color: var(--background-color); /* Более светлый фон для фокусированного состояния */
+            color: var(--text-color) !important; /* Убедимся, что текст остаётся читаемым */
         }
 
 
@@ -155,6 +156,76 @@
     .text-dark {
         color: var(--text-color) !important;
     }
+
+    /* ---------------- Контейнер для тегов ---------------- */
+    #tags-container {
+        background-color: var(--card-bg); /* Фон совпадает с карточками */
+        color: var(--text-color); /* Цвет текста */
+        border: 1px solid var(--search-bar-border); /* Граница */
+        border-radius: 5px; /* Скругленные углы */
+        padding: 8px;
+        min-height: 48px; /* Обеспечиваем минимальную высоту */
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap; /* Перенос строк для тегов */
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    /* Интерактивное поле ввода в контейнере тегов */
+    #tags-input {
+        background-color: var(--card-bg); /* Совпадает с фоном контейнера */
+        color: var(--text-color);
+        border: none;
+        outline: none; /* Убираем стандартные обводки */
+        flex-grow: 1; /* Растягивается на оставшееся пространство */
+        padding: 4px 0;
+        min-width: 100px; /* Минимальная ширина */
+    }
+
+        #tags-input::placeholder {
+            color: var(--placeholder-color); /* Цвет текста для плейсхолдера */
+            opacity: 0.7;
+        }
+
+    /* Теги */
+    .badge {
+        background-color: var(--button-color); /* Цвет для тегов */
+        color: var(--text-color); /* Цвет текста */
+        border-radius: 20px; /* Скругленные углы */
+        padding: 4px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        /* Кнопка удаления тега */
+        .badge .remove-tag {
+            color: var(--placeholder-color); /* Цвет кнопки удаления */
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+            .badge .remove-tag:hover {
+                color: var(--link-color); /* При наведении цвет ссылки */
+            }
+
+    .toolbar-btn {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .toolbar-btn:hover {
+            background-color: var(--button-hover-color);
+        }
 </style>
 
 <body>
@@ -166,16 +237,35 @@
             </h3>
             <form asp-action="CreateTopic" asp-controller="Topic" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <!-- Заголовок -->
                 <div class="mb-3">
                     <input name="title" type="text" class="editor-textarea form-control" placeholder="Заголовок" required>
                 </div>
 
-                <!-- Текстовое поле с панелью инструментов -->
-                <div>
-                    <div class="editor-toolbar d-flex justify-content-start gap-2"></div>
-                    <textarea name="content" class="editor-textarea form-control mt-0" placeholder="Ваше сообщение"></textarea>
+                <!-- Категории -->
+                <div class="mb-3">
+                    <label for="categories" class="form-label">Категории</label>
+                    <div id="tags-container" class="form-control p-2 d-flex flex-wrap gap-1">
+                        <!-- Теги добавляются сюда -->
+                        <input id="tags-input" type="text" class="border-0 flex-grow-1" placeholder="Введите категорию и нажмите Enter">
+                    </div>
+                    <input type="hidden" name="categories" id="categories-hidden" />
                 </div>
+
+                <!-- Панель инструментов для редактирования -->
+                <div class="editor-toolbar d-flex justify-content-start gap-2">
+                    <button type="button" class="toolbar-btn" onclick="execCommand('bold')"><b>Ж</b></button>
+                    <button type="button" class="toolbar-btn" onclick="execCommand('italic')"><i>К</i></button>
+                    <button type="button" class="toolbar-btn" onclick="execCommand('underline')"><u>П</u></button>
+                    <button type="button" class="toolbar-btn" onclick="execCommand('insertUnorderedList')">• Список</button>
+                </div>
+
+                <!-- Редактируемый контент -->
+                <div name="content" id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></div>
+
+                <!-- Скрытое поле для хранения контента -->
+                <input type="hidden" id="content" name="content" />
 
                 <!-- Кнопка отправки -->
                 <div class="text-center mt-4">
@@ -188,4 +278,43 @@
     <!-- Bootstrap Icons -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Поле для добавления тегов
+        const tagsInput = document.getElementById("tags-input");
+        const tagsContainer = document.getElementById("tags-container");
+        const categoriesHidden = document.getElementById("categories-hidden");
+        let tags = [];
+
+        // Добавление нового тега
+        tagsInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const tag = tagsInput.value.trim();
+                if (tag && !tags.includes(tag)) {
+                    tags.push(tag);
+
+                    // Создаем элемент для нового тега
+                    const tagElement = document.createElement("span");
+                    tagElement.className = "badge bg-primary text-white d-flex align-items-center gap-2";
+                    tagElement.innerHTML = `${tag} <i class="bi bi-x-circle remove-tag" style="cursor: pointer;"></i>`;
+                    tagsContainer.insertBefore(tagElement, tagsInput);
+
+                    // Обновляем скрытое поле
+                    categoriesHidden.value = tags.join(",");
+
+                    // Очистка поля ввода
+                    tagsInput.value = "";
+
+                    // Удаление тега
+                    tagElement.querySelector(".remove-tag").addEventListener("click", () => {
+                        tags = tags.filter((t) => t !== tag);
+                        categoriesHidden.value = tags.join(",");
+                        tagElement.remove();
+                    });
+                }
+            }
+        });
+    </script>
 </body>
+

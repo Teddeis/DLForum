@@ -211,6 +211,29 @@
     .next-btn {
         right: 10px;
     }
+
+    .category-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--background-color);
+        background-color: #007bff; /* Основной цвет для категории */
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    [data-theme="dark"] .category-badge {
+        color: #1a1a1b; /* Цвет текста для темной темы */
+        background-color: #bb86fc; /* Цвет категории для темной темы */
+    }
+
+    .category-badge:hover {
+        background-color: #0056b3; /* Более тёмный оттенок при наведении */
+        cursor: default;
+    }
 </style>
 
 <script>
@@ -254,13 +277,18 @@
         <div class="main-content">
             <div class="content-info">
                 <!-- Имя автора -->
-                <div>
-                    <p class="author">Автор: @Model.Author</p>
-                    <p class="views-count"><i class="bi bi-eye"></i> @Model.ViewsCount</p>
+                <div class="content-info">
+                    <div>
+                        <p class="author">Автор: @Model.Author</p>
+                        <p class="views-count"><i class="bi bi-eye"></i> @Model.ViewsCount</p>
+                    </div>
+                    <div class="category-badge">
+                        <span>@Model.Categories</span>
+                    </div>
+                    <h1 class="title">@Model.Title</h1>
+                    <p class="description">@Model.Content</p>
                 </div>
 
-                <h1 class="title">@Model.Title</h1>
-                <p class="description">@Model.Content</p>
 
                 @if (ViewBag.Images != null && ViewBag.Images.Count > 0)
                 {

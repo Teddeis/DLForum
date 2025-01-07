@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using DLForum.Models;
 using Microsoft.AspNetCore.Mvc;
-using DLForum.Service; // Добавьте пространство имен, если ваш TopicService находится здесь
 
 namespace DLForum.Controllers
 {
@@ -19,8 +18,9 @@ namespace DLForum.Controllers
         }
 
         // Метод для отображения главной страницы с пагинацией
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Home(int pageNumber = 1)
         {
+
             try
             {
                 int pageSize = 10; // Число тем на одной странице
@@ -37,7 +37,8 @@ namespace DLForum.Controllers
                 ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = totalPages;
 
-                return View(topics);
+
+                return PartialView(topics);
             }
             catch (Exception ex)
             {
@@ -45,6 +46,31 @@ namespace DLForum.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }
+        }
+
+
+        public async Task<IActionResult> Categories(int pageNumber = 1)
+        {
+            try
+            {
+                int pageSize = 10; // Число тем на одной странице
+
+                // Получаем темы и общее количество с пагинацией
+                var (topics, totalCount) = await _topicService.GetTopicsByPageAsync(pageNumber, pageSize);
+
+                return PartialView(topics);
+            }
+            catch (Exception ex)
+            {
+                // В случае ошибки, можно отобразить сообщение
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+        }
+
+        public IActionResult Index()
+        {
+            return View();
         }
 
         public IActionResult Privacy()
