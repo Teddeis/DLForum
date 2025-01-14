@@ -395,7 +395,7 @@
                     <li class="comment-item">
                         <div class="comment-header d-flex align-items-center">
                             <img src="@Url.Content(@comment.avatar)" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
-                            <span class="comment-author">@comment.author</span>
+                            <a class="comment-author back-link" href="@Url.Action("Users", "Profile", new { id = comment.id_users })">@comment.author</a>
                         </div>
                         <div class="comment-body">
                             <p>@comment.comments</p> <!-- Текст комментария -->

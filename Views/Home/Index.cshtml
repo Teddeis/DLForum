@@ -180,16 +180,21 @@
             color: var(--link-color);
         }
 
-    /* Индикатор загрузки */
-    #loading-indicator {
-        display: none;
-        text-align: center;
-        margin-top: 20px;
+    /* Стили для вложенного списка */
+    .list-unstyled {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-left: 2px solid #ddd;
     }
 
-    .spinner-border {
-        width: 3rem;
-        height: 3rem;
+        .list-unstyled > li {
+            margin: 5px 0;
+        }
+
+    /* Анимация для раскрытия */
+    .collapse {
+        transition: height 0.3s ease;
     }
 </style>
 
@@ -206,6 +211,7 @@
                                 <i class="bi bi-house-door-fill me-2"></i> Главная
                             </a>
                         </li>
+                        <!-- Список категорий -->
                         <li class="nav-item">
                             <a class="nav-link collapsed" href="#categoriesDropdown" data-bs-toggle="collapse" role="button" aria-expanded="false">
                                 <i class="bi bi-grid-3x3-gap-fill me-2"></i> Категории
@@ -244,12 +250,17 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="#">
-                                        <i class="bi bi-basketball me-2"></i> Спорт
+                                        <i class="bi bi-balloon me-2"></i> Спорт
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="#">
                                         <i class="bi bi-music-note-list me-2"></i> Музыка
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-archive me-2"></i> Другое
                                     </a>
                                 </li>
                             </ul>
@@ -264,17 +275,8 @@
             </div>
         </div>
 
-
-
         <!-- Контейнер для динамического контента -->
         <div class="col-md-9">
-            <!-- Индикатор загрузки -->
-            <div id="loading-indicator">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Загрузка...</span>
-                </div>
-                <p>Загрузка...</p>
-            </div>
             <div id="dynamic-content"></div>
         </div>
     </div>
@@ -300,16 +302,11 @@
             // Добавляем класс active на текущую ссылку
             $(this).addClass('active');
 
-            // Показываем индикатор загрузки
-            $('#loading-indicator').show();
-
             // Получаем URL из data-url атрибута
             var url = $(this).data('url');
 
             // Загружаем контент через AJAX
             $('#dynamic-content').load(url, function (response, status, xhr) {
-                // После загрузки контента скрываем индикатор загрузки
-                $('#loading-indicator').hide();
 
                 if (status === "error") {
                     $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");

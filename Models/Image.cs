@@ -6,7 +6,7 @@ namespace DLForum.Models
     [Table("image")]
     public class images : BaseModel
     {
-        [PrimaryKey("id", false)] // Убедитесь, что у вас есть поле `id` в таблице, которое является первичным ключом
+        [PrimaryKey("id", false)]
         public int Id { get; set; }
 
         [Column("topic_id")]
