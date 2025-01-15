@@ -61,7 +61,7 @@ public class AccountController : Controller
             }
 
             // Сохранение данных пользователя в сессию
-            HttpContext.Session.SetInt32("ID", user.Id);
+            HttpContext.Session.SetInt32("ID", user.id);
             HttpContext.Session.SetString("Email", user.email);
             HttpContext.Session.SetString("UserName", user.username);
             HttpContext.Session.SetString("Role", user.role);

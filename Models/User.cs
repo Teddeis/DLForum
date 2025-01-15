@@ -5,7 +5,7 @@ using Supabase.Postgrest.Models;
 public class users : BaseModel
 {
     [PrimaryKey("id", false)]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     public string username { get; set; } = GenerateRandomUsername();
 

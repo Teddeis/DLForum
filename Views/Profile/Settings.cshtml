@@ -1,4 +1,7 @@
-﻿@{
+﻿@model ProfileSettingsViewModel
+
+
+@{
     ViewData["Title"] = "Настройки профиля";
     ViewData["HideSidebar"] = true;
 }
@@ -79,18 +82,23 @@
     .form-control,
     input,
     select,
-    textarea {
+    textarea, 
+    small {
         background-color: var(--input-bg);
         border: 1px solid var(--input-border);
         color: var(--input-text-color);
         transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
+    
+
         .form-control:focus,
         input:focus,
         select:focus,
         textarea:focus {
+            background-color: var(--input-bg);
             border-color: var(--input-focus-border);
+            color: var(--input-text-color);
             outline: none;
             box-shadow: 0 0 5px var(--input-focus-border);
         }
@@ -110,7 +118,21 @@
         .btn:hover {
             background-color: var(--button-hover-color);
         }
-</style>
+
+    .form-select
+    {
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--input-text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .small
+    {
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    </style>
 
 
 
@@ -128,7 +150,6 @@
             </a>
         </div>
     </div>
-
     <!-- Основной контент -->
     <div class="col-md-9">
         <div class="card shadow-lg p-4" style="border-radius: 15px;">
@@ -136,29 +157,104 @@
                 <!-- Профиль -->
                 <div class="tab-pane fade show active" id="profile-settings" role="tabpanel" aria-labelledby="profile-tab">
                     <h3>Настройки профиля</h3>
-
-                    <!-- Аватар -->
-                    <div class="mb-3">
-                        <label for="avatar" class="form-label">Аватар</label>
-                        <input class="form-control" type="file" id="avatar" accept="image/*">
-                        <div class="mt-2">
-                            <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="Avatar" class="rounded-circle" style="width: 80px; height: 80px;">
+                    <form asp-action="UpdateProfile" asp-controller="Profile" method="post">
+                        <!-- Аватар -->
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Аватар</label>
+                            <div class="d-flex align-items-center">
+                                <!-- Просмотр аватара -->
+                                <img id="avatarPreview" src="@Url.Content($"{HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")"
+                                     alt="Avatar Preview"
+                                     class="rounded-circle border shadow-sm me-3"
+                                     style="width: 80px; height: 80px; object-fit: cover;">
+                                <div>
+                                    <label class="btn btn-outline-primary btn-sm">
+                                        Загрузить
+                                        <input type="file" id="avatar" name="avatar_url" accept="image/*" class="form-control visually-hidden">
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Баннер -->
-                    <div class="mb-3">
-                        <label for="banner" class="form-label">Баннер</label>
-                        <input class="form-control" type="file" id="banner" accept="image/*">
-                    </div>
+                        <!-- Баннер -->
+                        <div class="mb-3">
+                            <label for="banner" class="form-label">Баннер</label>
+                            <div class="position-relative">
+                                <!-- Просмотр баннера -->
+                                <img id="bannerPreview" src="@Url.Content($"{HttpContextAccessor.HttpContext.Session.GetString("Background")}")"
+                                     alt="Banner Preview"
+                                     class="border shadow-sm w-100 mb-2"
+                                     style="max-height: 200px; object-fit: cover;">
+                                <label class="btn btn-outline-primary btn-sm">
+                                    Загрузить
+                                    <input type="file" id="banner" name="you_background" accept="image/*" class="form-control visually-hidden">
+                                </label>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Аватар
+                            document.getElementById('avatar').addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        document.getElementById('avatarPreview').src = e.target.result;
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+
+                            // Баннер
+                            document.getElementById('banner').addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        document.getElementById('bannerPreview').src = e.target.result;
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        </script>
+
+                        <style>
+                            .btn {
+                                position: relative;
+                                overflow: hidden;
+                            }
+
+                                .btn input[type="file"] {
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    opacity: 0;
+                                    cursor: pointer;
+                                }
+
+                            .rounded-circle {
+                                border: 2px solid var(--card-border-color);
+                            }
+
+                            #avatarPreview,
+                            #bannerPreview {
+                                transition: transform 0.3s ease;
+                            }
+
+                                #avatarPreview:hover,
+                                #bannerPreview:hover {
+                                    transform: scale(1.05);
+                                }
+                        </style>
+
 
                     <!-- Информация -->
                     <div class="mb-3">
                         <label for="nickname" class="form-label">Никнейм</label>
-                        <input class="form-control" type="text" id="nickname" value="@HttpContextAccessor.HttpContext.Session.GetString("UserName")">
+                            <input class="form-control" type="text" name="username" id="nickname" value="@HttpContextAccessor.HttpContext.Session.GetString("UserName")">
                     </div>
-
-                    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
                     <div class="mb-3">
                         <label for="gender" class="form-label">Пол</label>
@@ -189,13 +285,12 @@
 
                     <div class="mb-3">
                         <label for="about" class="form-label">О себе</label>
-                        <textarea class="form-control" id="about" rows="4">@HttpContextAccessor.HttpContext.Session.GetString("About")</textarea>
+                        <textarea class="form-control" name="about" id="about" rows="4">@HttpContextAccessor.HttpContext.Session.GetString("About")</textarea>
                     </div>
-
                     <!-- Кнопка для сохранения настроек -->
-                    <button class="btn btn-primary">Сохранить изменения</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </form>
                 </div>
-
                 <!-- Безопасность и вход -->
                 <div class="tab-pane fade" id="security-settings" role="tabpanel" aria-labelledby="security-tab">
                     <h3>Настройки безопасности и входа</h3>

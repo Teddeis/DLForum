@@ -5,6 +5,7 @@
 }
 
 <style>
+
     /* Общие стили для элементов профиля */
     .card {
         background-color: var(--background-color);
@@ -20,17 +21,6 @@
         transition: background-color 0.3s, color 0.3s;
     }
 
-    /* Кнопка настроек */
-    .btn-light {
-        background-color: var(--button-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-        .btn-light:hover {
-            background-color: var(--button-hover-color);
-        }
-
     /* Стиль для баннера */
     #banner {
         background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")');
@@ -44,9 +34,8 @@
 
 </style>
 
-<!-- Существующий код вашего профиля -->
 <div class="d-flex justify-content-center align-items-center">
-    <div class="card" id="banner" style="width: 1000px; height: 400px; border-radius: 15px; background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")'); background-size: cover; background-position: center; position: relative; transition: all 0.3s ease;">
+    <div class="card" id="banner" style="width: 1000px; height: 400px; border-radius: 20px; border: none; background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")'); background-size: cover; background-position: center; position: relative; transition: all 0.3s ease;">
         @inject IHttpContextAccessor HttpContextAccessor
 
         <!-- Стрелочка для сужения баннера -->
@@ -66,16 +55,31 @@
             </div>
 
             <!-- Кнопка настроек -->
-            <a class="btn btn-light d-flex align-items-center justify-content-center" href="@Url.Action("Settings", "Profile")" style="width: 50px; height: 50px; border-radius: 50%; background-color: #f8f9fa;">
-                <i class="bi bi-gear-fill" style="font-size: 24px; color: #6c757d;"></i>
+            <a class="btn d-flex align-items-center justify-content-center"
+               href="@Url.Action("Settings", "Profile")"
+               style="width: 60px; height: 60px; border-radius: 50%; background-color: var(--button-color);color: var(--text-color); transition: background-color 0.3s, color 0.3s, transform 0.2s ease;">
+                <i class="bi bi-gear-fill" style="font-size: 28px;"></i>
             </a>
+
+            <style>
+                .btn:hover {
+                    background-color: var(--button-hover-color); /* При наведении - более яркий цвет */
+                    color: var(--text-color);
+                    transform: scale(1.1); /* Лёгкое увеличение кнопки */
+                }
+
+                .btn:active {
+                    transform: scale(0.95); /* Эффект нажатия - уменьшение кнопки */
+                }
+            </style>
+
         </div>
     </div>
 </div>
 
 <!-- Ваши темы, Комментарии, Друзья, Избранное, Проверка тем для модераторов -->
 <div class="d-flex justify-content-center align-items-center mt-4">
-    <div class="card shadow-lg p-4" style="width: 1000px; border-radius: 15px;">
+    <div class="card p-4" style="width: 1000px; border-radius: 15px;">
         <h4>Информация о себе</h4>
         <div class="mt-3">
             <p><strong>Пол:</strong> @HttpContextAccessor.HttpContext.Session.GetString("Gender")</p>
@@ -86,7 +90,7 @@
 
 <!-- Вкладки -->
 <div class="d-flex justify-content-center align-items-center rounded mt-3">
-    <div class="card shadow-lg p-4" style="width: 1000px; border-radius: 15px;">
+    <div class="card p-4" style="width: 1000px; border-radius: 15px;">
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link active" id="your-topics-tab" data-bs-toggle="tab" href="#your-topics" role="tab">Ваши темы</a>
@@ -151,7 +155,7 @@
     if (isCollapsed) {
         banner.style.height = '200px';
         userInfo.style.display = 'none';
-        banner.style.backgroundColor = '#e0e0e0';
+        banner.style.backgroundColor = '';
         collapseBtn.innerHTML = '<i class="bi bi-chevron-up" style="font-size: 24px; color: #6c757d;"></i>';
     } else {
         banner.style.height = '400px';
@@ -172,7 +176,7 @@
             // Сужение баннера и изменение фона
             banner.style.height = '200px'; // Сужаем по высоте
             userInfo.style.display = 'none';  // Скрываем блок с информацией
-            banner.style.backgroundColor = '#e0e0e0'; // Сероватый фон
+            banner.style.backgroundColor = ''; // Сероватый фон
             collapseBtn.innerHTML = '<i class="bi bi-chevron-up" style="font-size: 24px; color: #6c757d;"></i>';
         }
 
