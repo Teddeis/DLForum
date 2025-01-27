@@ -13,7 +13,7 @@ public class TopicService
     }
 
     // Метод для добавления новой записи в таблицу "topics"
-    public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author, string categories)
+    public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author, string categories, string tags)
     {
         var topic = new Topic
         {
@@ -21,12 +21,11 @@ public class TopicService
             Title = title,
             Content = content,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            ViewsCount = 0,
             LikesCount = 0,
             Status = "false",
             Author = author,
-            Categories = categories
+            Categories = categories,
+            Tags = tags
         };
 
         var response = await _client.From<Topic>().Insert(topic);

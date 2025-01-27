@@ -171,6 +171,59 @@
         .toolbar-btn:hover {
             background-color: var(--button-hover-color);
         }
+
+    .tag {
+        display: inline-block;
+        background-color: var(--card-color);
+        color: var(--text-color);
+        padding: 5px 10px;
+        margin: 5px;
+        border-color: white;
+        border-radius: 15px;
+        font-size: 14px;
+        cursor: pointer; /* Курсор указывает, что тег можно кликать */
+    }
+
+        .tag:hover {
+            background-color: var(--card-color); /* Цвет фона при наведении */
+        }
+
+
+    /* Стиль для категорий */
+    .category-badge {
+        padding: 10px 20px;
+        border-radius: 25px; /* Скругление углов для более плавного вида */
+        background-color: var(--link-color); /* Основной цвет */
+        color: white; /* Белый текст для контраста */
+        font-size: 14px; /* Средний размер текста */
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s ease-in-out;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Лёгкая тень для глубины */
+    }
+
+        /* Эффект при наведении */
+        .category-badge:hover {
+            background-color: var(--link-color:); /* Основной цвет */
+            transform: translateY(-2px); /* Легкий эффект подъема */
+        }
+
+        /* Стиль для выбранных категорий */
+        .category-badge.selected {
+            background-color: #28a745; /* Зеленый цвет для выбранной категории */
+        }
+
+    /* Контейнер категорий */
+    #categories-container {
+        background-color: var(--card-bg); /* Используем фон карточек для гармоничности */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px; /* Отступы между категориями */
+        padding: 12px;
+        border-radius: 10px; /* Закругление углов */
+        border: 1px solid var(--search-bar-border); /* Легкая граница */
+        min-height: 60px;
+    }
+
 </style>
 
 <body>
@@ -204,8 +257,19 @@
                         <span class="category-badge" data-value="Другое">Другое</span>
 
                     </div>
-                    <input type="hidden" name="categories" id="categories-hidden" />
+                    <input type="hidden" name="categories" id="categories-hidden" required/>
                 </div>
+
+                <!-- Теги -->
+                <div class="mb-3">
+                    <label for="categories" class="form-label">Теги</label>
+                    <div id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Введите тег" onkeydown="addTag(event)"></div>
+                    <div id="tags-list" class="mt-2">
+                        <!-- Сюда будут добавляться теги -->
+                    </div>
+                    <input type="hidden" id="tags-input" name="tags" required />
+                </div>
+
 
                 <!-- Панель инструментов для редактирования -->
                 <div class="editor-toolbar d-flex justify-content-start gap-2">
@@ -216,7 +280,7 @@
                 </div>
 
                 <!-- Редактируемый контент -->
-                <textarea name="content" id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></textarea>
+                <textarea name="content" id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение" required></textarea>
 
                 <!-- Кнопка отправки -->
                 <div class="text-center mt-4">
@@ -226,6 +290,9 @@
         </div>
     </div>
 
+
+
+    <!-- Основные скрипты-->
     <script>
         const categoryBadges = document.querySelectorAll('.category-badge');
         const categoriesHidden = document.getElementById('categories-hidden');
@@ -251,44 +318,51 @@
         });
     </script>
 
-    <style>
-        /* Стиль для категорий */
-        .category-badge {
-            padding: 10px 20px;
-            border-radius: 25px; /* Скругление углов для более плавного вида */
-            background-color: var(--link-color) ; /* Основной цвет */
-            color: white; /* Белый текст для контраста */
-            font-size: 14px; /* Средний размер текста */
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Лёгкая тень для глубины */
+    <script>
+        function addTag(event) {
+            // Слушаем нажатие клавиши
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault(); // Предотвращаем создание новой строки
+                let editor = document.getElementById('editor');
+                let tag = "#" + editor.textContent.trim(); // Получаем текст
+
+                // Если тег не пустой, добавляем его
+                if (tag) {
+                    let tagsList = document.getElementById('tags-list');
+
+                    // Создаем новый элемент для тега
+                    let tagElement = document.createElement('span');
+                    tagElement.classList.add('tag');
+                    tagElement.textContent = tag;
+
+                    // Добавляем обработчик для удаления тега по клику
+                    tagElement.onclick = function() {
+                        tagsList.removeChild(tagElement); // Удаляем тег при клике
+                        updateTagsInput(); // Обновляем скрытое поле после удаления
+                    };
+
+                    // Добавляем тег в список
+                    tagsList.appendChild(tagElement);
+
+                    // Обновляем скрытое поле с тегами
+                    updateTagsInput();
+
+                    // Очищаем поле ввода
+                    editor.textContent = '';
+                }
+            }
         }
 
-            /* Эффект при наведении */
-            .category-badge:hover {
-                background-color: var(--link-color:); /* Основной цвет */
-                transform: translateY(-2px); /* Легкий эффект подъема */
-            }
-
-            /* Стиль для выбранных категорий */
-            .category-badge.selected {
-                background-color: #28a745; /* Зеленый цвет для выбранной категории */
-                border: 2px solid #28a745;
-            }
-
-        /* Контейнер категорий */
-        #categories-container {
-            background-color: var(--card-bg); /* Используем фон карточек для гармоничности */
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px; /* Отступы между категориями */
-            padding: 12px;
-            border-radius: 10px; /* Закругление углов */
-            border: 1px solid var(--search-bar-border); /* Легкая граница */
-            min-height: 60px;
+        // Функция для обновления скрытого поля с тегами
+        function updateTagsInput() {
+            let tagsList = document.getElementById('tags-list');
+            let tags = [];
+            tagsList.querySelectorAll('.tag').forEach(function(tagElement) {
+                tags.push(tagElement.textContent);
+            });
+            document.getElementById('tags-input').value = tags.join(',');
         }
-    </style>
-
+    </script>
 
     <!-- Bootstrap Icons -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>

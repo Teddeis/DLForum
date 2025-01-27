@@ -184,138 +184,183 @@
             color: var(--link-color);
         }
 
+    .tags {
+        padding: 2px;
+        border-radius: 18px;
+        color: var(--text-color);
+        font-size: 10px;
+        font-weight: 600;
+        position: relative;
+        cursor: pointer;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
 </style>
 
-       <!-- Основная часть контента справа -->
-        <div class="col-md-9">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="h3">Обсуждения</h1>
-                @inject IHttpContextAccessor HttpContextAccessor
-                @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
+<body>
+    <!-- Основная часть контента справа -->
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3">Обсуждения</h1>
+            @inject IHttpContextAccessor HttpContextAccessor
+            @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
+            {
+                <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">
+                    Создать тему
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-area="" asp-controller="Topic" asp-action="Topic">
+                    Создать тему
+                </a>
+            }
+        </div>
+
+        <div class="row">
+            @if (Model.Any())
+            {
+                @foreach (var topic in Model)
                 {
-                    <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">
-                        Создать тему
-                    </a>
-                }
-                else
-                {
-                    <a class="btn btn-primary" asp-area="" asp-controller="Topic" asp-action="Topic">
-                        Создать тему
-                    </a>
-                }
-            </div>
-
-            <div class="row">
-                @if (Model.Any())
-                {
-                    @foreach (var topic in Model)
-                    {
-                        <div class="col-12 mb-3">
-                            <div class="d-flex border rounded p-3">
-                                <!-- Блок изображения -->
-                                <div class="me-3 position-relative">
-                                    <img src="@topic.ImageUrl" alt="Thumbnail" class="rounded thumbnail" style="width: 80px; height: 80px; object-fit: cover;" data-fullsize="@topic.ImageUrl">
-                                </div>
-
-                        <!-- Основной контент, обернутый в ссылку -->
-                        <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="flex-grow-1 text-dark text-decoration-none">
-                            <div>
-                                <!-- Заголовок -->
-                                <h5 class="mb-1">
-                                    @topic.Title.Substring(0, Math.Min(100, topic.Title.Length))
-                                </h5>
-
-                                <!-- Содержимое -->
-                                <p class="mb-2 text-muted">
-                                    @topic.Content.Substring(0, Math.Min(200, topic.Content.Length))...
-                                </p>
-
-                                <!-- Категории -->
-                                <div class="mb-2">
-                                    @foreach (var category in topic.Categories.Split(',')) // Если категории хранятся через запятую
-                                    {
-                                        <span class="badge bg-primary me-1">@category.Trim()</span>
-                                    }
-                                </div>
-
-                                <!-- Метрики и дата -->
-                                <div class="d-flex justify-content-between align-items-center text-muted">
-                                    <span>
-                                        <i class="bi bi-heart me-1"></i>@topic.LikesCount
-                                        <i class="bi bi-eye me-1 ms-3"></i>@topic.ViewsCount
-                                        <i class="bi bi-chat me-1 ms-3"></i>@topic.CommentsCount
-                                    </span>
-                                    <small>Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
-                                </div>
+                    <div class="col-12 mb-3">
+                        <div class="d-flex border rounded p-3">
+                            <!-- Блок изображения -->
+                            <div class="me-3 position-relative">
+                                <img src="@topic.ImageUrl" alt="Thumbnail" class="rounded thumbnail" style="width: 80px; height: 80px; object-fit: cover;" data-fullsize="@topic.ImageUrl">
                             </div>
-                        </a>
 
-                            </div>
+                            <!-- Основной контент -->
+                            <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="flex-grow-1 text-dark text-decoration-none">
+                                <div>
+                                    <!-- Автор и теги -->
+                                    <div class="mb-2 d-flex align-items-center">
+                                        <span style="font-size: 12px; color:#007BFF; margin-right: 10px;">Автор: @topic.Author</span>
+                                        @if (!string.IsNullOrEmpty(topic.Tags))
+                                        {
+                                            var tag = topic.Tags.Split(',');
+                                            var displayedTags = tag.Take(3);
+                                            var remainingCount = tag.Length - displayedTags.Count();
+
+                                            foreach (var category in displayedTags)
+                                            {
+                                                <span class="tags me-1">@category.Trim()</span>
+                                            }
+
+                                            if (remainingCount > 0)
+                                            {
+                                                <span class="tags">+ @remainingCount</span>
+                                            }
+                                        }
+                                    </div>
+
+                                    <!-- Заголовок -->
+                                    <h5 class="mb-1 fw-bold">
+                                        @topic.Title.Substring(0, Math.Min(100, topic.Title.Length))
+                                    </h5>
+
+                                    <!-- Содержимое -->
+                                    <p class="mb-2 text-muted" style="line-height: 1.5;">
+                                        @topic.Content.Substring(0, Math.Min(200, topic.Content.Length))...
+                                    </p>
+
+                                    <!-- Категории -->
+                                    <div class="mb-2">
+                                        @if (!string.IsNullOrEmpty(topic.Categories))
+                                        {
+                                            var categories = topic.Categories.Split(',');
+                                            var displayedCategories = categories.Take(3);
+                                            var remainingCount = categories.Length - displayedCategories.Count();
+
+                                            foreach (var category in displayedCategories)
+                                            {
+                                                <span style="font-size: 12px" class="badge bg-primary me-1">@category.Trim()</span>
+                                            }
+
+                                            if (remainingCount > 0)
+                                            {
+                                                <span class="badge bg-secondary">+ @remainingCount</span>
+                                            }
+                                        }
+                                    </div>
+
+                                    <!-- Метрики и дата -->
+                                    <div class="d-flex justify-content-between align-items-center text-muted">
+                                        <span>
+                                            <i class="bi bi-heart me-1"></i>@topic.LikesCount
+                                            <i class="bi bi-chat me-1 ms-3"></i>@topic.CommentsCount
+                                        </span>
+                                        <small>Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="col-12 text-center">
-                        <p style="color: var(--bs-secondary-color);">Тем для обсуждения пока нет. Будьте первым, кто создаст тему!</p>
                     </div>
                 }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p style="color: var(--bs-secondary-color);">Тем для обсуждения пока нет. Будьте первым, кто создаст тему!</p>
+                </div>
+            }
+        </div>
+
+
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            if (ViewBag.CurrentPage == i)
+                            {
+                                <li class="page-item active">
+                                    <span class="page-link">@i</span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="javascript:void(0);" data-page="@i">@i</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </nav>
             </div>
+        }
 
-    @if (ViewBag.TotalPages > 1)
-    {
-        <div class="d-flex justify-content-center mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                    {
-                        if (ViewBag.CurrentPage == i)
-                        {
-                            <li class="page-item active">
-                                <span class="page-link">@i</span> <!-- Используем <span> вместо ссылки -->
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="javascript:void(0);" data-page="@i">@i</a>
-                            </li>
-                        }
+    </div>
+
+
+    <script>
+                                            $(document).ready(function () {
+            // Обработчик клика на номера страниц пагинации
+            $('.pagination .page-link').click(function (e) {
+                e.preventDefault(); // Отменяем стандартное поведение ссылки
+
+                // Получаем номер страницы из data-page атрибута
+                var pageNumber = $(this).data('page');
+
+                // Показываем индикатор загрузки
+                $('#loading-indicator').show();
+
+                // Загружаем новый контент для выбранной страницы
+                $('#dynamic-content').load('/Home/Home?pageNumber=' + pageNumber, function (response, status, xhr) {
+                    // Скрываем индикатор загрузки после загрузки контента
+                    $('#loading-indicator').hide();
+
+                    if (status === "error") {
+                        $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
                     }
-                </ul>
-            </nav>
-        </div>
-    }
+                });
 
-        </div>
-
-
-                                <script>
-                                        $(document).ready(function () {
-        // Обработчик клика на номера страниц пагинации
-        $('.pagination .page-link').click(function (e) {
-            e.preventDefault(); // Отменяем стандартное поведение ссылки
-
-            // Получаем номер страницы из data-page атрибута
-            var pageNumber = $(this).data('page');
-
-            // Показываем индикатор загрузки
-            $('#loading-indicator').show();
-
-            // Загружаем новый контент для выбранной страницы
-            $('#dynamic-content').load('/Home/Home?pageNumber=' + pageNumber, function (response, status, xhr) {
-                // Скрываем индикатор загрузки после загрузки контента
-                $('#loading-indicator').hide();
-
-                if (status === "error") {
-                    $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
-                }
+                // Обновляем активную страницу в пагинации
+                $('.pagination .page-item').removeClass('active');
+                $(this).parent().addClass('active');
             });
-
-            // Обновляем активную страницу в пагинации
-            $('.pagination .page-item').removeClass('active');
-            $(this).parent().addClass('active');
         });
-    });
 
-</script>
+    </script>
+</body>
+       

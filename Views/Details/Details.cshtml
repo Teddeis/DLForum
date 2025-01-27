@@ -175,6 +175,7 @@
         font-size: 14px;
     }
 
+
     .image-gallery {
         position: relative;
         max-width: 100%;
@@ -232,11 +233,11 @@
     .category-tag {
         padding: 6px 14px; /* Чуть больше отступов для лучшего визуального восприятия */
         border-radius: 18px; /* Меньше скругления, чтобы они выглядели более стильно */
-        color: #333;
-        font-size: 14px; /* Немного уменьшен шрифт, чтобы не перегружать пространство */
+        color: var(--text-color);
+        font-size: 12px; /* Немного уменьшен шрифт, чтобы не перегружать пространство */
         font-weight: 600; /* Полужирный шрифт для выделения */
         border: 1px solid #ddd; /* Лёгкая граница, которая сохраняет вид разделения */
-        background-color: #f9f9f9; /* Лёгкий фон для категории */
+        background-color: var(--card-background); /* Лёгкий фон для категории */
         transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Плавные переходы */
         cursor: pointer; /* Курсор меняется на указатель для интерактивных элементов */
     }
@@ -295,24 +296,44 @@
             margin-top: 10px;
             color: var(--text-color); /* Цвет текста */
         }
+
+    .likes i {
+        font-size: 18px;
+        color: #666; /* Цвет по умолчанию */
+        transition: color 0.2s ease; /* Плавный переход цвета */
+    }
+
+        .likes i.liked {
+            color: red; /* Красный цвет для активного лайка */
+        }
+
+    /* Стиль для отдельных тегов */
+    .tags {
+        padding: 6px 8px;
+        border-radius: 18px;
+        color: var(--text-color);
+        font-size: 12px;
+        font-weight: 600;
+        position: relative;
+        cursor: pointer;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Стиль для отдельных тегов */
+    .hide-tags {
+        padding: 6px 8px;
+        border-radius: 18px;
+        color: var(--text-color);
+        font-size: 12px;
+        font-weight: 600;
+        position: relative;
+        cursor: pointer;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
     </style>
 
-<script>
-    // Добавляем поддержку переключения темы
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
 
-    // Кнопка переключения темы (если она есть на странице)
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-    }
-</script>
 
 <body>
     <div class="container">
@@ -341,9 +362,8 @@
                 <div class="content-info">
                     <div>
                         <p class="author">Автор: @Model.Author</p>
-                        <p class="views-count"><i class="bi bi-eye"></i> @Model.ViewsCount</p>
                     </div>
-                    <div class="category-badge">
+                    <div class="category-badge mt-auto" style="text-align: right;">
                         <!-- Каждая категория отображается отдельно -->
                         @foreach (var category in Model.Categories.Split(','))
                         {
@@ -367,9 +387,74 @@
                 }
 
             </div>
-            <div class="interactions">
-                <span class="likes"><i class="bi bi-heart"></i> @Model.LikesCount</span>
+            <div class="interactions" style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+
+                <!-- Теги -->
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.Tags))
+                    {
+                        var tags = Model.Tags.Split(',').Select(t => t.Trim()).ToList();
+                        var displayedTags = tags.Take(5).ToList(); // Первые 5 тегов
+                        var hiddenTags = tags.Skip(5).ToList(); // Остальные теги
+                        var remainingCount = hiddenTags.Count;
+
+                        // Разбиваем видимые теги на группы по 6 тегов
+                        var displayedGrouped = displayedTags
+                        .Select((tag, index) => new { tag, index })
+                        .GroupBy(x => x.index / 5)  // Группируем по индексу, чтобы сделать группы по 6 тегов
+                        .Select(g => g.Select(x => x.tag).ToList()) // Извлекаем теги
+                        .ToList();
+
+
+                        // Отображаем видимые теги
+                        foreach (var tagGroup in displayedGrouped)
+                        {
+                            <div class="tags-row mb-1">
+                                @foreach (var category in tagGroup)
+                                {
+                                    <span class="tags me-1">@category</span>
+                                }
+
+                            </div>
+                        }
+
+                        // Если есть скрытые теги
+                        if (remainingCount > 0)
+                        {
+                            if (remainingCount > 0)
+                            {
+                                <button class="hide-tags btn" style="font-size: 14px; text-decoration:none;" onclick="toggleTags(this)">
+                                    +@remainingCount
+                                </button>
+                            }
+                            <div class="hidden-tags" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
+                                @foreach (var hiddenGroup in hiddenTags.Select((tag, index) => new { tag, index })
+                               .GroupBy(x => x.index / 5) // Теги по группам 5
+                               .Select(g => g.Select(x => x.tag).ToList()))
+                                {
+                                    <div class="tags-row mb-1">
+                                        @foreach (var category in hiddenGroup)
+                                        {
+                                            <span class="tags me-1">@category</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                        }
+                    }
+                </div>
+
+
+                <!-- Лайки -->
+                <div>
+                    <span class="likes" onclick="toggleLike(this)" style="cursor: pointer;">
+                        <i class="bi bi-heart"></i>
+                        <span class="like-count">@Model.LikesCount</span>
+                    </span>
+                </div>
             </div>
+
         </div>
 
         <!-- Форма добавления комментария -->
@@ -377,11 +462,11 @@
             <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
                 <textarea name="comment" placeholder="Добавить новый ответ..."></textarea>
                 <input type="hidden" name="id_topic" value="@Model.Id" />
-                <button class="post-answer" type="submit">Ответить</button>
+                <button class="btn btn-primary btn-group-sm mt-1" type="submit">Ответить</button>
             </form>
         </div>
 
-        <!-- Визуальное разделение между комментарием и ответом -->
+        <!-- Разделение между комментарием и ответом -->
         <hr class="comments-separator">
 
         <!-- Секция комментариев -->
@@ -399,6 +484,15 @@
                         </div>
                         <div class="comment-body">
                             <p>@comment.comments</p> <!-- Текст комментария -->
+                            <div class="comment-actions d-flex align-items-center" style="margin-top: 8px;">
+                                <button class="btn btn-sm btn-outline-primary me-2 reply-button" style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">Ответить</button>
+                                <button class="btn btn-sm btn-outline-danger" style="font-size: 12px; padding: 2px 8px; border-radius: 12px;">Пожаловаться</button>
+                            </div>
+                        </div>
+
+                        <div class="reply-field mt-2" style="display: none;">
+                            <textarea class="textarea" rows="2" placeholder="Напишите свой ответ..."></textarea>
+                            <button class="btn btn-primary btn-sm mt-2">Отправить</button>
                         </div>
                     </li>
                 }
@@ -413,34 +507,93 @@
         }
     </div>
 
-</body>
 
-<script>
-    const images = [
-    @foreach (var image in ViewBag.Images)
-    {
-        <text>
-                    {
-                        url: '@image.ImageUrl'
-                    },
-        </text>
-    }
-    ];
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Находим все кнопки "Ответить"
+            const replyButtons = document.querySelectorAll('.reply-button');
 
-    let currentIndex = 0; // Начальный индекс изображения
+            replyButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Ищем ближайшее поле для ответа
+                    const replyField = this.closest('.comment-item').querySelector('.reply-field');
 
-    // Функция для смены изображения
-    function changeImage(direction) {
-        currentIndex += direction;
+                    // Показываем или скрываем поле
+                    if (replyField.style.display === 'none' || !replyField.style.display) {
+                        replyField.style.display = 'block'; // Показать
+                    } else {
+                        replyField.style.display = 'none'; // Скрыть
+                    }
+                });
+            });
+        });
+    </script>
 
-        // Если индекс выходит за пределы массива, возвращаем в начало или в конец
-        if (currentIndex < 0) {
-            currentIndex = images.length - 1;
-        } else if (currentIndex >= images.length) {
-            currentIndex = 0;
+
+    <script>
+        const images = [
+        @foreach (var image in ViewBag.Images)
+        {
+            <text>
+                            {
+                                url: '@image.ImageUrl'
+                            },
+            </text>
         }
+        ];
 
-        // Обновление изображения
-        document.getElementById('currentImage').src = images[currentIndex].url;
-    }
-</script>
+        let currentIndex = 0; // Начальный индекс изображения
+
+        // Функция для смены изображения
+        function changeImage(direction) {
+            currentIndex += direction;
+
+            // Если индекс выходит за пределы массива, возвращаем в начало или в конец
+            if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            } else if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
+
+            // Обновление изображения
+            document.getElementById('currentImage').src = images[currentIndex].url;
+        }
+    </script>
+
+    <script>
+        function toggleLike(element) {
+            const heartIcon = element.querySelector('i');
+            const likeCountElement = element.querySelector('.like-count');
+            let currentLikes = parseInt(likeCountElement.textContent, 10);
+
+            // Проверяем, уже ли лайк активирован
+            if (heartIcon.classList.contains('liked')) {
+                heartIcon.classList.remove('liked'); // Убираем класс "лайк"
+                currentLikes--; // Уменьшаем количество лайков
+            } else {
+                heartIcon.classList.add('liked'); // Добавляем класс "лайк"
+                currentLikes++; // Увеличиваем количество лайков
+            }
+
+            likeCountElement.textContent = currentLikes; // Обновляем текст количества лайков
+        }
+    </script>
+
+
+    <script>
+        function toggleTags(button) {
+            const hiddenTags = button.nextElementSibling; // Скрытые теги
+            const isOpen = hiddenTags.style.maxHeight !== "0px" && hiddenTags.style.maxHeight !== ""; // Проверяем состояние
+
+            if (isOpen) {
+                // Скрываем теги
+                hiddenTags.style.maxHeight = "0"; // Сворачиваем
+                button.textContent = `+${hiddenTags.querySelectorAll('.tags').length}`; // Меняем текст на "+N"
+            } else {
+                // Показываем теги
+                hiddenTags.style.maxHeight = `${hiddenTags.scrollHeight}px`; // Устанавливаем высоту
+                button.textContent = "⮝"; // Меняем текст на "Скрыть"
+            }
+        }
+    </script>
+</body>

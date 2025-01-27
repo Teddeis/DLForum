@@ -41,7 +41,7 @@ public class TopicController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTopic(string title, string content, string categories)
+    public async Task<IActionResult> CreateTopic(string title, string content, string categories,string tags)
     {
         var userId = HttpContext.Session.GetInt32("ID");
         var author = HttpContext.Session.GetString("UserName");
@@ -52,7 +52,7 @@ public class TopicController : Controller
             return RedirectToAction("Login", "Account"); // Перенаправление на страницу входа
         }
         // Добавляем новую тему в Supabase
-        await _supabaseService.AddTopicAsync(userId.Value, title, content, author.ToString(), categories);
+        await _supabaseService.AddTopicAsync(userId.Value, title, content, author.ToString(), categories, tags);
 
         return RedirectToAction("Index", "Home"); // Перенаправляем на главную страницу после добавления
     }
