@@ -1,6 +1,9 @@
-﻿using DLForum.Models;
+﻿using System.Xml.Linq;
+using DLForum.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Supabase.Gotrue;
 
 namespace DLForum.Controllers
 {
@@ -15,21 +18,68 @@ namespace DLForum.Controllers
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            // Получение текущего пользователя из сессии
+            var currentUser = HttpContext.Session.GetString("UserName");
+
+            if (string.IsNullOrEmpty(currentUser))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Асинхронно получаем данные о темах и комментариях пользователя
+            var topics = await _userService.GetTopicsByAuthorAsync(currentUser);
+            var comments = await _userService.GetCommentsByAuthorAsync(currentUser);
+
+            // Создаем модель для передачи в представление
+            var profile = new Profile
+            {
+                user = new users { email = currentUser }, // Тут только email, если нужна полная информация, надо вызвать GetUserByIdAsync или аналогичный метод
+                TopicsList = topics, // Полученные темы
+                CommentsList = comments // Полученные комментарии
+            };
+
+            return View(profile);
         }
+
+
 
         public async Task<IActionResult> Users(int id)
         {
+            // Получаем пользователя по ID
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound("Пользователь не найден.");
             }
 
-            return View(user);
+            // Асинхронно получаем данные о темах и комментариях текущего пользователя
+            var topics = await _userService.GetTopicsByIdAsync(user.id);
+            var comments = await _userService.GetCommentsByIdAsync(user.id);
+
+            // Создаем модель профиля
+            var profile = new Profile
+            {
+                user = new users
+                {
+                    id = user.id, // Передаем ID пользователя
+                    username = user.username, // Передаем имя пользователя
+                    email = user.email, // Передаем email пользователя
+                    role = user.role, // Передаем роль пользователя (если есть)
+                    avatar_url = user.avatar_url, // Передаем аватар пользователя (если есть)
+                    gender = user.gender,
+                    you_background = user.you_background,
+                    about = user.about
+                },
+                TopicsList = topics, // Список тем
+                CommentsList = comments // Список комментариев
+            };
+
+            // Передаем профиль в представление
+            return View(profile);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model)

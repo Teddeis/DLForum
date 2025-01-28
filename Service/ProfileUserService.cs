@@ -43,4 +43,46 @@ public class ProfileUserService
             throw;
         }
     }
+
+
+    // Получение списка тем пользователя
+    public async Task<List<Topic>> GetTopicsByAuthorAsync(string author)
+    {
+        var response = await _client.From<Topic>()
+            .Filter("author", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Get();
+
+        return response.Models ?? new List<Topic>();
+    }
+
+    // Получение списка комментариев пользователя
+    public async Task<List<comment>> GetCommentsByAuthorAsync(string author)
+    {
+        var response = await _client.From<comment>()
+            .Filter("author", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Get();
+
+        return response.Models ?? new List<comment>();
+    }
+
+
+    // Получение списка тем пользователя
+    public async Task<List<Topic>> GetTopicsByIdAsync(int author)
+    {
+        var response = await _client.From<Topic>()
+            .Filter("user_id", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Get();
+
+        return response.Models ?? new List<Topic>();
+    }
+
+    // Получение списка комментариев пользователя
+    public async Task<List<comment>> GetCommentsByIdAsync(int author)
+    {
+        var response = await _client.From<comment>()
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Get();
+
+        return response.Models ?? new List<comment>();
+    }
 }

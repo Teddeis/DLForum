@@ -138,5 +138,18 @@ public class TopicService
         var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
 
         return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
-    }    
+    }
+
+
+
+    public async Task<Topic?> GetTopicByIdAsync(int topicId)
+    {
+        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+        return response.Models.FirstOrDefault();
+    }
+
+    public async Task UpdateTopicAsync(Topic topic)
+    {
+        await _client.From<Topic>().Where(t => t.Id == topic.Id).Update(topic);
+    }
 }
