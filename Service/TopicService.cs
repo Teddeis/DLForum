@@ -1,18 +1,16 @@
-﻿using Supabase;
-
+﻿using DLForum.Models;
+using Supabase;
 
 public class TopicService
 {
     private readonly Client _client;
 
-
     public TopicService(SupabaseClientService clientService)
     {
         _client = clientService.Client;
-
     }
 
-    // Метод для добавления новой записи в таблицу "topics"
+    // Добавление темы
     public async Task<Topic?> AddTopicAsync(int userId, string title, string content, string author, string categories, string tags)
     {
         var topic = new Topic
@@ -29,127 +27,95 @@ public class TopicService
         };
 
         var response = await _client.From<Topic>().Insert(topic);
-
         return response.Models.FirstOrDefault();
     }
 
-  
-
-    // Метод для получения всех записей с пагинацией
+    // Получение тем с пагинацией (только одобренные)
     public async Task<(List<Topic>, int)> GetTopicsByPageAsync(int pageNumber, int pageSize)
     {
-        Topic topic = new Topic();
-        // Рассчитываем, сколько тем пропустить
         var offset = (pageNumber - 1) * pageSize;
 
-        // Получаем темы с учетом нагинации
         var response = await _client.From<Topic>()
+            .Where(t => t.Status == "true")
             .Limit(pageSize)
-            .Offset(offset).
-            Where(x => topic.Status == "true")
+            .Offset(offset)
             .Get();
 
-        // Получаем общее количество тем
-        var totalCountResponse = await _client.From<Topic>().Get();
+        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true").Get()).Models.Count;
 
-        // Возвращаем список тем и общее количество для пагинации
-        return (response.Models.ToList(), totalCountResponse.Models.Count);
+        return (response.Models.ToList(), totalCount);
     }
 
-    // Метод для получения всех записей с пагинацией
+
+    
+    public async Task<(List<Topic>, int)> GetTopicsByPageCategoriesAsync(string categories, int pageNumber, int pageSize)
+    {
+        var offset = (pageNumber - 1) * pageSize;
+
+        var query = _client.From<Topic>().Where(t => t.Status == "true");
+
+        // Фильтрация по категории
+        if (!string.IsNullOrEmpty(categories))
+        {
+            query = query.Where(t => t.Categories.Contains(categories));
+        }
+
+        // Получаем отфильтрованные темы с учетом пагинации
+        var response = await query
+            .Limit(pageSize)
+            .Offset(offset)
+            .Get();
+
+        // Получаем общее количество записей без учета пагинации
+        var totalCount = (await query.Get()).Models.Count;
+
+        return (response.Models.ToList(), totalCount);
+    }
+
+
+
+    // Получение тем с пагинацией для админов (неодобренные)
     public async Task<(List<Topic>, int)> GetTopicsByPageAsyncAdmin(int pageNumber, int pageSize)
     {
-        Topic topic = new Topic();
-        // Рассчитываем, сколько тем пропустить
         var offset = (pageNumber - 1) * pageSize;
 
-        // Получаем темы с учетом нагинации
         var response = await _client.From<Topic>()
+            .Where(t => t.Status == "false")
             .Limit(pageSize)
-            .Offset(offset).
-            Where(x => topic.Status == "false")
+            .Offset(offset)
             .Get();
 
-        // Получаем общее количество тем
-        var totalCountResponse = await _client.From<Topic>().Get();
+        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "false").Get()).Models.Count;
 
-        // Возвращаем список тем и общее количество для пагинации
-        return (response.Models.ToList(), totalCountResponse.Models.Count);
+        return (response.Models.ToList(), totalCount);
     }
 
-    // Метод для обновления статуса темы
+    // Обновление статуса темы
     public async Task<Topic?> UpdateTopicStatusAsync(int topicId, bool newStatus)
     {
-        // Ищем тему по ID
-        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+        var topic = await GetTopicByIdAsync(topicId);
+        if (topic == null) return null;
 
-        // Если тема не найдена
-        if (!topic.Models.Any())
-        {
-            return null;
-        }
+        topic.Status = newStatus.ToString();
+        await _client.From<Topic>().Where(t => t.Id == topic.Id).Update(topic);
 
-        var topicToUpdate = topic.Models.First();
-        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
-
-        // Обновляем тему в базе данных
-        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Update(topicToUpdate);
-
-        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+        return topic;
     }
 
-
-    // Метод для обновления статуса темы
-    public async Task<Topic?> DeleteTopicStatusAsync(int topicId, bool newStatus)
+    // Удаление темы
+    public async Task<bool> DeleteTopicAsync(int topicId)
     {
-        // Ищем тему по ID
-        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+        var topic = await GetTopicByIdAsync(topicId);
+        if (topic == null) return false;
 
-        // Если тема не найдена
-        if (!topic.Models.Any())
-        {
-            return null;
-        }
-
-        var topicToUpdate = topic.Models.First();
-        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
-
-        // Обновляем тему в базе данных
-        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
-
-        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+        await _client.From<Topic>().Where(t => t.Id == topic.Id).Delete();
+        return true;
     }
 
-
-    // Метод для обновления статуса темы
-    public async Task<Topic?> Delete(int topicId)
-    {
-        // Ищем тему по ID
-        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
-
-        // Если тема не найдена
-        if (!topic.Models.Any())
-        {
-            return null;
-        }
-
-        var topicToUpdate = topic.Models.First();
-        // Обновляем тему в базе данных
-        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
-
-        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
-    }
-
-
-
+    // Получение темы по ID
     public async Task<Topic?> GetTopicByIdAsync(int topicId)
     {
         var response = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
         return response.Models.FirstOrDefault();
-    }
-
-    public async Task UpdateTopicAsync(Topic topic)
-    {
-        await _client.From<Topic>().Where(t => t.Id == topic.Id).Update(topic);
     }
 }

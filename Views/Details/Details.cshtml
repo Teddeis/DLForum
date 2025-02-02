@@ -331,54 +331,6 @@
         transition: color 0.3s ease, transform 0.3s ease;
     }
 
-    /* Общий стиль контейнера для голосования */
-    .vote-container {
-        display: flex;
-        border: 2px solid var(--text-color); /* Светлая граница */
-        border-radius: 14px; /* Скруглённые углы */
-        align-items: center;
-        gap: 6px; /* Расстояние между кнопками и счётчиком */
-        background: transparent; /* Убираем фон для минималистичного вида */
-        padding: 5px; /* Немного добавим внутренние отступы для обводки */
-        margin: 0; /* Без внешних отступов */
-    }
-
-        /* Стили для кнопок */
-        .vote-container button {
-            background: transparent; /* Прозрачный фон */
-            border: none; /* Убираем границы */
-            cursor: pointer; /* Указатель при наведении */
-            font-size: 14px; /* Компактный размер стрелок */
-            font-weight: bold;
-            color: var(--text-color); /* Нейтральный серый цвет */
-            transition: color 0.2s ease, transform 0.2s ease;
-            padding: 2px; /* Компактные отступы */
-        }
-
-            /* Эффекты при наведении */
-            .vote-container button:hover {
-                color: #007bff; /* Синий цвет при наведении */
-                transform: scale(1.1); /* Лёгкое увеличение */
-            }
-
-            /* Активная кнопка вверх */
-            .vote-container button.upvote.active {
-                color: #28a745; /* Зелёный для "вверх" */
-            }
-
-            /* Активная кнопка вниз */
-            .vote-container button.downvote.active {
-                color: #dc3545; /* Красный для "вниз" */
-            }
-
-        /* Счётчик голосов */
-        .vote-container .vote-count {
-            font-size: 14px; /* Компактный текст */
-            font-weight: bold;
-            color: var(--text-color); /* Тёмно-серый цвет */
-            min-width: 20px; /* Минимальная ширина для выравнивания */
-            text-align: center;
-        }
 </style>
 
 
@@ -495,10 +447,8 @@
 
 
                 <!-- Лайки -->
-                <div class="vote-container">
-                    <button class="upvote" onclick="handleVote('up', @Model.Id, this)">▲</button>
-                    <span class="vote-count">@Model.LikesCount</span>
-                    <button class="downvote" onclick="handleVote('down', @Model.Id, this)">▼</button>
+                <div class="interactions">
+                    <span class="likes"><i class="bi bi-heart"></i> @Model.LikesCount</span>
                 </div>
             </div>
         </div>
@@ -606,45 +556,23 @@
         }
     </script>
 
-
     <script>
-        let userVote = null; // Храним информацию о текущем голосе
+        let liked = false;
+        let likeCount = 0;
+        const likeBtn = document.querySelector(".like-btn");
+        const likeCounter = document.getElementById("like-count");
 
-        async function handleVote(type, topicId, button) {
-            // Если пользователь уже проголосовал, но пытается проголосовать тем же типом, то ничего не делаем
-            if (userVote === type) {
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("type", type);
-            formData.append("topicId", topicId);
-
-            const container = button.closest('.vote-container');
-            const [upvoteButton, downvoteButton] = [
-                container.querySelector('.upvote'),
-                container.querySelector('.downvote')
-            ];
-
-            try {
-                const { success, likesCount } = await (await fetch('/Topic/AnonymousVote', { method: 'POST', body: formData })).json();
-                if (success) {
-                    container.querySelector('.vote-count').textContent = likesCount;
-
-                    userVote = type;
-
-                    upvoteButton.classList.toggle('active', type === 'up');
-                    downvoteButton.classList.toggle('active', type === 'down');
-                } else {
-                    alert("Ошибка при голосовании!");
-                }
-            } catch (error) {
-                console.error("Ошибка:", error);
-            }
+        function toggleLike() {
+            liked = !liked;
+            likeCount += liked ? 1 : -1;
+            likeBtn.classList.toggle("liked", liked);
+            likeCounter.classList.add("change");
+            setTimeout(() => {
+                likeCounter.textContent = likeCount;
+                likeCounter.classList.remove("change");
+            }, 300);
         }
     </script>
-
-
 
     <script>
         function toggleTags(button) {

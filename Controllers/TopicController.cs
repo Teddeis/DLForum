@@ -91,7 +91,7 @@ public class TopicController : Controller
         try
         {
             // Обновляем статус темы на false
-            var updatedTopic = await _supabaseService.DeleteTopicStatusAsync(topicId, false);
+            var updatedTopic = await _supabaseService.UpdateTopicStatusAsync(topicId, false);
 
             if (updatedTopic == null)
             {
@@ -117,7 +117,7 @@ public class TopicController : Controller
     {
         try
         {
-            var updatedTopic = await _supabaseService.Delete(topicId);
+            var updatedTopic = await _supabaseService.DeleteTopicAsync(topicId);
 
             if (updatedTopic == null)
             {
@@ -136,34 +136,4 @@ public class TopicController : Controller
     }
 
 
-    [HttpPost]
-    public async Task<IActionResult> AnonymousVote(string type, int topicId)
-    {
-            var userId = HttpContext.Session.GetString("Email");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            // Ищем тему в базе данных
-            var topic = await _supabaseService.GetTopicByIdAsync(topicId);
-            if (topic == null)
-            {
-                return Json(new { success = false, message = "Тема не найдена!" });
-            }
-
-            // Определяем, как изменить счётчик лайков
-            int change = type == "up" ? 1 : type == "down" ? -1 : 0;
-            if (change == 0)
-            {
-                return Json(new { success = false, message = "Некорректный тип голосования!" });
-            }
-
-            // Обновляем счётчик лайков
-            topic.LikesCount += change;
-            await _supabaseService.UpdateTopicAsync(topic);
-
-            return Json(new { success = true, likesCount = topic.LikesCount });
-    }
 }

@@ -62,11 +62,12 @@ public class DetailsController : Controller
                 return NotFound(); // Возвращаем ошибку, если тема не найдена
             }
 
-            // Получаем комментарии для этой темы
-            var comments = await _commentService.GetCommentsByTopicIdAsync(id);
+            var images = await _imageService.GetImagesByTopicIdAsync(id);
 
-            // Передаем данные в представление
-            ViewBag.Comments = comments;
+            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList(); // Only keep the URL
+
+
+            ViewBag.Images = imageUrls; // Send simplified list
 
             return View(topic); // Отправляем тему в представление
         }

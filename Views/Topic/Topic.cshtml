@@ -324,12 +324,16 @@
             if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault(); // Предотвращаем создание новой строки
                 let editor = document.getElementById('editor');
-                let tag = "#" + editor.textContent.trim(); // Получаем текст
+                let tag = editor.textContent.trim(); // Получаем текст
 
                 // Если тег не пустой, добавляем его
-                if (tag) {
-                    let tagsList = document.getElementById('tags-list');
+                if (tag && !tag.startsWith('#')) { // Проверка, что тег не начинается с #
+                    tag = '#' + tag; // Добавляем # в начало тега
+                }
 
+                // Проверяем, что количество тегов не превышает 25
+                let tagsList = document.getElementById('tags-list');
+                if (tagsList.children.length < 25 && tag) {
                     // Создаем новый элемент для тега
                     let tagElement = document.createElement('span');
                     tagElement.classList.add('tag');
@@ -349,6 +353,7 @@
 
                     // Очищаем поле ввода
                     editor.textContent = '';
+                } else if (tagsList.children.length >= 25) {
                 }
             }
         }
@@ -363,6 +368,7 @@
             document.getElementById('tags-input').value = tags.join(',');
         }
     </script>
+
 
     <!-- Bootstrap Icons -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>

@@ -48,25 +48,31 @@ namespace DLForum.Controllers
             }
         }
 
-
-        public async Task<IActionResult> Categories(int pageNumber = 1)
+        public async Task<IActionResult> Categories(string category, int pageNumber = 1)
         {
             try
             {
-                int pageSize = 10; // Число тем на одной странице
+                int pageSize = 10; // Количество тем на странице
 
-                // Получаем темы и общее количество с пагинацией
-                var (topics, totalCount) = await _topicService.GetTopicsByPageAsync(pageNumber, pageSize);
+                // Получаем темы с фильтрацией по категории и пагинацией
+                var (topics, totalCount) = await _topicService.GetTopicsByPageCategoriesAsync(category, pageNumber, pageSize);
 
-                return PartialView(topics);
+                int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                // Передаем данные в представление
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.TotalPages = totalPages;
+                ViewBag.SelectedCategory = category;
+
+                return PartialView(topics); // Загружаем в текущее представление
             }
             catch (Exception ex)
             {
-                // В случае ошибки, можно отобразить сообщение
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }
         }
+
 
         public IActionResult Index()
         {
