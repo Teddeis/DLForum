@@ -284,36 +284,38 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Загружаем контент главной страницы при первой загрузке страницы
-        $('#dynamic-content').load('/Home/Home', function(response, status, xhr) {
-            if (status === "error") {
-                $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
+        // Загружаем главную страницу при первой загрузке
+        loadContent('/Home/Home');
+
+        // Используем "on" вместо "click" для динамических элементов
+        $(document).on("click", ".nav-link", function (e) {
+            e.preventDefault();
+
+            // Убираем "active" у всех ссылок и добавляем на текущую
+            $(".nav-link").removeClass("active");
+            $(this).addClass("active");
+
+            // Загружаем контент
+            var url = $(this).data("url");
+            if (url) {
+                loadContent(url);
             }
         });
 
-        // Обработчик клика на навигационные ссылки
-        $('.nav-link').click(function (e) {
-            e.preventDefault(); // Отменяем стандартное действие ссылки
-
-            // Убираем класс active у всех ссылок
-            $('.nav-link').removeClass('active');
-
-            // Добавляем класс active на текущую ссылку
-            $(this).addClass('active');
-
-            // Получаем URL из data-url атрибута
-            var url = $(this).data('url');
-
-            // Загружаем контент через AJAX
-            $('#dynamic-content').load(url, function (response, status, xhr) {
-
-                if (status === "error") {
-                    $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
-                }
+        // Функция загрузки контента
+        function loadContent(url) {
+            $("#dynamic-content").fadeOut(100, function () {
+                $(this).load(url, function (response, status) {
+                    if (status === "error") {
+                        $(this).html("<p>Ошибка загрузки содержимого</p>");
+                    }
+                    $(this).fadeIn(100);
+                });
             });
-        });
+        }
     });
 </script>
+
 
 
 <!-- Модальное окно для изображения -->

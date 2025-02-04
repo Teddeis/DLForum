@@ -73,6 +73,36 @@ namespace DLForum.Controllers
             }
         }
 
+        // Метод для отображения главной страницы с пагинацией
+        public async Task<IActionResult> Popular(int pageNumber = 1)
+        {
+
+            try
+            {
+                int pageSize = 10; // Число тем на одной странице
+
+                // Получаем темы и общее количество с пагинацией
+                var (topics, totalCount) = await _topicService.GetTopicsByPagePopularAsync(pageNumber, pageSize);
+
+
+
+                // Рассчитываем количество страниц
+                int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                // Передаем данные в представление
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.TotalPages = totalPages;
+
+
+                return PartialView(topics);
+            }
+            catch (Exception ex)
+            {
+                // В случае ошибки, можно отобразить сообщение
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+        }
 
         public IActionResult Index()
         {

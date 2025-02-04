@@ -1,5 +1,6 @@
 ﻿using DLForum.Models;
 using Supabase;
+using static Supabase.Postgrest.Constants;
 
 public class TopicService
 {
@@ -72,6 +73,23 @@ public class TopicService
         return (response.Models.ToList(), totalCount);
     }
 
+
+    // Получение тем с пагинацией (только одобренные)
+    public async Task<(List<Topic>, int)> GetTopicsByPagePopularAsync(int pageNumber, int pageSize)
+    {
+        var offset = (pageNumber - 1) * pageSize;
+
+        var response = await _client.From<Topic>()
+            .Where(t => t.Status == "true" && t.LikesCount != 0)
+            .Limit(pageSize)
+            .Offset(offset)
+            .Order(t => t.LikesCount, Ordering.Descending)
+            .Get();
+
+        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true" && t.LikesCount != 0).Order(t => t.LikesCount, Ordering.Descending).Get()).Models.Count;
+
+        return (response.Models.ToList(), totalCount);
+    }
 
 
     // Получение тем с пагинацией для админов (неодобренные)

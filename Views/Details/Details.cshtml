@@ -307,6 +307,16 @@
             color: red; /* Красный цвет для активного лайка */
         }
 
+    .favorite i {
+        font-size: 18px;
+        color: #666; /* Цвет по умолчанию */
+        transition: color 0.2s ease; /* Плавный переход цвета */
+    }
+
+        .favorite i.favorited {
+            color: yellow; /* Красный цвет для активного лайка */
+        }
+
     /* Стиль для отдельных тегов */
     .tags {
         padding: 6px 8px;
@@ -360,14 +370,21 @@
             <div class="content-info">
                 <!-- Имя автора -->
                 <div class="content-info">
-                    <div>
-                        <p class="author">Автор: @Model.Author</p>
+                    <div style="text-align: center;">
+
+                        <div style="text-align: left;">
+                        <span class="author">Автор: @Model.Author</span>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <span class="favorite" style="text-align: right;"><i class="bi bi-star"></i></span>
+                        </div>
                     </div>
                     <div class="category-badge mt-auto" style="text-align: right;">
                         <!-- Каждая категория отображается отдельно -->
                         @foreach (var category in Model.Categories.Split(','))
                         {
-                            <span class="category-tag">@category.Trim()</span>
+                            <a class="category-tag" href="/Home/Categories?category=@category.Trim()">@category.Trim()</a>
                         }
                     </div>
                     <h1 class="title">@Model.Title</h1>
@@ -553,24 +570,6 @@
 
             // Обновление изображения
             document.getElementById('currentImage').src = images[currentIndex].url;
-        }
-    </script>
-
-    <script>
-        let liked = false;
-        let likeCount = 0;
-        const likeBtn = document.querySelector(".like-btn");
-        const likeCounter = document.getElementById("like-count");
-
-        function toggleLike() {
-            liked = !liked;
-            likeCount += liked ? 1 : -1;
-            likeBtn.classList.toggle("liked", liked);
-            likeCounter.classList.add("change");
-            setTimeout(() => {
-                likeCounter.textContent = likeCount;
-                likeCounter.classList.remove("change");
-            }, 300);
         }
     </script>
 
