@@ -19,7 +19,7 @@ public class TopicService
             UserId = userId,
             Title = title,
             Content = content,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = DateTime.Now,
             LikesCount = 0,
             Status = "false",
             Author = author,
@@ -38,11 +38,12 @@ public class TopicService
 
         var response = await _client.From<Topic>()
             .Where(t => t.Status == "true")
+            .Order(t => t.CreatedAt, Ordering.Descending)
             .Limit(pageSize)
             .Offset(offset)
             .Get();
 
-        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true").Get()).Models.Count;
+        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true").Order(t => t.CreatedAt, Ordering.Descending).Get()).Models.Count;
 
         return (response.Models.ToList(), totalCount);
     }
@@ -118,6 +119,27 @@ public class TopicService
         await _client.From<Topic>().Where(t => t.Id == topic.Id).Update(topic);
 
         return topic;
+    }
+
+    // Метод для обновления статуса темы
+    public async Task<Topic?> DeleteTopicStatusAsync(int topicId, bool newStatus)
+    {
+        // Ищем тему по ID
+        var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
+
+        // Если тема не найдена
+        if (!topic.Models.Any())
+        {
+            return null;
+        }
+
+        var topicToUpdate = topic.Models.First();
+        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
+
+        // Обновляем тему в базе данных
+        var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
+
+        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
     }
 
     // Удаление темы

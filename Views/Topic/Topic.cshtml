@@ -234,7 +234,6 @@
                 <a asp-controller="Home" asp-action="Rules" class="rules-btn float-end">ПРАВИЛА</a>
             </h3>
             <form asp-action="CreateTopic" asp-controller="Topic" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- Заголовок -->
                 <div class="mb-3">
@@ -282,15 +281,47 @@
                 <!-- Редактируемый контент -->
                 <textarea name="content" id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение" required></textarea>
 
+
                 <!-- Кнопка отправки -->
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">Создать тему</button>
+                    <!-- Измените кнопку отправки формы, чтобы она вызывала validateForm -->
+                    <button type="submit" class="btn btn-primary" onclick="return validateForm()">Создать тему</button>
                 </div>
             </form>
         </div>
     </div>
 
+	<!-- Проверка перед отправкой -->
+	<script>
+		const categories = []; // Массив выбранных категорий (нужно заполнить логикой)
+		const tags = []; // Массив добавленных тегов (нужно заполнить логикой)
 
+		document.querySelector('form').addEventListener('submit', function (event) {
+			if (categories.length === 0 || tags.length === 0) {
+                
+				alert("Выберите хотя бы одну категорию и добавьте хотя бы один тег!");
+				event.preventDefault(); // Останавливаем отправку формы
+			}
+		});
+	</script>
+    <script>
+        function validateForm() {
+            let categories = document.getElementById("categories-hidden").value;
+            let tags = document.getElementById("tags-input").value;
+
+            if (!categories) {
+                alert("Выберите хотя бы одну категорию!");
+                return false;  // Останавливаем отправку формы
+            }
+
+            if (!tags) {
+                alert("Добавьте хотя бы один тег!");
+                return false;  // Останавливаем отправку формы
+            }
+
+            return true; // Разрешаем отправку формы
+        }
+    </script>
 
     <!-- Основные скрипты-->
     <script>
@@ -368,6 +399,7 @@
             document.getElementById('tags-input').value = tags.join(',');
         }
     </script>
+
 
 
     <!-- Bootstrap Icons -->

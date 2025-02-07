@@ -7,6 +7,24 @@
 }
 
 <style>
+    /* Общие стили для темной и светлой тем */
+    :root {
+        --list-group-bg: #272729;
+        --list-group-hover: #3c3c3d;
+        --input-bg: #1f1f1f;
+        --input-border: #424245;
+        --input-focus-border: #5a5a5b;
+        --input-text-color: #d7dadc;
+    }
+
+    [data-theme="light"] {
+        --list-group-bg: #f8f9fa;
+        --list-group-hover: #e6e6e6;
+        --input-bg: #ffffff;
+        --input-border: #cccccc;
+        --input-focus-border: #b3b3b3;
+        --input-text-color: #333333;
+    }
     body {
         background-color: var(--background-color);
         color: var(--text-color);
@@ -40,8 +58,8 @@
             color: var(--text-color);
         }
 
+
     .form-control,
-    input,
     select,
     textarea, 
     small {
@@ -54,7 +72,6 @@
     
 
         .form-control:focus,
-        input:focus,
         select:focus,
         textarea:focus {
             background-color: var(--input-bg);
@@ -254,8 +271,47 @@
                 </div>
                 <!-- Безопасность и вход -->
                 <div class="tab-pane fade" id="security-settings" role="tabpanel" aria-labelledby="security-tab">
-                    <h3>Настройки безопасности и входа</h3>
-                    <p>Тут будет отображаться информация о безопасности и методах входа.</p>
+                    <h3>Смена пароля</h3>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Текущий пароль
+                        </label>
+                        <input class="form-control" type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Новый пароль
+                        </label>
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Подтвердите новый пароль
+                        </label>
+                        <input class="form-control" type="text" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сменить данные</button>
+
+                    <hr class="dropdown-divider" style="margin-top: 30px">
+                    <h3>Смена почты</h3>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Текущая почта: @HttpContextAccessor.HttpContext.Session.GetString("Email")
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Новая почта
+                        </label>
+                        <input class="form-control" type="text" name="username" id="nickname">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">
+                            Текущий пароль
+                        </label>
+                        <input class="form-control" type="text" name="username" id="nickname">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сменить данные</button>
                 </div>
             </div>
         </div>

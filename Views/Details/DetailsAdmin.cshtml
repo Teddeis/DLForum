@@ -535,7 +535,7 @@
                 <!-- Форма для отмены темы -->
                 @if (@Model.Status == "false")
                 {
-                <form method="post" asp-controller="Topic" asp-action="Delete" asp-route-topicId="@Model.Id">
+                <form method="post" asp-controller="Topic" asp-action="UpdateStatusToNone" asp-route-topicId="@Model.Id">
                         <button type="submit" class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #e34234;">
                             <i style="font-size: 18px; margin-right: 5px;"></i> Отменить тему
                         </button>

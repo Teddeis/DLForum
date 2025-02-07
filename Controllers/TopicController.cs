@@ -41,7 +41,7 @@ public class TopicController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTopic(string title, string content, string categories,string tags)
+    public async Task<IActionResult> CreateTopic(string title, string content, string categories, string tags)
     {
         var userId = HttpContext.Session.GetInt32("ID");
         var author = HttpContext.Session.GetString("UserName");
@@ -84,6 +84,33 @@ public class TopicController : Controller
         }
     }
 
+    // Метод для отмены статуса темы (Отменить тему)
+    [HttpPost]
+    public async Task<IActionResult> UpdateStatusToNone(int topicId)
+    {
+        try
+        {
+            // Обновляем статус темы на false
+            var updatedTopic = await _supabaseService.DeleteTopicStatusAsync(topicId, false);
+
+            if (updatedTopic == null)
+            {
+                // Если тема не была обновлена (не найдена), возвращаем ошибку
+                ViewBag.ErrorMessage = "Тема не найдена!";
+                return View("Error");
+            }
+
+            // Перенаправляем на страницу темы после отмены статуса
+            return RedirectToAction("TopicList", new { id = topicId });
+        }
+        catch (Exception ex)
+        {
+            // В случае ошибки выводим сообщение
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+        }
+    }
+
     // Отмена темы и полное её удаление:
     [HttpPost]
     public async Task<IActionResult> Delete(int topicId)
@@ -99,7 +126,7 @@ public class TopicController : Controller
             }
 
             // Исправленный редирект
-            return RedirectToAction("TopicList", new { id = topicId });
+            return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
         {
@@ -107,6 +134,4 @@ public class TopicController : Controller
             return View("Error");
         }
     }
-
-
 }

@@ -33,5 +33,5 @@ public class Topic : BaseModel
     [Column("categories")]
     public string Categories { get; set; }
     [Column("tags")]
-    public string Tags { get; set; } = string.Empty;
+    public string Tags { get; set; }
 }

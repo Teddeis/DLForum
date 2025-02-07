@@ -10,198 +10,203 @@
 
         /* Для всех скроллбаров */
         ::-webkit-scrollbar {
-            width: 8px; /* Узкий вертикальный скроллбар */
-            height: 8px; /* Узкий горизонтальный скроллбар */
+        width: 8px; /* Узкий вертикальный скроллбар */
+        height: 8px; /* Узкий горизонтальный скроллбар */
         }
 
         /* Фон трека скроллбара */
         ::-webkit-scrollbar-track {
-            background: #2a2a2a; /* Тёмный, ненавязчивый фон трека */
-            border-radius: 4px; /* Лёгкое скругление */
+        background: #2a2a2a; /* Тёмный, ненавязчивый фон трека */
+        border-radius: 4px; /* Лёгкое скругление */
         }
 
         /* Ползунок */
         ::-webkit-scrollbar-thumb {
-            background: #5a5a5a; /* Нейтральный цвет для ползунка */
-            border-radius: 4px; /* Скругление для минималистичного вида */
-            transition: background 0.3s ease; /* Плавный переход цвета */
+        background: #5a5a5a; /* Нейтральный цвет для ползунка */
+        border-radius: 4px; /* Скругление для минималистичного вида */
+        transition: background 0.3s ease; /* Плавный переход цвета */
         }
 
-            /* При наведении на ползунок */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #808080; /* Более тёмный цвет для ползунка при наведении */
-            }
+        /* При наведении на ползунок */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #808080; /* Более тёмный цвет для ползунка при наведении */
+        }
 
 
         /* Общие стили */
         :root {
-            --background-color: #1a1a1b; /* Тёмная тема */
-            --text-color: #d7dadc;
-            --navbar-color: #272729;
-            --button-color: #424245;
-            --button-hover-color: #5a5a5b;
-            --search-bar-bg: #272729;
-            --search-bar-border: #424245;
-            --placeholder-color: #848586;
-            --search-bar-border: #333; /* Цвет для темной темы */
+        --background-color: #1a1a1b; /* Тёмная тема */
+        --text-color: #d7dadc;
+        --navbar-color: #272729;
+        --button-color: #424245;
+        --button-hover-color: #5a5a5b;
+        --search-bar-bg: #272729;
+        --search-bar-border: #424245;
+        --placeholder-color: #848586;
+        --search-bar-border: #333; /* Цвет для темной темы */
         }
 
         [data-theme="light"] {
-            --background-color: #ffffff; /* Светлая тема */
-            --text-color: #333333;
-            --navbar-color: #f8f9fa;
-            --button-color: #e7e7e7;
-            --button-hover-color: #d6d6d6;
-            --search-bar-bg: #f1f3f5;
-            --search-bar-border: #cccccc;
-            --placeholder-color: #666666;
-            --light-theme-search-bar-border: #ccc; /* Цвет для светлой темы */
+        --background-color: #ffffff; /* Светлая тема */
+        --text-color: #333333;
+        --navbar-color: #f8f9fa;
+        --button-color: #e7e7e7;
+        --button-hover-color: #d6d6d6;
+        --search-bar-bg: #f1f3f5;
+        --search-bar-border: #cccccc;
+        --placeholder-color: #666666;
+        --light-theme-search-bar-border: #ccc; /* Цвет для светлой темы */
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
         }
 
         .navbar {
-            background-color: var(--navbar-color);
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: background-color 0.3s;
+        background-color: var(--navbar-color);
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background-color 0.3s;
         }
 
         .navbar-brand {
-            font-size: 24px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: bold;
+        font-size: 24px;
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: bold;
         }
 
-            .navbar-brand:hover {
-                color: var(--text-color);
-            }
+        .navbar-brand:hover {
+        color: var(--text-color);
+        }
 
         .search-bar {
-            background-color: var(--search-bar-bg);
-            border: 1px solid var(--search-bar-border);
-            border-radius: 20px;
-            padding: 5px 10px;
-            display: flex;
-            align-items: center;
-            color: var(--text-color);
-            flex: 1;
-            max-width: 400px;
-            margin: 0 auto; /* Центрирование */
-            transition: background-color 0.3s, border-color 0.3s;
+        background-color: var(--search-bar-bg);
+        border: 1px solid var(--search-bar-border);
+        border-radius: 20px;
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+        flex: 1;
+        max-width: 400px;
+        margin: 0 auto; /* Центрирование */
+        transition: background-color 0.3s, border-color 0.3s;
         }
 
-            .search-bar input {
-                background-color: transparent;
-                border: none;
-                outline: none;
-                color: var(--text-color);
-                width: 100%;
-                margin-left: 5px;
-            }
+        .search-bar input {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-color);
+        width: 100%;
+        margin-left: 5px;
+        }
 
-                .search-bar input::placeholder {
-                    color: var(--placeholder-color);
-                }
+        .search-bar input::placeholder {
+        color: var(--placeholder-color);
+        }
 
-            .search-bar i {
-                color: var(--placeholder-color);
-            }
+        .search-bar i {
+        color: var(--placeholder-color);
+        }
 
         .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         }
 
         .btn {
-            color: var(--text-color);
-            background-color: var(--button-color);
-            border-radius: 20px;
-            padding: 5px 15px;
-            border: none;
-            transition: background-color 0.3s;
+        color: var(--text-color);
+        background-color: var(--button-color);
+        border-radius: 20px;
+        padding: 5px 15px;
+        border: none;
+        transition: background-color 0.3s;
         }
 
-            .btn:hover {
-                background-color: var(--button-hover-color);
-            }
+        .btn:hover {
+        background-color: var(--button-hover-color);
+        }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
         }
 
 
-/* Стиль для выпадающего меню */
-.dropdown-menu {
-    background-color: var(--navbar-color); /* Темный фон для меню */
-    border: 1px solid var(--search-bar-border); /* Граница меню */
-    color: var(--text-color); /* Цвет текста */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для меню */
-    border-radius: 8px; /* Скругленные углы */
-    padding: 8px 0; /* Отступы внутри меню */
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
+        /* Стиль для выпадающего меню */
+        .dropdown-menu {
+        background-color: var(--navbar-color); /* Темный фон для меню */
+        border: 1px solid var(--search-bar-border); /* Граница меню */
+        color: var(--text-color); /* Цвет текста */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для меню */
+        border-radius: 8px; /* Скругленные углы */
+        padding: 8px 0; /* Отступы внутри меню */
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
 
-/* Стиль для заголовков меню */
-.dropdown-header {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: var(--placeholder-color); /* Слегка приглушенный цвет */
-    padding: 8px 16px;
-    text-transform: uppercase;
-}
+        /* Стиль для заголовков меню */
+        .dropdown-header {
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: var(--placeholder-color); /* Слегка приглушенный цвет */
+        padding: 8px 16px;
+        text-transform: uppercase;
+        }
 
-/* Линия-разделитель для темной темы */
-.dropdown-divider {
-    height: 1px;
-    background-color: var(--search-bar-border); /* Линия-разделитель */
-    margin: 8px 0;
-}
+        /* Линия-разделитель для темной темы */
+        .dropdown-divider {
+        height: 1px;
+            background-color: var(--placeholder-color); /* Линия-разделитель */
+        margin: 8px 0;
+        }
 
-/* Линия-разделитель для светлой темы */
-.light-theme .dropdown-divider {
-    height: 1px;
-    background-color: var(--light-theme-search-bar-border); /* Линия-разделитель для светлой темы */
-    margin: 8px 0;
-}
+        /* Линия-разделитель для светлой темы */
+        .light-theme .dropdown-divider {
+            height: 1px;
+            background-color: var(--placeholder-color); /* Линия-разделитель для светлой темы */
+            margin: 8px 0;
+        }
 
-/* Элементы меню */
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    padding: 12px 16px;
-    gap: 8px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-    color: var(--text-color);
-}
+        /* Элементы меню */
+        .dropdown-item {
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        padding: 12px 16px;
+        gap: 8px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        color: var(--text-color);
+        }
+
+            .dropdown-item:hover {
+                color: var(--text-color);
+                background: var(--search-bar-border);
+            }
 
 
-/* Темный фон для аватарки */
-.dropdown-item i {
-    color: var(--text-color); /* Иконки меню */
-}
+        /* Темный фон для аватарки */
+        .dropdown-item i {
+        color: var(--text-color); /* Иконки меню */
+        }
 
-.dropdown-item span.badge {
-    background-color: #e74c3c; /* Красный значок уведомлений */
-    color: #fff;
-}
-</style>
+        .dropdown-item span.badge {
+        background-color: #e74c3c; /* Красный значок уведомлений */
+        color: #fff;
+        }
+    </style>
 </head>
 
 <body>
@@ -213,23 +218,28 @@
             <!-- Поисковая строка -->
             <div class="search-bar">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Поиск..." />
+                <input type="text" placeholder="Поиск...">
             </div>
 
             <!-- Кнопки -->
             <div class="user-actions">
+                @inject IHttpContextAccessor HttpContextAccessor
                 <!-- Кнопка переключения темы -->
                 <button class="btn" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
-
-                @inject IHttpContextAccessor HttpContextAccessor
                 @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
                 {
+                    <a class="btn" asp-controller="Account" asp-action="Login">
+                        <i class="bi bi-bell-fill"></i>
+                    </a>
                     <a asp-controller="Account" asp-action="Login" class="btn">Вход | Регистрация</a>
                 }
                 else
                 {
+                    <a class="btn" asp-controller="Profile" asp-action="Notification">
+                        <i class="bi bi-bell-fill"></i>
+                    </a>
                     <div class="dropdown">
                         <a class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="user-avatar" />

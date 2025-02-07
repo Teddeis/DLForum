@@ -138,7 +138,7 @@ namespace DLForum.Controllers
                 HttpContext.Session.SetString("Gender", updatedUser.gender ?? "");
                 HttpContext.Session.SetString("About", updatedUser.about ?? "");
 
-                return RedirectToAction("Profile");
+                return RedirectToAction("Settings");
             }
             catch (Exception ex)
             {

@@ -70,6 +70,7 @@ public class ProfileUserService
     public async Task<List<Topic>> GetTopicsByIdAsync(int author)
     {
         var response = await _client.From<Topic>()
+            .Where(t => t.Status == "true")
             .Filter("user_id", Supabase.Postgrest.Constants.Operator.Equals, author)
             .Get();
 

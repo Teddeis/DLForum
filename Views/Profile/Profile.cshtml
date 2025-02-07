@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Профиль";
+
+        bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == Model.user.id; // Проверка, является ли текущий пользователь владельцем темы
+    
 }
 
 <style>
@@ -180,24 +183,45 @@
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="your-topics" role="tabpanel" aria-labelledby="your-topics-tab">
                 <h3>Список ваших тем</h3>
-                @if (Model.TopicsList != null && Model.TopicsList.Any())
-                {
+                    @if (Model.TopicsList != null && Model.TopicsList.Any())
+                    {
                     <div class="list-group">
                         @foreach (var topic in Model.TopicsList)
                         {
-                            <a href="@Url.Action("Details","Details", new { id = topic.Id })"
-                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                               style="border-radius: 10px; margin-bottom: 10px; border: 1px solid #ccc; transition: all 0.3s ease;">
-                                <div>
-                                    <h5 class="mb-1" style="font-weight: 600; color: var(--primary-color);">
-                                        @topic.Title
-                                    </h5>
-                                        <p class="mb-1" style="font-size: 0.9em;color: var(--text-color);">
-                                        Создано: @topic.CreatedAt.ToString("dd.MM.yyyy HH:mm")
-                                    </p>
-                                </div>
-                                <i class="bi bi-chevron-right" style="font-size: 1.5em; color: var(--secondary-color);"></i>
-                            </a>
+                                if (topic.Status == "true")
+                                {
+                                    <a href="@Url.Action("Details","Details", new { id = topic.Id })"
+                                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                       style="border-radius: 10px; margin-bottom: 10px; border: 1px solid #ccc; transition: all 0.3s ease;">
+                                        <div>
+                                            <h5 class="mb-1" style="font-weight: 600; color: var(--primary-color);">
+                                                @topic.Title
+                                            </h5>
+                                            <p class="mb-1" style="font-size: 0.9em;color: var(--text-color);">
+                                                Создано: @topic.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                                            </p>
+                                        </div>
+                                        <i class="bi bi-chevron-right" style="font-size: 1.5em; color: var(--secondary-color);"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                       style="border-radius: 10px; margin-bottom: 10px; border: 1px solid #ccc; transition: all 0.3s ease;">
+                                        <div>
+                                            <h5 class="mb-1" style="font-weight: 600; color: var(--primary-color);">
+                                                @topic.Title
+                                            </h5>
+                                            <p class="mb-1" style="font-size: 0.9em;color: var(--text-color);">
+                                                Создано: @topic.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                                            </p>
+                                            <p class="mb-1" style="font-size: 0.9em;color:#c70000">
+                                                На рассмотрении
+                                            </p>
+                                        </div>
+                                        <i class="bi bi-chevron-right" style="font-size: 1.5em; color: var(--secondary-color);"></i>
+                                    </a>
+                                }
                         }
                     </div>
                 }
@@ -212,8 +236,8 @@
             </div>
             <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
                 <h3>Список ваших комментариев</h3>
-                @if (Model.CommentsList != null && Model.CommentsList.Any())
-                {
+                    @if (Model.CommentsList != null && Model.CommentsList.Any())
+                    {
                     <div class="list-group">
                         @foreach (var comment in Model.CommentsList)
                         {
