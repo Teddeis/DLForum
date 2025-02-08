@@ -73,6 +73,32 @@ namespace DLForum.Controllers
             }
         }
 
+
+        public async Task<IActionResult> CategoriesSearch(string category, int pageNumber = 1)
+        {
+            try
+            {
+                int pageSize = 10; 
+
+                var (topics, totalCount) = await _topicService.GetTopicsByPageCategoriesAsync(category, pageNumber, pageSize);
+
+                int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                // Передаем данные в представление
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.TotalPages = totalPages;
+                ViewBag.SelectedCategory = category;
+
+                return View(topics);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+        }
+
+
         // Метод для отображения главной страницы с пагинацией
         public async Task<IActionResult> Popular(int pageNumber = 1)
         {
@@ -111,12 +137,12 @@ namespace DLForum.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return PartialView();
         }
 
         public IActionResult Rules()
         {
-            return View();
+            return PartialView();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

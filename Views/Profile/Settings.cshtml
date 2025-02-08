@@ -25,16 +25,6 @@
         --input-focus-border: #b3b3b3;
         --input-text-color: #333333;
     }
-    body {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .navbar {
-        background-color: var(--navbar-color);
-        transition: background-color 0.3s;
-    }
 
     .card {
         background-color: var(--background-color);
@@ -61,8 +51,8 @@
 
     .form-control,
     select,
-    textarea, 
-    small {
+    textarea
+     {
         background-color: var(--input-bg);
         border: 1px solid var(--input-border);
         color: var(--input-text-color);
@@ -87,11 +77,6 @@
             color: var(--placeholder-color);
         }
 
-    .btn {
-        background-color: var(--button-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
 
         .btn:hover {
             background-color: var(--button-hover-color);
@@ -105,11 +90,34 @@
         transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
-    .small
-    {
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    .btn {
+        position: relative;
+        overflow: hidden;
     }
+
+        .btn input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+    .rounded-circle {
+        border: 2px solid var(--card-border-color);
+    }
+
+    #avatarPreview,
+    #bannerPreview {
+        transition: transform 0.3s ease;
+    }
+
+        #avatarPreview:hover,
+        #bannerPreview:hover {
+            transform: scale(1.05);
+        }
     </style>
 
 
@@ -169,64 +177,6 @@
                                 </label>
                             </div>
                         </div>
-
-                        <script>
-                            // Аватар
-                            document.getElementById('avatar').addEventListener('change', function (event) {
-                                const file = event.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = function (e) {
-                                        document.getElementById('avatarPreview').src = e.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            });
-
-                            // Баннер
-                            document.getElementById('banner').addEventListener('change', function (event) {
-                                const file = event.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = function (e) {
-                                        document.getElementById('bannerPreview').src = e.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            });
-                        </script>
-
-                        <style>
-                            .btn {
-                                position: relative;
-                                overflow: hidden;
-                            }
-
-                                .btn input[type="file"] {
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    width: 100%;
-                                    height: 100%;
-                                    opacity: 0;
-                                    cursor: pointer;
-                                }
-
-                            .rounded-circle {
-                                border: 2px solid var(--card-border-color);
-                            }
-
-                            #avatarPreview,
-                            #bannerPreview {
-                                transition: transform 0.3s ease;
-                            }
-
-                                #avatarPreview:hover,
-                                #bannerPreview:hover {
-                                    transform: scale(1.05);
-                                }
-                        </style>
-
 
                     <!-- Информация -->
                     <div class="mb-3">
@@ -317,3 +267,30 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    // Аватар
+    document.getElementById('avatar').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Баннер
+    document.getElementById('banner').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('bannerPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

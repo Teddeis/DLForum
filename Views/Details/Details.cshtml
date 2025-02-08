@@ -214,57 +214,55 @@
     }
 
     .comments-title {
-        font-weight: 700; /* Устанавливаем более толстый шрифт */
-        font-size: 20px; /* Если нужно увеличить размер */
-        color: var(--text-color); /* Цвет текста */
+        font-weight: 700; 
+        font-size: 20px; 
+        color: var(--text-color);
     }
 
 
     /* Контейнер для всех категорий */
     .category-badge {
         display: inline-flex;
-        flex-wrap: wrap; /* Разрешаем категориям переноситься на следующую строку, если места не хватает */
-        gap: 10px; /* Отступ между категориями */
+        flex-wrap: wrap; 
+        gap: 10px; 
         margin-bottom: 15px;
-        cursor: default; /* Отключаем курсор-палец для всего блока */
+        cursor: default;
     }
 
     /* Стиль для отдельных категорий */
     .category-tag {
-        padding: 6px 14px; /* Чуть больше отступов для лучшего визуального восприятия */
-        border-radius: 18px; /* Меньше скругления, чтобы они выглядели более стильно */
+        padding: 6px 14px;
+        border-radius: 18px; 
         color: var(--text-color);
-        font-size: 12px; /* Немного уменьшен шрифт, чтобы не перегружать пространство */
-        font-weight: 600; /* Полужирный шрифт для выделения */
-        border: 1px solid #ddd; /* Лёгкая граница, которая сохраняет вид разделения */
-        background-color: var(--card-background); /* Лёгкий фон для категории */
-        transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Плавные переходы */
-        cursor: pointer; /* Курсор меняется на указатель для интерактивных элементов */
+        font-size: 12px; 
+        font-weight: 600; 
+        border: 1px solid #ddd; 
+        background-color: var(--card-background);
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+        cursor: pointer;
     }
 
-        /* Эффект при наведении на категорию */
         .category-tag:hover {
-            background-color: #007bff; /* Изменение фона на синий при наведении */
-            color: #fff; /* Белый цвет текста при наведении */
-            transform: translateY(-2px); /* Легкий эффект подъема при наведении */
+            background-color: #007bff; 
+            color: #fff; 
+            transform: translateY(-2px); 
         }
 
-        /* Дополнительный стиль для неактивной категории (если нужно для состояния) */
         .category-tag:active {
-            transform: translateY(1px); /* Легкий эффект нажатия */
+            transform: translateY(1px); 
         }
 
-        /* Для категорий, которые выбраны или выделены */
         .category-tag.selected {
-            background-color: #28a745; /* Зеленый фон для выбранной категории */
-            color: white; /* Белый текст для выделенной категории */
-            border-color: #28a745; /* Цвет границы совпадает с фоном */
+            background-color: #28a745; 
+            color: white; 
+            border-color: #28a745; 
         }
 
 
 
     [data-theme="dark"] .category-badge {
-        color: #1a1a1b; /* Цвет текста для темной темы */
+        color: #1a1a1b; 
     }
 
     .category-badge:hover {
@@ -281,40 +279,40 @@
         margin-top: 40px;
         text-align: center;
         color: #555;
-        animation: fadeIn 1s ease-out; /* Плавное появление */
+        animation: fadeIn 1s ease-out; 
     }
 
         .no-comments i {
             font-size: 50px;
             color: #007bff;
-            animation: bounce 1.5s infinite; /* Подпрыгивающая иконка */
+            animation: bounce 1.5s infinite;
         }
 
         .no-comments p {
             font-size: 18px;
             font-weight: 600;
             margin-top: 10px;
-            color: var(--text-color); /* Цвет текста */
+            color: var(--text-color); 
         }
 
     .likes i {
         font-size: 18px;
-        color: #666; /* Цвет по умолчанию */
-        transition: color 0.2s ease; /* Плавный переход цвета */
+        color: #666;
+        transition: color 0.2s ease; 
     }
 
         .likes i.liked {
-            color: red; /* Красный цвет для активного лайка */
+            color: red;
         }
 
     .favorite i {
         font-size: 18px;
-        color: #666; /* Цвет по умолчанию */
-        transition: color 0.2s ease; /* Плавный переход цвета */
+        color: #666; 
+        transition: color 0.2s ease; 
     }
 
         .favorite i.favorited {
-            color: yellow; /* Красный цвет для активного лайка */
+            color: yellow; 
         }
 
     /* Стиль для отдельных тегов */
@@ -349,7 +347,7 @@
     <div class="container">
         <!-- Навигация -->
         <nav>
-            <a href="@Url.Action("Index", "Home")" class="back-link">← Назад</a>
+            <a href="javascript:void(0);" class="back-link" onclick="window.location.href=document.referrer;">← Назад</a>
             <div class="nav-right">
                 @if (isOwner)
                 {
@@ -384,7 +382,8 @@
                         <!-- Каждая категория отображается отдельно -->
                         @foreach (var category in Model.Categories.Split(','))
                         {
-                            <a class="category-tag" href="/Home/Categories?category=@category.Trim()">@category.Trim()</a>
+
+                            <a class="category-tag" href="/Home/CategoriesSearch?category=@category.Trim()">@category.Trim()</a>
                         }
                     </div>
                     <h1 class="title">@Model.Title</h1>
@@ -493,7 +492,7 @@
                     <li class="comment-item">
                         <div class="comment-header d-flex align-items-center">
                             <img src="@Url.Content(@comment.avatar)" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
-                            <a class="comment-author back-link" href="@Url.Action("Users", "Profile", new { id = comment.id_users })">@comment.author</a>
+                            <a class="comment-author back-link" href="@Url.Action("users", "profile", new { id = comment.id_users })">@comment.author</a>
                         </div>
                         <div class="comment-body">
                             <p>@comment.comments</p> <!-- Текст комментария -->

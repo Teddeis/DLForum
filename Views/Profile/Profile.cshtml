@@ -42,18 +42,18 @@
     }
 
     /* Кнопки */
-    .btn {
+    .btn-setting {
         background-color: var(--button-color);
         color: var(--text-color);
         transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
     }
 
-        .btn:hover {
+        .btn-setting:hover {
             background-color: var(--button-hover-color);
             transform: scale(1.1);
         }
 
-        .btn:active {
+        .btn-setting:active {
             transform: scale(0.95);
         }
 
@@ -123,24 +123,11 @@
             </div>
 
             <!-- Кнопка настроек -->
-            <a class="btn d-flex align-items-center justify-content-center"
+                <a class="btn-setting d-flex align-items-center justify-content-center"
                href="@Url.Action("Settings", "Profile")"
                style="width: 60px; height: 60px; border-radius: 50%; background-color: var(--button-color);color: var(--text-color); transition: background-color 0.3s, color 0.3s, transform 0.2s ease;">
                 <i class="bi bi-gear-fill" style="font-size: 28px;"></i>
             </a>
-
-            <style>
-                .btn:hover {
-                    background-color: var(--button-hover-color); /* При наведении - более яркий цвет */
-                    color: var(--text-color);
-                    transform: scale(1.1); /* Лёгкое увеличение кнопки */
-                }
-
-                .btn:active {
-                    transform: scale(0.95); /* Эффект нажатия - уменьшение кнопки */
-                }
-            </style>
-
         </div>
     </div>
 </div>

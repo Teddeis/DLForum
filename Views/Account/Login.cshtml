@@ -68,21 +68,6 @@
                 box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.25);
             }
 
-        .btn-primary {
-            background-color: var(--button-bg-color);
-            border-color: var(--button-bg-color);
-            color: #fff;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-            .btn-primary:hover {
-                background-color: var(--button-hover-color);
-                border-color: var(--button-hover-color);
-            }
-
-        .text-muted {
-            color: var(--placeholder-color) !important;
-        }
     </style>
 </head>
 <body>
@@ -91,7 +76,7 @@
         <div class="card shadow-lg p-4" style="width: 400px;">
                 <h2 class="form-label text-center mb-4">Вход</h2>
 
-               <form asp-action="Login" asp-controller="Auth" method="post">
+            <form asp-action="Login" asp-controller="Auth" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label class="form-label">Email</label>

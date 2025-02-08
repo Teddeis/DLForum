@@ -56,19 +56,16 @@ public class TopicService
 
         var query = _client.From<Topic>().Where(t => t.Status == "true");
 
-        // Фильтрация по категории
         if (!string.IsNullOrEmpty(categories))
         {
             query = query.Where(t => t.Categories.Contains(categories));
         }
 
-        // Получаем отфильтрованные темы с учетом пагинации
         var response = await query
             .Limit(pageSize)
             .Offset(offset)
             .Get();
 
-        // Получаем общее количество записей без учета пагинации
         var totalCount = (await query.Get()).Models.Count;
 
         return (response.Models.ToList(), totalCount);

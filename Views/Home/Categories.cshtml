@@ -7,196 +7,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <style>
 
-    /* Общие стили */
-    :root {
-        --background-color: #1a1a1b; /* Тёмная тема */
-        --text-color: #d7dadc;
-        --navbar-color: #272729;
-        --button-color: #424245;
-        --button-hover-color: #5a5a5b;
-        --search-bar-bg: #272729;
-        --search-bar-border: #424245;
-        --placeholder-color: #848586;
-        --card-bg: #2a2a2d; /* Темный фон карточек */
-        --link-color: #4d4d4d; /* Цвет ссылок на темной теме */
-    }
-
-    [data-theme="light"] {
-        --background-color: #ffffff; /* Светлая тема */
-        --text-color: #333333;
-        --navbar-color: #f8f9fa;
-        --button-color: #e7e7e7;
-        --button-hover-color: #d6d6d6;
-        --search-bar-bg: #f1f3f5;
-        --search-bar-border: #cccccc;
-        --placeholder-color: #666666;
-        --card-bg: #f8f9fa; /* Светлый фон карточек */
-        --link-color: #0066cc; /* Цвет ссылок на светлой теме */
-    }
-
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .navbar {
-        background-color: var(--navbar-color);
-        padding: 0.5rem 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition: background-color 0.3s;
-    }
-
-    .navbar-brand {
-        font-size: 24px;
-        color: var(--text-color);
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-        .navbar-brand:hover {
-            color: var(--text-color);
-        }
-
-    .search-bar {
-        background-color: var(--search-bar-bg);
-        border: 1px solid var(--search-bar-border);
-        border-radius: 20px;
-        padding: 5px 10px;
-        display: flex;
-        align-items: center;
-        color: var(--text-color);
-        flex: 1;
-        max-width: 400px;
-        margin: 0 auto; /* Центрирование */
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-
-        .search-bar input {
-            background-color: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-color);
-            width: 100%;
-            margin-left: 5px;
-        }
-
-            .search-bar input::placeholder {
-                color: var(--placeholder-color);
-            }
-
-        .search-bar i {
-            color: var(--placeholder-color);
-        }
-
-    .user-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .btn {
-        color: var(--text-color);
-        background-color: var(--button-color);
-        border-radius: 20px;
-        padding: 5px 15px;
-        border: none;
-        transition: background-color 0.3s;
-    }
-
-        .btn:hover {
-            background-color: var(--button-hover-color);
-        }
-
-    .user-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        object-fit: cover;
-        cursor: pointer;
-    }
-
-    /* Карточки и контент в зависимости от темы */
-    .card {
-        background-color: var(--card-bg); /* Тема фона карточек */
-        color: var(--text-color);
-        border: 1px solid var(--search-bar-border);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-    }
-
-        .card:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-
-    .card-title,
-    .card-body {
-        color: var(--text-color);
-    }
-
-        .card-body p {
-            color: var(--text-color);
-            font-size: 0.95rem;
-        }
-
-    .text-muted {
-        color: var(--placeholder-color) !important; /* Слегка тусклый текст */
-    }
-
-    .nav-link {
-        color: var(--text-color);
-    }
-
-        .nav-link:hover {
-            color: var(--link-color);
-        }
-
-
-    .pagination .page-item.active .page-link {
-        background-color: var(--link-color);
-        border-color: var(--link-color);
-    }
-
-
-    .thumbnail {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-    }
-
-    .text-dark {
-        color: var(--text-color) !important;
-    }
-
-    .text-muted {
-        color: var(--placeholder-color) !important;
-    }
-
-    /* Улучшение внешнего вида ссылок */
-    .card a {
-        color: var(--text-color);
-        text-decoration: none;
-    }
-
-        .card a:hover {
-            color: var(--link-color);
-        }
-
-    .tags {
-        padding: 2px;
-        border-radius: 18px;
-        color: var(--text-color);
-        font-size: 10px;
-        font-weight: 600;
-        position: relative;
-        cursor: pointer;
-        transition: color 0.3s ease, transform 0.3s ease;
-    }
-
     .no-comments {
         display: flex;
         flex-direction: column;
@@ -225,25 +35,11 @@
 
 <body>
     <!-- Основная часть контента справа -->
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 id="page-title" class="h3">
                 @(!string.IsNullOrEmpty(Context.Request.Query["category"]) ? Context.Request.Query["category"] : "Обсуждения")
             </h1>
-
-            @inject IHttpContextAccessor HttpContextAccessor
-            @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
-            {
-                <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">
-                    Создать тему
-                </a>
-            }
-            else
-            {
-                <a class="btn btn-primary" asp-area="" asp-controller="Topic" asp-action="Topic">
-                    Создать тему
-                </a>
-            }
         </div>
 
         <div class="row">
@@ -360,6 +156,8 @@
                 </div>
             }
         </div>
+    </div>
+
 
 
         <script>
