@@ -143,7 +143,7 @@
                 <!-- Профиль -->
                 <div class="tab-pane fade show active" id="profile-settings" role="tabpanel" aria-labelledby="profile-tab">
                     <h3>Настройки профиля</h3>
-                    <form asp-action="UpdateProfile" asp-controller="Profile" method="post">
+                    <form asp-action="UpdateProfile" asp-controller="Profile" method="post" enctype="multipart/form-data">
                         <!-- Аватар -->
                         <div class="mb-3">
                             <label for="avatar" class="form-label">Аватар</label>
@@ -156,11 +156,12 @@
                                 <div>
                                     <label class="btn btn-outline-primary btn-sm">
                                         Загрузить
-                                        <input type="file" id="avatar" name="avatar_url" accept="image/*" class="form-control visually-hidden">
+                                        <input type="file" id="avatar" name="avatar" accept="image/*" class="form-control visually-hidden">
                                     </label>
                                 </div>
                             </div>
                         </div>
+                        
 
                         <!-- Баннер -->
                         <div class="mb-3">
@@ -173,10 +174,12 @@
                                      style="max-height: 200px; object-fit: cover;">
                                 <label class="btn btn-outline-primary btn-sm">
                                     Загрузить
-                                    <input type="file" id="banner" name="you_background" accept="image/*" class="form-control visually-hidden">
+                                    <input type="file" id="banner" name="banner" accept="image/*" class="form-control visually-hidden">
                                 </label>
                             </div>
                         </div>
+
+
 
                     <!-- Информация -->
                     <div class="mb-3">
@@ -294,3 +297,4 @@
         }
     });
 </script>
+

@@ -82,7 +82,7 @@
         transition: color 0.3s ease, transform 0.3s ease;
     }
 
-    .no-comments {
+    .no-topic {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -94,18 +94,19 @@
         animation: fadeIn 1s ease-out; /* Плавное появление */
     }
 
-        .no-comments i {
+        .no-topic i {
             font-size: 50px;
             color: #007bff;
             animation: bounce 1.5s infinite; /* Подпрыгивающая иконка */
         }
 
-        .no-comments p {
+        .no-topic p {
             font-size: 18px;
             font-weight: 600;
             margin-top: 10px;
             color: var(--text-color); /* Цвет текста */
         }
+
 </style>
 
 <body>
@@ -115,24 +116,30 @@
             <h1 class="h3">Обсуждения</h1>
         </div>
 
+
         <div class="row">
             @if (Model.Any())
             {
                 @foreach (var topic in Model)
                 {
                     <div class="col-12 mb-3">
-                        <div class="d-flex border rounded p-3">
+                        <div class="d-flex border rounded p-3 overflow-hidden" style="max-width: 100%;">
                             <!-- Блок изображения -->
-                            <div class="me-3 position-relative">
-                                <img src="@topic.ImageUrl" alt="Thumbnail" class="rounded thumbnail" style="width: 80px; height: 80px; object-fit: cover;" data-fullsize="@topic.ImageUrl">
+                            <div class="me-3 position-relative" style="flex-shrink: 0;">
+                                <img src="@topic.ImageUrl" alt="Thumbnail"
+                                     class="rounded thumbnail"
+                                     style="width: 80px; height: 80px; object-fit: cover; max-width: 100%;"
+                                     data-fullsize="@topic.ImageUrl">
                             </div>
 
                             <!-- Основной контент -->
-                            <a href="@Url.Action("Details", "Details", new { id = topic.Id })" class="flex-grow-1 text-dark text-decoration-none">
-                                <div>
+                            <a href="@Url.Action("Details", "Details", new { id = topic.Id })"
+                               class="flex-grow-1 text-dark text-decoration-none"
+                               style="min-width: 0;">
+                                <div class="d-flex flex-column">
                                     <!-- Автор и теги -->
-                                    <div class="mb-2 d-flex align-items-center">
-                                        <span style="font-size: 12px; color:#007BFF; margin-right: 10px;">Автор: @topic.Author</span>
+                                    <div class="mb-2 d-flex align-items-center flex-wrap">
+                                        <span class="text-primary me-2" style="font-size: 12px; white-space: nowrap;">Автор: @topic.Author</span>
                                         @if (!string.IsNullOrEmpty(topic.Tags))
                                         {
                                             var tag = topic.Tags.Split(',');
@@ -141,7 +148,7 @@
 
                                             foreach (var category in displayedTags)
                                             {
-                                                <span class="tags me-1">@category.Trim()</span>
+                                                <span class="tags me-1 text-truncate" style="max-width: 100px;">@category.Trim()</span>
                                             }
 
                                             if (remainingCount > 0)
@@ -152,17 +159,17 @@
                                     </div>
 
                                     <!-- Заголовок -->
-                                    <h5 class="mb-1 fw-bold">
+                                    <h5 class="mb-1 fw-bold text-truncate" style="max-width: 100%;">
                                         @topic.Title.Substring(0, Math.Min(100, topic.Title.Length))
                                     </h5>
 
                                     <!-- Содержимое -->
-                                    <p class="mb-2 text-muted" style="line-height: 1.5;">
+                                    <p class="mb-2 text-muted text-truncate" style="line-height: 1.5; max-height: 3rem; overflow: hidden; text-overflow: ellipsis;">
                                         @topic.Content.Substring(0, Math.Min(200, topic.Content.Length))...
                                     </p>
 
                                     <!-- Категории -->
-                                    <div class="mb-2">
+                                    <div class="mb-2 d-flex flex-wrap">
                                         @if (!string.IsNullOrEmpty(topic.Categories))
                                         {
                                             var categories = topic.Categories.Split(',');
@@ -171,7 +178,7 @@
 
                                             foreach (var category in displayedCategories)
                                             {
-                                                <span style="font-size: 12px" class="badge bg-primary me-1">@category.Trim()</span>
+                                                <span class="badge bg-primary me-1 text-truncate" style="max-width: 100px;">@category.Trim()</span>
                                             }
 
                                             if (remainingCount > 0)
@@ -187,7 +194,7 @@
                                             <i class="bi bi-heart me-1"></i>@topic.LikesCount
                                             <i class="bi bi-chat me-1 ms-3"></i>@topic.CommentsCount
                                         </span>
-                                        <small>Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
+                                        <small class="text-truncate">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
                                     </div>
                                 </div>
                             </a>
@@ -197,13 +204,12 @@
             }
             else
             {
-                <div class="no-comments">
+                <div class="no-topic">
                     <i class="bi bi-window-dock"></i>
                     <p style="color: var(--text-color);">Тем для обсуждения пока нет. Будьте первым, кто создаст тему!</p>
                 </div>
             }
         </div>
-
 
         @if (ViewBag.TotalPages > 1)
         {
@@ -212,16 +218,29 @@
                     <ul class="pagination">
                         @for (int i = 1; i <= ViewBag.TotalPages; i++)
                         {
-                            if (ViewBag.CurrentPage == i)
+                            // Отображаем первую страницу всегда
+                            if (i == 1 || i == ViewBag.TotalPages || i == ViewBag.CurrentPage ||
+                            (i >= ViewBag.CurrentPage - 1 && i <= ViewBag.CurrentPage + 1) ||
+                            (ViewBag.CurrentPage <= 3 && i <= 5) ||
+                            (ViewBag.CurrentPage >= ViewBag.TotalPages - 2 && i >= ViewBag.TotalPages - 4))
                             {
-                                <li class="page-item active">
-                                    <span class="page-link">@i</span>
-                                </li>
+                                if (ViewBag.CurrentPage == i)
+                                {
+                                    <li class="page-item active">
+                                        <span class="page-link">@i</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="javascript:void(0);" data-page="@i">@i</a>
+                                    </li>
+                                }
                             }
-                            else
+                            else if (i == 2 || i == ViewBag.TotalPages - 1)
                             {
-                                <li class="page-item">
-                                    <a class="page-link" href="javascript:void(0);" data-page="@i">@i</a>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
                                 </li>
                             }
                         }
@@ -230,32 +249,23 @@
             </div>
         }
 
+
     </div>
 
-
     <script>
-                                            $(document).ready(function () {
-            // Обработчик клика на номера страниц пагинации
+           $(document).ready(function () {
             $('.pagination .page-link').click(function (e) {
-                e.preventDefault(); // Отменяем стандартное поведение ссылки
+                e.preventDefault();
 
-                // Получаем номер страницы из data-page атрибута
                 var pageNumber = $(this).data('page');
 
-                // Показываем индикатор загрузки
-                $('#loading-indicator').show();
-
-                // Загружаем новый контент для выбранной страницы
                 $('#dynamic-content').load('/Home/Home?pageNumber=' + pageNumber, function (response, status, xhr) {
-                    // Скрываем индикатор загрузки после загрузки контента
-                    $('#loading-indicator').hide();
 
                     if (status === "error") {
                         $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
                     }
                 });
 
-                // Обновляем активную страницу в пагинации
                 $('.pagination .page-item').removeClass('active');
                 $(this).parent().addClass('active');
             });

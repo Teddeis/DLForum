@@ -125,7 +125,6 @@ public class TopicController : Controller
                 return View("Error");
             }
 
-            // Исправленный редирект
             return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)

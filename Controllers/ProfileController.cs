@@ -10,11 +10,13 @@ namespace DLForum.Controllers
     public class ProfileController : Controller
     {
         private readonly ProfileUserService _userService;
+        private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
 
-        public ProfileController(ProfileUserService userService, IWebHostEnvironment environment)
+        public ProfileController(ProfileUserService userService, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
@@ -82,7 +84,7 @@ namespace DLForum.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model)
+        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
         {
             try
             {
@@ -98,16 +100,50 @@ namespace DLForum.Controllers
                     return RedirectToAction("Login", "Account");
                 }
 
-                // Если есть аватар, сохраняем его как Data URL в базу данных
-                if (!string.IsNullOrEmpty(model.avatar_url))
-                {
-                    user.avatar_url = model.avatar_url; 
-                }
-                if (!string.IsNullOrEmpty(model.you_background))
-                {
-                    user.you_background = model.you_background; 
-                }
+                var supabaseUrl = _configuration["Supabase:Url"];
+                var supabaseKey = _configuration["Supabase:Key"];
+                var supabase = new Supabase.Client(supabaseUrl, supabaseKey);
+                await supabase.InitializeAsync();
 
+                var storage = supabase.Storage;
+
+        // Загрузка аватара в Supabase Storage
+        if (avatar != null && avatar.Length > 0)
+        {
+            string avatarFileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+            using (var memoryStream = new MemoryStream())
+            {
+                await avatar.CopyToAsync(memoryStream);
+                byte[] avatarBytes = memoryStream.ToArray();
+
+                var bucket = storage.From("avatars");
+                var response = await bucket.Upload(avatarBytes, avatarFileName);
+
+                if (response != null)
+                {
+                    user.avatar_url = $"{supabaseUrl}/storage/v1/object/public/avatars/{avatarFileName}";
+                }
+            }
+        }
+
+        // Загрузка баннера в Supabase Storage
+        if (banner != null && banner.Length > 0)
+        {
+            string bannerFileName = $"{Guid.NewGuid()}{Path.GetExtension(banner.FileName)}";
+            using (var memoryStream = new MemoryStream())
+            {
+                await banner.CopyToAsync(memoryStream);
+                byte[] bannerBytes = memoryStream.ToArray();
+
+                var bucket = storage.From("banners");
+                var response = await bucket.Upload(bannerBytes, bannerFileName);
+
+                if (response != null)
+                {
+                    user.you_background = $"{supabaseUrl}/storage/v1/object/public/banners/{bannerFileName}";
+                }
+            }
+        }
 
                 if (!string.IsNullOrEmpty(model.username))
                 {
@@ -122,16 +158,13 @@ namespace DLForum.Controllers
                     user.about = model.about;
                 }
 
-                // Update the user in the database
                 var updatedUser = await _userService.UpdateUserAsync(user);
-
                 if (updatedUser == null)
                 {
                     ModelState.AddModelError(string.Empty, "Failed to update user.");
                     return View(model);
                 }
 
-                // Update session data
                 HttpContext.Session.SetString("Background", updatedUser.you_background ?? "");
                 HttpContext.Session.SetString("AvatarUrl", updatedUser.avatar_url ?? "");
                 HttpContext.Session.SetString("UserName", updatedUser.username ?? "");
@@ -147,6 +180,7 @@ namespace DLForum.Controllers
                 return View(model);
             }
         }
+
 
 
 

@@ -1,9 +1,9 @@
 ﻿@model Profile
-
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Профиль";
 
-        bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == Model.user.id; // Проверка, является ли текущий пользователь владельцем темы
+        bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == Model.user.id; // Проверка, является ли текущий пользователь владельцем профиля
     
 }
 
@@ -104,12 +104,11 @@
 <body>
 <div class="d-flex justify-content-center align-items-center">
     <div class="card" id="banner" style="width: 1000px; height: 400px; border-radius: 20px; border: none; background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")'); background-size: cover; background-position: center; position: relative; transition: all 0.3s ease;">
-        @inject IHttpContextAccessor HttpContextAccessor
-
-        <!-- Стрелочка для сужения баннера -->
-        <button id="collapseBtn" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: transparent; border: none; cursor: pointer;">
-            <i class="bi bi-chevron-down" style="font-size: 24px; color: #6c757d;"></i>
-        </button>
+       
+                <!-- Стрелочка для сужения баннера -->
+                <button id="collapseBtn" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: transparent; border: none; cursor: pointer;">
+                    <i class="bi bi-chevron-down" style="font-size: 24px; color: #6c757d;"></i>
+                </button>
 
         <!-- Основной блок с информацией о пользователе (аватар, ник, роль, настройки) -->
         <div id="userInfo" class="d-flex align-items-center justify-content-between" style="position: absolute; bottom: 0; width: 100%; padding: 20px; border-radius: 15px; transition: all 0.3s ease;">
@@ -152,9 +151,6 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments" role="tab">Комментарии</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="friends-tab" data-bs-toggle="tab" href="#friends" role="tab">Друзья</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="favorites-tab" data-bs-toggle="tab" href="#favorites" role="tab">Избранное</a>
@@ -203,7 +199,7 @@
                                                 Создано: @topic.CreatedAt.ToString("dd.MM.yyyy HH:mm")
                                             </p>
                                             <p class="mb-1" style="font-size: 0.9em;color:#c70000">
-                                                На рассмотрении
+                                                На рассмотрении 
                                             </p>
                                         </div>
                                         <i class="bi bi-chevron-right" style="font-size: 1.5em; color: var(--secondary-color);"></i>
@@ -257,16 +253,10 @@
                 else
                 {
                     <div class="text-center mt-3">
-                        <i class="bi bi-info-circle" style="font-size: 2em; color: #6c757d;"></i>
-                        <p class="mt-2" style="color: #6c757d;">У вас пока нет комментариев.</p>
+                        <i class="bi bi-info-circle" style="font-size: 2em;"></i>
+                        <p class="mt-2">У вас пока нет комментариев.</p>
                     </div>
                 }
-            </div>
-
-
-            <div class="tab-pane fade" id="friends" role="tabpanel" aria-labelledby="friends-tab">
-                <h3>Список друзей</h3>
-                <p>Тут будет отображаться список ваших друзей.</p>
             </div>
             <div class="tab-pane fade" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
                 <h3>Избранное</h3>

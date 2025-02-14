@@ -206,6 +206,7 @@
         background-color: #e74c3c; /* Красный значок уведомлений */
         color: #fff;
         }
+
     </style>
 </head>
 
@@ -218,8 +219,12 @@
             <!-- Поисковая строка -->
             <div class="search-bar">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Поиск...">
+                <input type="text" id="searchInput" placeholder="Поиск...">
             </div>
+
+            <!-- Контейнер для результатов поиска -->
+            <div id="searchResults" class="search-results"></div>
+
 
             <!-- Кнопки -->
             <div class="user-actions">
@@ -306,6 +311,9 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         themeIcon.className = savedTheme === 'light' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
     </script>
+
+
+ 
 
 </body>
 </html>

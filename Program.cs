@@ -3,6 +3,27 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 internal class Program
 {
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", builder =>
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        });
+
+        services.AddControllers();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseCors("AllowAll"); // Разрешаем все домены
+        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
+
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +42,8 @@ internal class Program
         builder.Services.AddScoped<DetailsService>();
         builder.Services.AddScoped<ImageService>();
         builder.Services.AddScoped<ProfileUserService>();
+        builder.Services.AddScoped<SearchService>();
+
 
 
 
@@ -65,6 +88,9 @@ internal class Program
 
         // Настройка маршрутов
         app.MapDefaultControllerRoute();
+
+
+        app.UseDeveloperExceptionPage(); // Ensure this is enabled in development mode.
 
         app.Run();
     }
