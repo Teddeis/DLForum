@@ -225,46 +225,39 @@
                 <!-- Безопасность и вход -->
                 <div class="tab-pane fade" id="security-settings" role="tabpanel" aria-labelledby="security-tab">
                     <h3>Смена пароля</h3>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Текущий пароль
-                        </label>
-                        <input class="form-control" type="text">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Новый пароль
-                        </label>
-                        <input class="form-control" type="text" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Подтвердите новый пароль
-                        </label>
-                        <input class="form-control" type="text" />
-                    </div>
-                    <button type="submit" class="btn btn-primary">Сменить данные</button>
+                    <form asp-action="ChangePassword" asp-controller="Profile" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="current-password" class="form-label">Текущий пароль</label>
+                            <input class="form-control" type="password" name="currentPassword" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-password" class="form-label">Новый пароль</label>
+                            <input class="form-control" type="password" name="newPassword" id="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Подтвердите новый пароль</label>
+                            <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сменить пароль</button>
+                    </form>
 
                     <hr class="dropdown-divider" style="margin-top: 30px">
+
                     <h3>Смена почты</h3>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Текущая почта: @HttpContextAccessor.HttpContext.Session.GetString("Email")
-                        </label>
-                    </div>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Новая почта
-                        </label>
-                        <input class="form-control" type="text" name="username" id="nickname">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nickname" class="form-label">
-                            Текущий пароль
-                        </label>
-                        <input class="form-control" type="text" name="username" id="nickname">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Сменить данные</button>
+                    <form asp-action="ChangeEmail" asp-controller="Profile" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Текущая почта: @HttpContextAccessor.HttpContext.Session.GetString("Email")</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-email" class="form-label">Новая почта</label>
+                            <input class="form-control" type="email" name="newEmail" id="newEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email-password" class="form-label">Текущий пароль</label>
+                            <input class="form-control" type="password" name="password" id="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сменить почту</button>
+                    </form>
                 </div>
             </div>
         </div>

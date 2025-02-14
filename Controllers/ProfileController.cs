@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using DLForum.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -181,8 +182,57 @@ namespace DLForum.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            var passwordHasher = new PasswordHasher<users>();
+            var userId = HttpContext.Session.GetInt32("ID");
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            var user = await _userService.GetUserByIdAsync(userId.Value);
+            if (user == null || !passwordHasher.VerifyHashedPassword(user, user.password_hash, currentPassword).Equals(PasswordVerificationResult.Success))
+            {
+                ModelState.AddModelError("", "Неверный текущий пароль.");
+                return View("Settings");
+            }
 
+            if (newPassword != confirmPassword)
+            {
+                ModelState.AddModelError("", "Пароли не совпадают.");
+                return View("Settings");
+            }
+
+            user.password_hash = passwordHasher.HashPassword(user, newPassword);
+            await _userService.UpdateUserAsync(user);
+            return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(string newEmail, string password)
+        {
+            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<users>();
+            var userId = HttpContext.Session.GetInt32("ID");
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = await _userService.GetUserByIdAsync(userId.Value);
+            if (!passwordHasher.VerifyHashedPassword(user, user.password_hash, password).Equals(PasswordVerificationResult.Success))
+            {
+                ModelState.AddModelError("", "Неверный пароль.");
+                return View("Settings");
+            }
+
+            user.email = newEmail;
+            await _userService.UpdateUserAsync(user);
+            HttpContext.Session.SetString("Email", newEmail);
+
+            return RedirectToAction("Settings");
+        }
 
         public IActionResult Settings()
         {
