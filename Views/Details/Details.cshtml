@@ -391,7 +391,7 @@
                         }
                     </div>
                     <h1 class="title">@Model.Title</h1>
-                    <p class="description">@Model.Content</p>
+                    <p class="description">@Html.Raw(Model.Content)</p>
                 </div>
 
                 @if (ViewBag.Images != null && ViewBag.Images.Count > 0)
@@ -478,9 +478,9 @@
       
         <!-- Форма добавления комментария -->
         <div class="post-comment">
-            <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
-                <textarea name="comment" placeholder="Добавить новый ответ..."></textarea>
-                <input type="hidden" name="id_topic" value="@Model.Id" />
+                <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
+                <textarea name="comment" id="comment" placeholder="Добавить новый ответ..."></textarea>
+                    <input hidden name="id_topic" id="id_topic" value="@Model.Id" />
                 <button class="btn btn-primary btn-group-sm mt-1" type="submit">Ответить</button>
             </form>
         </div>
@@ -505,20 +505,43 @@
                 {
                     <li class="comment-item">
                         <div class="comment-header d-flex align-items-center">
-                            <img src="@Url.Content(@comment.avatar)" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
-                            <a class="comment-author back-link" href="@Url.Action("users", "profile", new { id = comment.id_users })">@comment.author</a>
+                            <img src="@comment.users.avatar_url" alt="Avatar" class="rounded-circle"
+                                 style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
+                            <span class="user-role"
+                                  style="font-size: 12px; font-weight: bold; color: white; background-color: @(comment.users.role == "admin" ? "#dc3545" :
+                               comment.users.role == "moderator" ? "#17a2b8" : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
+                                @comment.users.role
+                            </span>
+
+                            <a class="comment-author back-link"
+                               href="@Url.Action("Users", "Profile", new { id = comment.id_users })">
+                                 @comment.users.username
+                            </a>
+                            <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">
+                                @comment.created.ToString("HH:mm dd MMM yyyy")
+                            </span>
                         </div>
-                        <div class="comment-body">
-                            <p>@comment.comments</p> <!-- Текст комментария -->
+                        <div class="comment-body" style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
+                            <p style="margin: 0; white-space: pre-line;">@comment.comments</p> <!-- Текст комментария -->
                             <div class="comment-actions d-flex align-items-center" style="margin-top: 8px;">
-                                <button class="btn btn-sm btn-outline-primary me-2 reply-button" style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">Ответить</button>
-                                <button class="btn btn-sm btn-outline-danger" style="font-size: 12px; padding: 2px 8px; border-radius: 12px;">Пожаловаться</button>
+                                <button class="btn btn-sm btn-outline-primary me-2 reply-button"
+                                        style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">
+                                    Ответить
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        style="font-size: 12px; padding: 2px 8px; border-radius: 12px;">
+                                    Пожаловаться
+                                </button>
                             </div>
                         </div>
 
+
                         <div class="reply-field mt-2" style="display: none;">
-                            <textarea class="textarea" rows="2" placeholder="Напишите свой ответ..."></textarea>
-                            <button class="btn btn-primary btn-sm mt-2">Отправить</button>
+                            <form method="post" asp-controller="Details" asp-action="CreateReply" class="comment-form">
+								<input hidden name="id_topic" id="id_topic" value="@Model.Id" />
+								<textarea name="comment" class="textarea" rows="2" placeholder="Напишите свой ответ..."></textarea>
+								<button class="btn btn-primary btn-sm mt-2">Отправить</button>
+							</form>
                         </div>
                     </li>
                 }
@@ -531,7 +554,8 @@
                 <p>Комментариев пока нет. Будьте первым!</p>
             </div>
         }
-    </div>
+
+
 
 
     <script>

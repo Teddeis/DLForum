@@ -46,20 +46,21 @@ public class ProfileUserService
 
 
     // Получение списка тем пользователя
-    public async Task<List<Topic>> GetTopicsByAuthorAsync(string author)
+    public async Task<List<Topic>> GetTopicsByAuthorAsync(int author)
     {
         var response = await _client.From<Topic>()
-            .Filter("author", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Filter("user_id", Supabase.Postgrest.Constants.Operator.Equals, author)
             .Get();
 
         return response.Models ?? new List<Topic>();
     }
 
     // Получение списка комментариев пользователя
-    public async Task<List<comment>> GetCommentsByAuthorAsync(string author)
+    public async Task<List<comment>> GetCommentsByAuthorAsync(int author)
     {
         var response = await _client.From<comment>()
-            .Filter("author", Supabase.Postgrest.Constants.Operator.Equals, author)
+            .Select("id, id_topics, comments, users(id, username, avatar_url)")  // Включаем данные из таблицы users
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author) 
             .Get();
 
         return response.Models ?? new List<comment>();
@@ -80,8 +81,10 @@ public class ProfileUserService
     // Получение списка комментариев пользователя
     public async Task<List<comment>> GetCommentsByIdAsync(int author)
     {
-        var response = await _client.From<comment>()
-            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)
+        var response = await _client
+            .From<comment>()
+            .Select("id, id_topics, comments, users(id, username, avatar_url)")  // Включаем данные из таблицы users
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)  // Фильтруем по id_topics
             .Get();
 
         return response.Models ?? new List<comment>();

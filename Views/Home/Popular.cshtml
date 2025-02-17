@@ -94,11 +94,6 @@
                                         @topic.Title.Substring(0, Math.Min(100, topic.Title.Length))
                                     </h5>
 
-                                    <!-- Содержимое -->
-                                    <p class="mb-2 text-muted text-truncate" style="line-height: 1.5; max-height: 3rem; overflow: hidden; text-overflow: ellipsis;">
-                                        @topic.Content.Substring(0, Math.Min(200, topic.Content.Length))...
-                                    </p>
-
                                     <!-- Категории -->
                                     <div class="mb-2 d-flex flex-wrap">
                                         @if (!string.IsNullOrEmpty(topic.Categories))
@@ -125,7 +120,7 @@
                                             <i class="bi bi-heart me-1"></i>@topic.LikesCount
                                             <i class="bi bi-chat me-1 ms-3"></i>@topic.CommentsCount
                                         </span>
-                                        <small class="text-truncate">Опубликовано @topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
+                                        <small class="text-truncate">@topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
                                     </div>
                                 </div>
                             </a>

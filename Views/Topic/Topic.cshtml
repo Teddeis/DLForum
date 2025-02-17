@@ -200,6 +200,13 @@
         min-height: 60px;
     }
 
+    .error-message {
+        color: red;
+        font-size: 14px;
+        display: block;
+        margin-top: 5px;
+    }
+
 </style>
 
 <body>
@@ -213,7 +220,7 @@
 
                 <!-- Заголовок -->
                 <div class="mb-3">
-                    <input name="title" type="text" class="editor-textarea form-control" placeholder="Заголовок" required>
+                    <input name="title" type="text" maxlength="500" class="editor-textarea form-control" placeholder="Заголовок" required>
                 </div>
 
                 <!-- Категории -->
@@ -233,6 +240,7 @@
 
                     </div>
                     <input type="hidden" name="categories" id="categories-hidden" required/>
+                    <span id="categories-error" class="error-message"></span>
                 </div>
 
                 <!-- Теги -->
@@ -243,6 +251,7 @@
                         <!-- Сюда будут добавляться теги -->
                     </div>
                     <input type="hidden" id="tags-input" name="tags" required />
+                    <span id="tags-error" class="error-message"></span>
                 </div>
 
 
@@ -254,48 +263,75 @@
                     <button type="button" class="toolbar-btn" onclick="execCommand('insertUnorderedList')">• Список</button>
                 </div>
 
+                <div name="content" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение" required onkeydown="checkContentLength(event)"></div>
                 <!-- Редактируемый контент -->
-                <textarea name="content" id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение" required></textarea>
+
+                <textarea hidden name="content" id="ta" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></textarea>
 
 
                 <!-- Кнопка отправки -->
                 <div class="text-center mt-4">
                     <!-- Измените кнопку отправки формы, чтобы она вызывала validateForm -->
-                    <button type="submit" class="btn btn-primary" onclick="return validateForm()">Создать тему</button>
+                    <input type="submit" class="btn btn-primary" onclick="return copyAndValidateForm()">
                 </div>
             </form>
         </div>
     </div>
 
-	<!-- Проверка перед отправкой -->
-	<script>
-		const categories = []; // Массив выбранных категорий (нужно заполнить логикой)
-		const tags = []; // Массив добавленных тегов (нужно заполнить логикой)
 
-		document.querySelector('form').addEventListener('submit', function (event) {
-			if (categories.length === 0 || tags.length === 0) {
-                
-				alert("Выберите хотя бы одну категорию и добавьте хотя бы один тег!");
-				event.preventDefault(); // Останавливаем отправку формы
-			}
-		});
-	</script>
     <script>
+        function checkContentLength(event) {
+            const editor = event.target;
+            const maxLength = 5000; // Максимальное количество символов (приблизительно 5000 строк)
+
+            if (editor.innerText.length >= maxLength && event.key !== "Backspace" && event.key !== "Delete") {
+                event.preventDefault(); // Предотвращаем ввод, если количество символов достигло лимита
+            }
+        }
+    </script>
+
+    <script>
+        // Функция для копирования текста из div в textarea
+        function CopyDivsToTextArea() {
+            var divs = document.getElementsByTagName("div");
+            let textToTransfer = "";
+            var pattern = new RegExp("editor-textarea");
+
+            for (var i = 0; i < divs.length; i++) {
+                if (pattern.test(divs[i].className)) {
+                    textToTransfer = divs[i].innerHTML.trim();
+                }
+            }
+
+            // Сохранение пробелов и переводов строк
+            textToTransfer = textToTransfer.replace(/ /g, '\u00A0');  // заменяет пробелы на неразрывные пробелы
+            textToTransfer = textToTransfer.replace(/\n/g, '\u000A');  // оставляем переводы строк
+
+            document.getElementById("ta").value = textToTransfer;
+        }
+
+        // Функция для валидации формы и копирования текста из div в textarea
+        function copyAndValidateForm() {
+            // Копирование текста из div в textarea
+            CopyDivsToTextArea();
+
+            // Здесь можно добавить код для валидации формы
+            if (validateForm()) {
+                return true; // форма отправляется
+            } else {
+                return false; // форма не отправляется, если не пройдена валидация
+            }
+        }
+
+        // Пример функции валидации формы
         function validateForm() {
-            let categories = document.getElementById("categories-hidden").value;
-            let tags = document.getElementById("tags-input").value;
-
-            if (!categories) {
-                alert("Выберите хотя бы одну категорию!");
-                return false;  // Останавливаем отправку формы
+            // Пример простой валидации (проверка, что textarea не пустая)
+            var textarea = document.getElementById("ta");
+            if (textarea.value == "") {
+                alert("Пожалуйста, заполните все, что видите!");
+                return false;
             }
-
-            if (!tags) {
-                alert("Добавьте хотя бы один тег!");
-                return false;  // Останавливаем отправку формы
-            }
-
-            return true; // Разрешаем отправку формы
+            return true;
         }
     </script>
 
@@ -327,6 +363,12 @@
 
     <script>
         function addTag(event) {
+            const editor = event.target;
+            const maxLength = 25; // Максимальное количество символов
+
+            if (editor.innerText.length >= maxLength && event.key !== "Backspace" && event.key !== "Delete") {
+                event.preventDefault(); // Предотвращаем ввод, если количество символов достигло лимита
+            }
             // Слушаем нажатие клавиши
             if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault(); // Предотвращаем создание новой строки

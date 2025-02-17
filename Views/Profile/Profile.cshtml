@@ -117,7 +117,12 @@
                 <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; margin-right: 15px;" />
                 <div>
                     <h2>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</h2>
-                    <p>Роль: @HttpContextAccessor.HttpContext.Session.GetString("Role")</p>
+                        <p>
+                            Роль:
+                            <span class="user-role" style="font-size: 14px; font-weight: bold; color: white; background-color: @(@HttpContextAccessor.HttpContext.Session.GetString("Role") == "admin" ? "#dc3545" : @HttpContextAccessor.HttpContext.Session.GetString("Role") == "moderator" ? "#17a2b8" : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
+                                @HttpContextAccessor.HttpContext.Session.GetString("Role")
+                            </span>
+                        </p>
                 </div>
             </div>
 
@@ -131,7 +136,7 @@
     </div>
 </div>
 
-<!-- Ваши темы, Комментарии, Друзья, Избранное, Проверка тем для модераторов -->
+<!-- Ваши темы, Комментарии, Избранное, Проверка тем для модераторов -->
 <div class="d-flex justify-content-center align-items-center mt-4">
     <div class="card p-4" style="width: 1000px; border-radius: 15px;">
         <h4>Информация о себе</h4>
@@ -228,7 +233,7 @@
                                  style="border-radius: 10px; margin-bottom: 10px; border: 1px solid #ccc; transition: all 0.3s ease;">
 
                                 <!-- Аватарка -->
-                                <img src="@comment.avatar" alt="Avatar"
+                                    <img src="@comment.users.avatar_url" alt="Avatar"
                                      style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;" />
 
                                 <!-- Текст комментария -->
@@ -239,8 +244,8 @@
                                         <small class="mb-1" style="font-size: 0.9em;color: var(--text-color);">
                                         Комментарий к теме:
                                             <a href="/Details/@comment.id_topics" style="text-decoration: underline;color: var(--text-color);">
-                                            Перейти к теме
-                                        </a>
+                                                Перейти к теме
+                                            </a>
                                     </small>
                                 </div>
 

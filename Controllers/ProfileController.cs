@@ -24,21 +24,21 @@ namespace DLForum.Controllers
         public async Task<IActionResult> Profile()
         {
             // Получение текущего пользователя из сессии
-            var currentUser = HttpContext.Session.GetString("UserName");
+            var currentUser = HttpContext.Session.GetInt32("ID");
 
-            if (string.IsNullOrEmpty(currentUser))
+            if (currentUser == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
             // Асинхронно получаем данные о темах и комментариях пользователя
-            var topics = await _userService.GetTopicsByAuthorAsync(currentUser);
-            var comments = await _userService.GetCommentsByAuthorAsync(currentUser);
+            var topics = await _userService.GetTopicsByAuthorAsync((int)currentUser);
+            var comments = await _userService.GetCommentsByAuthorAsync((int)currentUser);
 
             // Создаем модель для передачи в представление
             var profile = new Profile
             {
-                user = new users { email = currentUser }, // Тут только email, если нужна полная информация, надо вызвать GetUserByIdAsync или аналогичный метод
+                user = new users { id = (int)currentUser }, // Тут только email, если нужна полная информация, надо вызвать GetUserByIdAsync или аналогичный метод
                 TopicsList = topics, // Полученные темы
                 CommentsList = comments // Полученные комментарии
             };

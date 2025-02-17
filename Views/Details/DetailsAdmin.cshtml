@@ -396,8 +396,8 @@
                     }
                     </div>
                     <h1 class="title">@Model.Title</h1>
-                    <p class="description">@Model.Content</p>
-                </div>
+                <p class="description">@Html.Raw(Model.Content)</p>
+            </div>
 
                 @if (ViewBag.Images != null && ViewBag.Images.Count > 0)
                 {
