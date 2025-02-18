@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AllTopics;
+using Microsoft.EntityFrameworkCore;
 using Supabase;
 using Supabase.Gotrue;
 using Supabase.Postgrest;
@@ -88,5 +89,16 @@ public class ProfileUserService
             .Get();
 
         return response.Models ?? new List<comment>();
+    }
+
+    public async Task<List<favoritelist>> GetFavorite(int id)
+    {
+        var response = await _client
+            .From<favoritelist>()
+            .Select("id,id_user,id_topics, topics(id, title,created_at)")  // Включаем связанные данные из таблицы Topic
+            .Filter("id_user", Supabase.Postgrest.Constants.Operator.Equals, id)  // Фильтруем по id пользователя
+            .Get();
+
+        return response.Models ?? new List<favoritelist>();
     }
 }

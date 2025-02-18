@@ -1,20 +1,21 @@
-﻿using DLForum.Service;
+﻿using DLForum.Models.Topic;
+using DLForum.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Supabase.Interfaces;
-using System.Threading.Tasks;
+using Supabase.Gotrue;
 
 public class DetailsController : Controller
 {
     private readonly DetailsService _topicService;
     private readonly CommentService _commentService; // Assuming a CommentService for fetching comments
     private readonly ImageService _imageService;
+    private readonly FavoriteService _favoriteService;
 
-    public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService)
+    public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService, FavoriteService favoriteService)
     {
         _topicService = topicService;
         _commentService = commentService;
         _imageService = imageService;
+        _favoriteService = favoriteService;
     }
 
     [HttpGet("/Details/{id}")]
@@ -34,13 +35,23 @@ public class DetailsController : Controller
             var images = await _imageService.GetImagesByTopicIdAsync(id);
 
             // Упрощаем данные об изображениях
-            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList(); // Только URL
+            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList();
 
-            // Передаем комментарии и изображения в представление через ViewBag
+            var userId = HttpContext.Session.GetInt32("ID");
+            var isFavorite = false;
+
+            if (userId != null)
+            {
+                // Проверяем, является ли эта тема избранной для текущего пользователя
+                isFavorite = await _favoriteService.IsFavorite(userId.Value, id);
+            }
+
+            // Передаем данные через ViewBag
             ViewBag.Comments = comments;
             ViewBag.Images = imageUrls;
+            ViewBag.IsFavorite = isFavorite;
 
-            // Передаем саму модель темы в представление
+            // Передаем саму модель (topic) в представление
             return View(topic);
         }
         catch (Exception ex)
@@ -50,6 +61,7 @@ public class DetailsController : Controller
             return View("Error");
         }
     }
+
 
 
 
@@ -155,6 +167,35 @@ public class DetailsController : Controller
 
         return RedirectToAction("Details", new { id = id_topic });
     }
+
+
+
+    [HttpPost]
+    public async Task<IActionResult> ToggleFavorite(int id_topics)
+    {
+        var userId = HttpContext.Session.GetInt32("ID");
+
+        if (userId == null)
+        {
+            return Json(new { error = "NotLoggedIn" }); // Вернуть ошибку, если пользователь не авторизован
+        }
+
+        var isFavorite = await _favoriteService.IsFavorite(userId.Value, id_topics);
+
+        if (isFavorite)
+        {
+            await _favoriteService.RemoveFavorite(userId.Value, id_topics);
+        }
+        else
+        {
+            await _favoriteService.AddFavorite(userId.Value, id_topics);
+        }
+
+        // Возвращаем состояние избранного в формате JSON
+        isFavorite = !isFavorite; // Инвертируем состояние после изменения
+        return Json(new { isFavorite });
+    }
+
 
 
 

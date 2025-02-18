@@ -1,10 +1,11 @@
 ﻿using System.Xml.Linq;
-using DLForum.Models;
+using Profile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Supabase.Gotrue;
+using DLForum.Models.Topic;
 
 namespace DLForum.Controllers
 {
@@ -34,13 +35,15 @@ namespace DLForum.Controllers
             // Асинхронно получаем данные о темах и комментариях пользователя
             var topics = await _userService.GetTopicsByAuthorAsync((int)currentUser);
             var comments = await _userService.GetCommentsByAuthorAsync((int)currentUser);
+            var favorites = await _userService.GetFavorite((int)currentUser);
 
             // Создаем модель для передачи в представление
-            var profile = new Profile
+            var profile = new Profile.Profile
             {
-                user = new users { id = (int)currentUser }, // Тут только email, если нужна полная информация, надо вызвать GetUserByIdAsync или аналогичный метод
+                user = new users { id = (int)currentUser }, // id пользователя
                 TopicsList = topics, // Полученные темы
-                CommentsList = comments // Полученные комментарии
+                CommentsList = comments, // Полученные комментарии
+                FavoritesList = favorites
             };
 
             return View(profile);
@@ -62,7 +65,7 @@ namespace DLForum.Controllers
             var comments = await _userService.GetCommentsByIdAsync(user.id);
 
             // Создаем модель профиля
-            var profile = new Profile
+            var profile = new Profile.Profile
             {
                 user = new users
                 {
@@ -85,7 +88,7 @@ namespace DLForum.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
+        public async Task<IActionResult> UpdateProfile(Profile.ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
         {
             try
             {
@@ -213,7 +216,7 @@ namespace DLForum.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeEmail(string newEmail, string password)
         {
-            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<users>();
+            var passwordHasher = new PasswordHasher<users>();
             var userId = HttpContext.Session.GetInt32("ID");
             if (!userId.HasValue)
             {

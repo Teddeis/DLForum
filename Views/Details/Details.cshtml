@@ -377,10 +377,18 @@
                         <div style="text-align: left;">
                         <span class="author">Автор: @Model.Author</span>
                         </div>
-
-                        <div style="text-align: right;">
-                            <span class="favorite" style="text-align: right;"><i class="bi bi-star"></i></span>
+                            <div style="text-align: right;">
+                            <form class="favorite-form" asp-controller="Details" asp-action="ToggleFavorite" method="post">
+                                <input hidden name="id_topics" value="@Model.Id">
+                                <button type="submit" class="favorite-btn" style="background: none; border: none; cursor: pointer;">
+                                    <i class="bi @(ViewBag.IsFavorite == true ? "bi-bookmark-fill" : "bi-bookmark")"
+                                       style="color: @(ViewBag.IsFavorite == true ? "gold" : "var(--text-color)")"></i>
+                                </button>
+                            </form>
                         </div>
+
+
+
                     </div>
                     <div class="category-badge mt-auto" style="text-align: right;">
                         <!-- Каждая категория отображается отдельно -->
@@ -626,4 +634,40 @@
             }
         }
     </script>
+
+    <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".favorite-form").forEach(function (form) {
+                    form.addEventListener("submit", function (e) {
+                        e.preventDefault(); // Останавливаем стандартную отправку формы
+
+                        var button = form.querySelector(".favorite-btn i");
+                        var formData = new FormData(form);
+
+                        fetch(form.action, {
+                            method: "POST",
+                            body: formData
+                        })
+                        .then(response => response.json()) // Ожидаем JSON-ответ
+                        .then(data => {
+                            // Если возвращаемое состояние избранного true, добавляем класс "bi-bookmark-fill"
+                if (data.isFavorite) {
+                    button.classList.add("bi-bookmark-fill");
+                    button.classList.remove("bi-bookmark");
+                    button.style.color = "gold"; // Цвет для состояния "избранное"
+                } else {
+                    button.classList.remove("bi-bookmark-fill");
+                    button.classList.add("bi-bookmark");
+                    button.style.color = "var(--text-color)"; // Цвет для состояния "не избранное"
+                }
+                        })
+                        .catch(error => {
+                            console.error("Ошибка при обработке запроса", error);
+                        });
+                    });
+                });
+            });
+
+    </script>
+
 </body>

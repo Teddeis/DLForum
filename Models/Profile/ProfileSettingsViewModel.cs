@@ -1,7 +1,7 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
-namespace DLForum.Models
+namespace Profile
 {
     [Table("users")]
     public class ProfileSettingsViewModel

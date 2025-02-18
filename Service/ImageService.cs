@@ -1,4 +1,4 @@
-﻿using DLForum.Models;
+﻿using DLForum.Models.Topic;
 using Supabase;
 using System.Collections.Generic;
 using System.Threading.Tasks;

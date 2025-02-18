@@ -1,7 +1,7 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
-namespace DLForum.Models
+namespace DLForum.Models.Topic
 {
     [Table("image")]
     public class images : BaseModel

@@ -43,8 +43,7 @@ internal class Program
         builder.Services.AddScoped<ImageService>();
         builder.Services.AddScoped<ProfileUserService>();
         builder.Services.AddScoped<SearchService>();
-
-
+        builder.Services.AddScoped<FavoriteService>();
 
 
 

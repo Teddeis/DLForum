@@ -1,4 +1,5 @@
-﻿using DLForum.Service;
+﻿using DLForum.Models.Topic;
+using DLForum.Service;
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
 
