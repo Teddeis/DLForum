@@ -10,6 +10,7 @@ public class DetailsController : Controller
     private readonly ImageService _imageService;
     private readonly FavoriteService _favoriteService;
 
+
     public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService, FavoriteService favoriteService)
     {
         _topicService = topicService;
@@ -39,17 +40,20 @@ public class DetailsController : Controller
 
             var userId = HttpContext.Session.GetInt32("ID");
             var isFavorite = false;
+            var isLike = false;
 
             if (userId != null)
             {
                 // Проверяем, является ли эта тема избранной для текущего пользователя
                 isFavorite = await _favoriteService.IsFavorite(userId.Value, id);
+                isLike = await _favoriteService.IsLike(userId.Value, id);
             }
 
             // Передаем данные через ViewBag
             ViewBag.Comments = comments;
             ViewBag.Images = imageUrls;
             ViewBag.IsFavorite = isFavorite;
+            ViewBag.IsLike = isLike;
 
             // Передаем саму модель (topic) в представление
             return View(topic);
@@ -196,7 +200,37 @@ public class DetailsController : Controller
         return Json(new { isFavorite });
     }
 
+    [HttpPost]
+    public async Task<IActionResult> ToggleLike(int id_topics)
+    {
+        var userId = HttpContext.Session.GetInt32("ID");
+
+        if (userId == null)
+        {
+            return Json(new { error = "NotLoggedIn" }); // Ошибка, если пользователь не авторизован
+        }
+
+        var isLike = await _favoriteService.IsLike(userId.Value, id_topics);
+
+        if (isLike)
+        {
+            await _favoriteService.RemoveLike(userId.Value, id_topics);
+        }
+        else
+        {
+            await _favoriteService.AddLike(userId.Value, id_topics);
+        }
+
+        // Инвертируем состояние
+        isLike = !isLike;
+
+        // Подсчитываем актуальное количество лайков
+        var likeCount = await _favoriteService.GetLikeCount(id_topics);
+
+        // Обновляем количество лайков в `topics`
+        await _topicService.UpdateLikesCount(id_topics, likeCount);
 
 
-
+        return Json(new { isLike, likeCount });
+    }
 }

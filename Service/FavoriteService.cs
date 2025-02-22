@@ -1,5 +1,6 @@
 ﻿using DLForum.Models.Topic;
 using Supabase;
+using Supabase.Interfaces;
 using Supabase.Postgrest.Exceptions;
 
 namespace DLForum.Service
@@ -18,7 +19,7 @@ namespace DLForum.Service
         public async Task<bool> IsFavorite(int userId, int topicId)
         {
             var favorite = await _client.From<favorite>().Where(x=> x.TopicId == topicId && x.UserId == userId)
-                .Single(); // Для получения одного объекта, так как это фильтрация по уникальной паре (userId, topicId)
+                .Single();
 
             return favorite != null;
         }
@@ -29,6 +30,31 @@ namespace DLForum.Service
                 .Delete();
 
         }
+
+        public async Task<bool> IsLike(int userId, int topicId)
+        {
+            var like = await _client.From<like>().Where(x => x.TopicId == topicId && x.UserId == userId)
+                .Single();
+
+            return like != null;
+        }
+
+        public async Task RemoveLike(int userId, int topicId)
+        {
+            await _client.From<like>().Where(x => x.TopicId == topicId && x.UserId == userId)
+                .Delete();
+        }
+
+        public async Task<int> GetLikeCount(int topicId)
+        {
+            var likes = await _client
+                .From<like>()
+                .Where(l => l.TopicId == topicId)
+                .Get();
+
+            return likes.Models.Count;
+        }
+
 
         // Добавление в избранное
         public async Task<favorite?> AddFavorite(int userId, int topicId)
@@ -44,5 +70,18 @@ namespace DLForum.Service
             return response.Models.FirstOrDefault();
         }
 
+        // Лайк
+        public async Task<like?> AddLike(int userId, int topicId)
+        {
+            var newLike = new like
+            {
+                UserId = userId,
+                TopicId = topicId,
+            };
+
+            var response = await _client.From<like>().Insert(newLike);
+
+            return response.Models.FirstOrDefault();
+        }
     }
 }

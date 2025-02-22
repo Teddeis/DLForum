@@ -11,9 +11,7 @@ public class comment : BaseModel
     public int id_users { get; set; }
     public int id_topics { get; set; }
     public string comments { get; set; }
-    [Column("created")]
     public DateTime created { get; set; }
-
     public users users { get; set; } // Навигационное свойство
 
 }

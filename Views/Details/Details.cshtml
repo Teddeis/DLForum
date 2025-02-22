@@ -88,18 +88,6 @@
         margin-bottom: 10px;
     }
 
-    .likes-and-comments {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .answers {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 20px;
-    }
 
     textarea {
         width: 100%;
@@ -297,26 +285,6 @@
             color: var(--text-color); 
         }
 
-    .likes i {
-        font-size: 18px;
-        color: #666;
-        transition: color 0.2s ease; 
-    }
-
-        .likes i.liked {
-            color: red;
-        }
-
-    .favorite i {
-        font-size: 18px;
-        color: #666; 
-        transition: color 0.2s ease; 
-    }
-
-        .favorite i.favorited {
-            color: yellow; 
-        }
-
     /* Стиль для отдельных тегов */
     .tags {
         padding: 6px 8px;
@@ -473,10 +441,15 @@
                     }
                 </div>
 
-
-                <!-- Лайки -->
-                <div class="interactions">
-                    <span class="likes"><i class="bi bi-heart"></i> @Model.LikesCount</span>
+                    <div class="interactions">
+                    <form class="like-form" asp-controller="Details" asp-action="ToggleLike" method="post">
+                    <input hidden name="id_topics" value="@Model.Id">
+                    <button type="submit" class="like-btn" style="background: none; border: none; cursor: pointer;">
+                            <i class="bi @(ViewBag.IsLike == true ? "bi-heart-fill" : "bi-heart")"
+                           style="color: @(ViewBag.IsLike == true ? "red" : "var(--text-color)")"></i>
+                            <span style="color: var(--text-color)"> @Model.LikesCount</span>
+                    </button>
+                </form>
                 </div>
             </div>
         </div>
@@ -515,9 +488,13 @@
                         <div class="comment-header d-flex align-items-center">
                             <img src="@comment.users.avatar_url" alt="Avatar" class="rounded-circle"
                                  style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
+
                             <span class="user-role"
-                                  style="font-size: 12px; font-weight: bold; color: white; background-color: @(comment.users.role == "admin" ? "#dc3545" :
-                               comment.users.role == "moderator" ? "#17a2b8" : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
+                                  style="font-size: 14px; font-weight: bold; color: white;
+                                background-color: @(comment.users.role == "admin" ? "#dc3545"  /* Красный */
+                               : comment.users.role == "moderator" ? "#17a2b8" /* Голубой */
+                               : comment.users.role == "banned" ? "#6c757d" /* Серый */
+                               : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
                                 @comment.users.role
                             </span>
 
@@ -562,6 +539,7 @@
                 <p>Комментариев пока нет. Будьте первым!</p>
             </div>
         }
+    </div>
 
 
 
@@ -669,5 +647,42 @@
             });
 
     </script>
+
+
+        <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".like-form").forEach(function (form) {
+                    form.addEventListener("submit", function (e) {
+                        e.preventDefault(); // Останавливаем стандартную отправку формы
+
+                        var button = form.querySelector(".like-btn i");
+                        var formData = new FormData(form);
+
+                        fetch(form.action, {
+                            method: "POST",
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Если возвращаемое состояние избранного true, добавляем класс "bi-heart-fill"
+                if (data.isFavorite) {
+                    button.classList.add("bi-heart-fill");
+                    button.classList.remove("bi-heart");
+                    button.style.color = "red"; // Цвет для состояния "поставить лайк"
+                } else {
+                    button.classList.remove("bi-heart-fill");
+                    button.classList.add("bi-heart");
+                    button.style.color = "var(--text-color)"; // Цвет для состояния "убрать лайк"
+                }
+                        })
+                        .catch(error => {
+                            console.error("Ошибка при обработке запроса", error);
+                        });
+                    });
+                });
+            });
+
+        </script>
+
 
 </body>

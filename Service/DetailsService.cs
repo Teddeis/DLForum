@@ -2,6 +2,7 @@
 using DLForum.Service;
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
+using Supabase.Interfaces;
 
 namespace DLForum.Service
 {
@@ -19,6 +20,15 @@ namespace DLForum.Service
         {
             var response = await _client.From<Topic>().Where(x => x.Id == id).Get();
             return response.Models.FirstOrDefault();
+        }
+
+        public async Task UpdateLikesCount(int topicId, int likeCount)
+        {
+            await _client
+                .From<Topic>()
+                .Where(t => t.Id == topicId)
+                .Set(t => t.LikesCount, likeCount) // Обновляем только `LikesCount`
+                .Update();
         }
     }
 }
