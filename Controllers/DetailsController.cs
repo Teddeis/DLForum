@@ -195,8 +195,7 @@ public class DetailsController : Controller
             await _favoriteService.AddFavorite(userId.Value, id_topics);
         }
 
-        // Возвращаем состояние избранного в формате JSON
-        isFavorite = !isFavorite; // Инвертируем состояние после изменения
+        isFavorite = !isFavorite; 
         return Json(new { isFavorite });
     }
 
@@ -230,7 +229,7 @@ public class DetailsController : Controller
         // Обновляем количество лайков в `topics`
         await _topicService.UpdateLikesCount(id_topics, likeCount);
 
-
         return Json(new { isLike, likeCount });
     }
+
 }

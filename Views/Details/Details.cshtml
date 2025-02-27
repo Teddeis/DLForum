@@ -443,13 +443,14 @@
 
                     <div class="interactions">
                     <form class="like-form" asp-controller="Details" asp-action="ToggleLike" method="post">
-                    <input hidden name="id_topics" value="@Model.Id">
-                    <button type="submit" class="like-btn" style="background: none; border: none; cursor: pointer;">
+                        <input hidden name="id_topics" value="@Model.Id">
+                        <button type="submit" class="like-btn" style="background: none; border: none; cursor: pointer;">
                             <i class="bi @(ViewBag.IsLike == true ? "bi-heart-fill" : "bi-heart")"
-                           style="color: @(ViewBag.IsLike == true ? "red" : "var(--text-color)")"></i>
-                            <span style="color: var(--text-color)"> @Model.LikesCount</span>
-                    </button>
-                </form>
+                               style="color: @(ViewBag.IsLike == true ? "red" : "var(--text-color)")"></i>
+                            <span class="like-count" style="color: var(--text-color)"> @Model.LikesCount</span>
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -649,40 +650,61 @@
     </script>
 
 
-        <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                document.querySelectorAll(".like-form").forEach(function (form) {
-                    form.addEventListener("submit", function (e) {
-                        e.preventDefault(); // Останавливаем стандартную отправку формы
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".like-form").forEach(function (form) {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault(); // Останавливаем стандартную отправку формы
 
-                        var button = form.querySelector(".like-btn i");
-                        var formData = new FormData(form);
+                    var button = form.querySelector(".like-btn i");
+                    var likeCountSpan = form.querySelector(".like-count"); // Ссылка на счетчик лайков
+                    var formData = new FormData(form);
 
-                        fetch(form.action, {
-                            method: "POST",
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            // Если возвращаемое состояние избранного true, добавляем класс "bi-heart-fill"
-                if (data.isFavorite) {
-                    button.classList.add("bi-heart-fill");
-                    button.classList.remove("bi-heart");
-                    button.style.color = "red"; // Цвет для состояния "поставить лайк"
-                } else {
-                    button.classList.remove("bi-heart-fill");
-                    button.classList.add("bi-heart");
-                    button.style.color = "var(--text-color)"; // Цвет для состояния "убрать лайк"
-                }
-                        })
-                        .catch(error => {
-                            console.error("Ошибка при обработке запроса", error);
-                        });
+                    // Переключаем состояние кнопки на клиенте сразу
+                    if (button.classList.contains("bi-heart")) {
+                        button.classList.add("bi-heart-fill");
+                        button.classList.remove("bi-heart");
+                        button.style.color = "red";
+                        likeCountSpan.textContent = parseInt(likeCountSpan.textContent) + 1; // Увеличиваем счетчик
+                    } else {
+                        button.classList.remove("bi-heart-fill");
+                        button.classList.add("bi-heart");
+                        button.style.color = "var(--text-color)";
+                        likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1; // Уменьшаем счетчик
+                    }
+
+                    fetch(form.action, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                         if (data.error === "NotLoggedIn") {
+                             // Если пользователь не авторизован, перенаправляем на страницу входа
+                             window.location.href = "/Account/Login"; // Измените URL на нужный
+                             return;
+                         }
+                        likeCountSpan.textContent = data.likeCount;
+
+                        // Обновляем состояние кнопки лайка, если оно изменилось на сервере
+                        if (data.isLike) {
+                            button.classList.add("bi-heart-fill");
+                            button.classList.remove("bi-heart");
+                            button.style.color = "red";
+                        } else {
+                            button.classList.remove("bi-heart-fill");
+                            button.classList.add("bi-heart");
+                            button.style.color = "var(--text-color)";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Ошибка при обработке запроса", error);
                     });
                 });
             });
+        });
+    </script>
 
-        </script>
 
 
 </body>
