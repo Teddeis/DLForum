@@ -207,6 +207,11 @@
         margin-top: 5px;
     }
 
+    #editor * {
+        all: unset;
+    }
+
+
 </style>
 
 <body>
@@ -263,7 +268,7 @@
                     <button type="button" class="toolbar-btn" onclick="execCommand('insertUnorderedList')">• Список</button>
                 </div>
 
-                <div name="content" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение" required onkeydown="checkContentLength(event)"></div>
+                <div name="content" style="min-height: 200px;" class="editor-textarea form-control mt-0 custom-editor" contenteditable="true" placeholder="Ваше сообщение" required onkeydown="checkContentLength(event)"></div>
                 <!-- Редактируемый контент -->
 
                 <textarea hidden name="content" id="ta" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></textarea>
@@ -310,30 +315,42 @@
             document.getElementById("ta").value = textToTransfer;
         }
 
-        // Функция для валидации формы и копирования текста из div в textarea
+        // Функция для копирования текста и проверки формы
         function copyAndValidateForm() {
-            // Копирование текста из div в textarea
-            CopyDivsToTextArea();
+            CopyDivsToTextArea(); // Копируем текст из div в textarea
 
-            // Здесь можно добавить код для валидации формы
             if (validateForm()) {
-                return true; // форма отправляется
+                return true; // Форма отправляется
             } else {
-                return false; // форма не отправляется, если не пройдена валидация
+                return false; // Форма не отправляется
             }
         }
 
-        // Пример функции валидации формы
+        // Функция валидации формы
         function validateForm() {
-            // Пример простой валидации (проверка, что textarea не пустая)
-            var textarea = document.getElementById("ta");
-            if (textarea.value == "") {
-                alert("Пожалуйста, заполните все, что видите!");
+            let textarea = document.getElementById("ta");
+            let categoriesHidden = document.getElementById("categories-hidden");
+        let tagsInput = document.getElementById("tags-input"); // Исправлено
+
+            if (!textarea.value.trim()) {
+                alert("Пожалуйста, заполните текст!");
                 return false;
             }
+
+            if (!categoriesHidden.value.trim()) {
+                alert("Выберите хотя бы одну категорию!");
+                return false;
+            }
+
+        if (!tagsInput.value.trim()) { // Теперь проверяется правильный элемент
+            alert("Добавьте хотя бы один тег!");
+            return false;
+        }
+
             return true;
         }
     </script>
+
 
     <!-- Основные скрипты-->
     <script>
@@ -418,7 +435,21 @@
         }
     </script>
 
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            const editor = document.querySelector(".custom-editor");
 
+            editor.addEventListener("paste", function (event) {
+                event.preventDefault();
+
+                // Получаем текст без форматирования
+                const text = (event.clipboardData || window.clipboardData).getData("text");
+
+                // Вставляем чистый текст без HTML-тегов
+                document.execCommand("insertText", false, text);
+            });
+        });
+    </script>
 
     <!-- Bootstrap Icons -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>

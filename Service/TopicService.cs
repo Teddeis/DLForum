@@ -72,7 +72,7 @@ public class TopicService
     }
 
 
-    // Получение тем с пагинацией (только одобренные)
+    // Получение тем с пагинацией для Популярное (только одобренные)
     public async Task<(List<Topic>, int)> GetTopicsByPagePopularAsync(int pageNumber, int pageSize)
     {
         var offset = (pageNumber - 1) * pageSize;
@@ -121,22 +121,20 @@ public class TopicService
     // Метод для обновления статуса темы
     public async Task<Topic?> DeleteTopicStatusAsync(int topicId, bool newStatus)
     {
-        // Ищем тему по ID
         var topic = await _client.From<Topic>().Where(t => t.Id == topicId).Get();
 
-        // Если тема не найдена
         if (!topic.Models.Any())
         {
             return null;
         }
 
         var topicToUpdate = topic.Models.First();
-        topicToUpdate.Status = newStatus.ToString(); // Преобразуем булево значение в строку
+        topicToUpdate.Status = newStatus.ToString(); 
 
         // Обновляем тему в базе данных
         var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
 
-        return response.Models.FirstOrDefault(); // Возвращаем обновленную тему
+        return response.Models.FirstOrDefault(); 
     }
 
     // Удаление темы
@@ -145,9 +143,17 @@ public class TopicService
         var topic = await GetTopicByIdAsync(topicId);
         if (topic == null) return false;
 
-        await _client.From<Topic>().Where(t => t.Id == topic.Id).Delete();
+        await _client.From<comment>()
+                     .Where(c => c.id_topics == topic.Id)
+                     .Delete();
+
+        await _client.From<Topic>()
+                     .Where(t => t.Id == topic.Id)
+                     .Delete();
+
         return true;
     }
+
 
     // Получение темы по ID
     public async Task<Topic?> GetTopicByIdAsync(int topicId)
