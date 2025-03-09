@@ -84,14 +84,15 @@ public class AccountGoogleController : Controller
         // Обновляем аутентификацию с новыми данными
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
-        // Сохраняем данные в сессию
+
+        HttpContext.Session.SetInt32("ID", user.id);
         HttpContext.Session.SetString("Email", user.email);
         HttpContext.Session.SetString("UserName", user.username);
-        HttpContext.Session.SetString("Role", user.role ?? "user");
-        HttpContext.Session.SetString("Gender", user.gender ?? "Не указан");
-        HttpContext.Session.SetString("About", user.about ?? "");
-        HttpContext.Session.SetString("AvatarUrl", user.avatar_url ?? avatarUrl ?? "");
-        HttpContext.Session.SetString("Background", user.you_background ?? "");
+        HttpContext.Session.SetString("Role", user.role);
+        HttpContext.Session.SetString("Gender", user.gender);
+        HttpContext.Session.SetString("About", user.about);
+        HttpContext.Session.SetString("AvatarUrl", user.avatar_url);
+        HttpContext.Session.SetString("Background", user.you_background);
 
         // Печать данных для проверки
         Console.WriteLine($"User signed in: {user.username}");

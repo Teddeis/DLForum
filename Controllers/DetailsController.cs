@@ -103,29 +103,30 @@ public class DetailsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateComment(int id_user, int id_topic, string comment)
+    public async Task<IActionResult> CreateComment(int id_topic, string comment)
     {
         var userId = HttpContext.Session.GetInt32("ID");
-
         if (userId == null)
         {
             return RedirectToAction("Login", "Account");
+        }
+
+        if (string.IsNullOrWhiteSpace(comment))
+        {
+            TempData["ErrorMessage"] = "Комментарий не может быть пустым.";
+            return RedirectToAction("Details", new { id = id_topic });
         }
 
         try
         {
             Console.WriteLine($"Полученные данные: id_user={userId}, id_topic={id_topic}, comment={comment}");
 
-            if (string.IsNullOrWhiteSpace(comment))
-            {
-                Console.WriteLine("ОШИБКА: Комментарий пустой!");
-                ModelState.AddModelError("Comment", "Комментарий не может быть пустым.");
-            }
-            else
-            {
-                await _commentService.AddCommentAsync(userId.Value, id_topic, comment);
-                TempData["SuccessMessage"] = "Комментарий успешно добавлен!";
-            }
+            await _commentService.AddCommentAsync(userId.Value, id_topic, comment);
+
+            var commentCount = await _favoriteService.GetCommentCount(id_topic);
+            await _topicService.UpdateCommentCount(id_topic, commentCount);
+
+            TempData["SuccessMessage"] = "Комментарий успешно добавлен!";
         }
         catch (Exception ex)
         {

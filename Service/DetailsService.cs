@@ -30,5 +30,14 @@ namespace DLForum.Service
                 .Set(t => t.LikesCount, likeCount) // Обновляем только `LikesCount`
                 .Update();
         }
+
+        public async Task UpdateCommentCount(int topicId, int commentCount)
+        {
+            await _client
+                .From<Topic>()
+                .Where(t => t.Id == topicId)
+                .Set(t => t.CommentsCount, commentCount) // Обновляем только `CommentsCount`
+                .Update();
+        }
     }
 }

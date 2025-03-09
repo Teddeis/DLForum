@@ -62,6 +62,11 @@ internal class Program
             {
                 options.LoginPath = "/Account/Login"; // Путь к странице входа
                 options.LogoutPath = "/Account/Logout"; // Путь к действию выхода
+            }).AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                options.CallbackPath = "/signin-google"; // Строка для обратного вызова
             });
 
         // Регистрация HttpContextAccessor для доступа к текущему контексту

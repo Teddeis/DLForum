@@ -59,7 +59,15 @@ public class UserService
 
             if (user == null)
             {
-                return null; 
+                Console.WriteLine("User not found in LoginAsync.");
+                return null; // Пользователь не найден
+            }
+
+            // Если пароль не передается, пропускаем проверку пароля (для Google)
+            if (string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("User found (no password check).");
+                return user; // Возвращаем пользователя без проверки пароля
             }
 
             var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<users>();
@@ -67,14 +75,17 @@ public class UserService
 
             if (result != Microsoft.AspNetCore.Identity.PasswordVerificationResult.Success)
             {
-                return null; 
+                Console.WriteLine("Password mismatch.");
+                return null; // Неверный пароль
             }
-            return user; 
+
+            Console.WriteLine("User found in LoginAsync.");
+            return user; // Пользователь найден
         }
         catch (Exception ex)
         {
-            return null; 
+            Console.WriteLine($"Error in LoginAsync: {ex.Message}");
+            return null; // Ошибка
         }
     }
-
 }

@@ -55,6 +55,16 @@ namespace DLForum.Service
             return likes.Models.Count;
         }
 
+        public async Task<int> GetCommentCount(int topicId)
+        {
+            var likes = await _client
+                .From<comment>()
+                .Where(l => l.id_topics == topicId)
+                .Get();
+
+            return likes.Models.Count;
+        }
+
 
         // Добавление в избранное
         public async Task<favorite?> AddFavorite(int userId, int topicId)
