@@ -1,0 +1,450 @@
+﻿/* Светлая тема (по умолчанию) */
+:root {
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --filter-panel-bg: #f7f7f7;
+    --filter-panel-border: #cccccc;
+    --tab-bg: #eeeeee;
+    --tab-text-color: #555555;
+    --tab-active-bg: #bb86fc;
+    --tab-active-text-color: #ffffff;
+    --notification-item-bg: #f9f9f9;
+    --notification-item-border: #dddddd;
+    --notification-hover-bg: #eeeeee;
+    --notification-avatar-border: #cccccc;
+    --notification-time-color: #999999;
+}
+
+/* Темная тема */
+[data-theme="dark"] {
+    --background-color: #1a1a1b;
+    --text-color: #d7dadc;
+    --filter-panel-bg: #2b2b2b;
+    --filter-panel-border: #444444;
+    --tab-bg: #2b2b2b;
+    --tab-text-color: #cccccc;
+    --tab-active-bg: #bb86fc;
+    --tab-active-text-color: #ffffff;
+    --notification-item-bg: #1e1e1e;
+    --notification-item-border: #444444;
+    --notification-hover-bg: #333333;
+    --notification-avatar-border: #444444;
+    --notification-time-color: #777777;
+}
+
+/* Основной стиль */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.notification-page {
+    display: flex;
+    height: 100vh;
+}
+
+/* Левая панель фильтров */
+.filter-panel {
+    width: 300px;
+    background-color: var(--filter-panel-bg);
+    padding: 20px;
+    border-right: 1px solid var(--filter-panel-border);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+    .filter-panel h4 {
+        color: var(--text-color);
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+.filter-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.filter-group input {
+    margin-right: 10px;
+}
+
+    .filter-group input:checked + label {
+        color: var(--tab-active-bg);
+    }
+
+/* Основная область уведомлений */
+.notification-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Вкладки */
+.tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.tab {
+    padding: 10px 20px;
+    background-color: var(--tab-bg);
+    border: none;
+    border-radius: 5px;
+    color: var(--tab-text-color);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .tab.active {
+        background-color: var(--tab-active-bg);
+        color: var(--tab-active-text-color);
+    }
+
+    .tab:hover {
+        background-color: var(--filter-panel-border);
+    }
+
+/* Список уведомлений */
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: var(--filter-panel-bg);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+/* Элементы уведомлений */
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border: 1px solid var(--notification-item-border);
+    border-radius: 8px;
+    background-color: var(--notification-item-bg);
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+    .notification-item:hover {
+        transform: scale(1.02);
+        background-color: var(--notification-hover-bg);
+    }
+
+.notification-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--notification-avatar-border);
+}
+
+.notification-details {
+    flex: 1;
+}
+
+.notification-text {
+    color: var(--text-color);
+    font-size: 14px;
+    margin: 0 0 5px;
+}
+
+    .notification-text span {
+        color: var(--tab-active-bg);
+    }
+
+.notification-time {
+    font-size: 12px;
+    color: var(--notification-time-color);
+}
+
+/* Общие стили для элементов профиля */
+.card {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Стиль для блока с информацией о пользователе */
+#userInfo {
+    background-color: var(--navbar-color); /* Используем переменную */
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Стиль для баннера */
+#banner {
+    background-image: url('@HttpContextAccessor.HttpContext.Session.GetString("Background")');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    height: 400px;
+    border-radius: 15px;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Кнопки */
+.btn-setting {
+    background-color: var(--button-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
+}
+
+    .btn-setting:hover {
+        background-color: var(--button-hover-color);
+        transform: scale(1.1);
+    }
+
+    .btn-setting:active {
+        transform: scale(0.95);
+    }
+
+/* Тексты и ссылки */
+a {
+    color: var(--link-color);
+    transition: color 0.3s ease;
+}
+
+/* Элементы списков (темы, комментарии) */
+.list-group-item {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    .list-group-item:hover {
+        color: var(--text-color);
+        background-color: var(--navbar-color);
+    }
+
+/* Иконки */
+.bi {
+    color: var(--secondary-color);
+    transition: color 0.3s ease;
+}
+
+    .bi:hover {
+        color: var(--primary-color);
+    }
+
+/* Навигационные вкладки */
+.nav-tabs .nav-link {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    .nav-tabs .nav-link.active {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border-color: var(--primary-color);
+    }
+
+/* Общие стили для темной и светлой тем */
+:root {
+    --list-group-bg: #272729;
+    --list-group-hover: #3c3c3d;
+    --input-bg: #1f1f1f;
+    --input-border: #424245;
+    --input-focus-border: #5a5a5b;
+    --input-text-color: #d7dadc;
+}
+
+[data-theme="light"] {
+    --list-group-bg: #f8f9fa;
+    --list-group-hover: #e6e6e6;
+    --input-bg: #ffffff;
+    --input-border: #cccccc;
+    --input-focus-border: #b3b3b3;
+    --input-text-color: #333333;
+}
+
+.card {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--card-border-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.list-group-item {
+    background-color: var(--list-group-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .list-group-item:hover {
+        background-color: var(--list-group-hover);
+    }
+
+    .list-group-item.active {
+        background-color: var(--active-tab-bg);
+        color: var(--text-color);
+    }
+
+
+.form-control,
+select,
+textarea {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--input-text-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+
+
+    .form-control:focus,
+    select:focus,
+    textarea:focus {
+        background-color: var(--input-bg);
+        border-color: var(--input-focus-border);
+        color: var(--input-text-color);
+        outline: none;
+        box-shadow: 0 0 5px var(--input-focus-border);
+    }
+
+    .form-control::placeholder,
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--placeholder-color);
+    }
+
+
+.btn:hover {
+    background-color: var(--button-hover-color);
+}
+
+.form-select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--input-text-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+.rounded-circle {
+    border: 2px solid var(--card-border-color);
+}
+
+#avatarPreview,
+#bannerPreview {
+    transition: transform 0.3s ease;
+}
+
+    #avatarPreview:hover,
+    #bannerPreview:hover {
+        transform: scale(1.05);
+    }
+
+/* Общие стили для элементов профиля */
+.card {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Стиль для блока с информацией о пользователе */
+#userInfo {
+    background-color: var(--navbar-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Кнопка настроек */
+.btn-light {
+    background-color: var(--button-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn-light:hover {
+        background-color: var(--button-hover-color);
+    }
+
+/* Стиль для баннера */
+#banner {
+    background-image: url('@Model.user.you_background');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    height: 400px;
+    border-radius: 15px;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+}
+
+/* Тексты и ссылки */
+a {
+    color: var(--link-color);
+    transition: color 0.3s ease;
+}
+
+/* Элементы списков (темы, комментарии) */
+.list-group-item {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    .list-group-item:hover {
+        color: var(--text-color);
+        background-color: var(--navbar-color);
+    }
+
+/* Иконки */
+.bi {
+    color: var(--secondary-color);
+    transition: color 0.3s ease;
+}
+
+    .bi:hover {
+        color: var(--primary-color);
+    }
+
+/* Навигационные вкладки */
+.nav-tabs .nav-link {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--search-bar-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    .nav-tabs .nav-link.active {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border-color: var(--primary-color);
+    }

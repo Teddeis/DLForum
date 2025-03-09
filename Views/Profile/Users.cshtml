@@ -4,87 +4,8 @@
     ViewData["Title"] = "Профиль";
 }
 
-<style>
-    /* Общие стили для элементов профиля */
-    .card {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        border: 1px solid var(--search-bar-border);
-        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
+<link rel="stylesheet" type="text/css" href="/css/profile_style.css">
 
-    /* Стиль для блока с информацией о пользователе */
-    #userInfo {
-        background-color: var(--navbar-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    /* Кнопка настроек */
-    .btn-light {
-        background-color: var(--button-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-        .btn-light:hover {
-            background-color: var(--button-hover-color);
-        }
-
-    /* Стиль для баннера */
-    #banner {
-        background-image: url('@Model.user.you_background');
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        height: 400px;
-        border-radius: 15px;
-        transition: background-color 0.3s ease, filter 0.3s ease;
-    }
-
-    /* Тексты и ссылки */
-    a {
-        color: var(--link-color);
-        transition: color 0.3s ease;
-    }
-
-    /* Элементы списков (темы, комментарии) */
-    .list-group-item {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        border: 1px solid var(--search-bar-border);
-        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-        .list-group-item:hover {
-            color: var(--text-color);
-            background-color: var(--navbar-color);
-        }
-
-    /* Иконки */
-    .bi {
-        color: var(--secondary-color);
-        transition: color 0.3s ease;
-    }
-
-        .bi:hover {
-            color: var(--primary-color);
-        }
-
-    /* Навигационные вкладки */
-    .nav-tabs .nav-link {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        border: 1px solid var(--search-bar-border);
-        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-        .nav-tabs .nav-link.active {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            border-color: var(--primary-color);
-        }
-</style>
 <body>
 <div class="d-flex justify-content-center align-items-center">
     <div class="card" id="banner" style="width: 1000px; height: 400px;  border-radius: 20px; border: none; background-image: url('@Model.user.you_background'); background-size: cover; background-position: center; position: relative; transition: all 0.3s ease;">

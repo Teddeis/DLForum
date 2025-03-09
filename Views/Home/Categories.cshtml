@@ -5,43 +5,7 @@
     var filteredTopics = string.IsNullOrEmpty(selectedCategory) ? Model : Model.Where(t => t.Categories.Contains(selectedCategory)).ToList();
 }
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-    .tags {
-        padding: 2px;
-        border-radius: 18px;
-        color: var(--text-color);
-        font-size: 10px;
-        font-weight: 600;
-        position: relative;
-        cursor: pointer;
-        transition: color 0.3s ease, transform 0.3s ease;
-    }
-
-    .no-topic {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 40px;
-        text-align: center;
-        color: #555;
-        animation: fadeIn 1s ease-out; /* Плавное появление */
-    }
-
-        .no-topic i {
-            font-size: 50px;
-            color: #007bff;
-            animation: bounce 1.5s infinite; /* Подпрыгивающая иконка */
-        }
-
-        .no-topic p {
-            font-size: 18px;
-            font-weight: 600;
-            margin-top: 10px;
-            color: var(--text-color); /* Цвет текста */
-        }
-</style>
+<link rel="stylesheet" type="text/css" href="/css/home_style.css">
 
 <body>
     <!-- Основная часть контента справа -->

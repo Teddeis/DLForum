@@ -83,6 +83,7 @@ internal class Program
 
         // Подключение сессий перед авторизацией
         app.UseSession();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         // Настройка маршрутов

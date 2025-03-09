@@ -2,70 +2,11 @@
     ViewData["Title"] = "Зарегистрируйтесь";
     ViewData["HideSidebar"] = true;
 }
+<link rel="stylesheet" type="text/css" href="/css/login_reg_layout_style.css">
 
 <form method="post">
 <div class="row">
-        <style>
-            /* Общие стили для темы */
-            :root {
-                --background-color: #1a1a1b;
-                --text-color: #d7dadc;
-                --card-bg-color: #272729;
-                --card-border-color: #424245;
-                --button-bg-color: #424245;
-                --button-hover-color: #5a5a5b;
-                --placeholder-color: #848586;
-                --input-bg-color: #272729;
-                --input-border-color: #424245;
-                --input-text-color: #d7dadc;
-            }
-
-            [data-theme="light"] {
-                --background-color: #ffffff;
-                --text-color: #333333;
-                --card-bg-color: #f8f9fa;
-                --card-border-color: #cccccc;
-                --button-bg-color: #007bff;
-                --button-hover-color: #0056b3;
-                --placeholder-color: #666666;
-                --input-bg-color: #f1f3f5;
-                --input-border-color: #cccccc;
-                --input-text-color: #333333;
-            }
-
-            body {
-                margin: 0;
-                font-family: Arial, sans-serif;
-                background-color: var(--background-color);
-                color: var(--text-color);
-                transition: background-color 0.3s, color 0.3s;
-            }
-
-            .card {
-                background-color: var(--card-bg-color);
-                border: 1px solid var(--card-border-color);
-                border-radius: 25px;
-                transition: background-color 0.3s, border-color 0.3s;
-            }
-
-            .form-label {
-                color: var(--text-color);
-            }
-
-            .form-control {
-                background-color: var(--input-bg-color);
-                border: 1px solid var(--input-border-color);
-                color: var(--input-text-color);
-                transition: background-color 0.3s, border-color 0.3s;
-            }
-
-                .form-control:focus {
-                    border-color: #007bff;
-                    box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.25);
-                }
-        </style>
-
-        <div class="row d-flex justify-content-center align-items-center vh-100">
+         <div class="row d-flex justify-content-center align-items-center vh-100">
             <div class="card shadow-lg p-4" style="width: 400px;">
                 <h2 class="form-label text-center mb-4">Регистрация</h2>
                     <form asp-action="Register" asp-controller="Auth" method="post">
