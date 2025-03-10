@@ -188,6 +188,7 @@
                                   style="font-size: 14px; font-weight: bold; color: white;
                                 background-color: @(comment.users.role == "admin" ? "#dc3545"  /* Красный */
                                : comment.users.role == "moderator" ? "#17a2b8" /* Голубой */
+                               : comment.users.role == "vip" ? "#ffd500" /* Голубой */
                                : comment.users.role == "banned" ? "#6c757d" /* Серый */
                                : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
                                 @comment.users.role

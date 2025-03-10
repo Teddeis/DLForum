@@ -95,7 +95,7 @@ public class TopicController : Controller
             // Обновляем статус темы на false
             var updatedTopic = await _supabaseService.DeleteTopicStatusAsync(topicId, false);
 
-            var messages = await _notificationService.AddNotificationAsync(userId, message, "System", false,DateTime.Now);
+            var messages = await _notificationService.AddNotificationAsync(userId, message, "System", false,DateTime.Now,"Системное");
 
             // Перенаправляем на страницу темы после отмены статуса
             return RedirectToAction("TopicList", new { id = topicId });

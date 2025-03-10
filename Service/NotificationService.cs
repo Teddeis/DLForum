@@ -40,7 +40,7 @@ public class NotificationService
     }
 
 
-    public async Task<notification?> AddNotificationAsync(int userId, string message, string fromTo, bool read,DateTime created_at)
+    public async Task<notification?> AddNotificationAsync(int userId, string message, string fromTo, bool read,DateTime created_at, string type)
     {
         var notification = new notification
         {
@@ -48,7 +48,8 @@ public class NotificationService
             message = message,
             from_to = fromTo,
             read = read,
-            created_at = created_at
+            created_at = created_at,
+            type = type
         };
 
         var response = await _client.From<notification>().Insert(notification);

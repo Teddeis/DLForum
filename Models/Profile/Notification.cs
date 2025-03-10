@@ -14,5 +14,7 @@ namespace Profile
         public string from_to { get; set; }
         public bool read { get; set; } = false;
         public DateTime created_at { get; set; }
+        public string type { get; set; }
+
     }
 }

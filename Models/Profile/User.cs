@@ -15,7 +15,7 @@ public class users : BaseModel
     public bool is_active { get; set; } = true;
     public string gender { get; set; } = "Не указан";
     public string about { get; set; } = "Пусто";
-    public string avatar_url { get; set; } = "https://grandfestival.vcht.center/storage/exponents/logos/2186_logo.jpg";
+    public string avatar_url { get; set; } = "https://feehcmjymwvyhganwaqw.supabase.co/storage/v1/object/public/default//DLFDefault.png";
     public string you_background { get; set; } = "Пусто";
 
 
