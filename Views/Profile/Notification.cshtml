@@ -15,10 +15,13 @@
 
 <div class="notification-page">
     <main class="notification-content">
+        <!-- Вкладки для переключения -->
         <nav class="tabs">
-            <button class="tab active">Все <span>@(Model?.Count ?? 0)</span></button>
+            <button class="tab active" id="unreadTab">Непрочитанные <span>@(Model?.Count(n => n.id_users == currentUserId && !n.read) ?? 0)</span></button>
+            <button class="tab" id="readTab">Прочитанные <span>@(Model?.Count(n => n.id_users == currentUserId && n.read) ?? 0)</span></button>
         </nav>
 
+        <!-- Секция уведомлений -->
         <section class="notification-list">
             @if (currentUserId == null)
             {
@@ -26,52 +29,59 @@
             }
             else
             {
-                var unreadNotifications = Model?.Where(n => n.id_users == currentUserId && !n.read).ToList();
-                var readNotifications = Model?.Where(n => n.id_users == currentUserId && n.read).ToList();
-
-                // Выводим непрочитанные уведомления
-                if (unreadNotifications != null && unreadNotifications.Any())
-                {
-                    <h3>Непрочитанные уведомления</h3>
-                    @foreach (var notification in unreadNotifications)
+                <!-- Непрочитанные уведомления -->
+                <div id="unreadNotifications" class="notification-section">
+                    @if (Model?.Any(n => n.id_users == currentUserId && !n.read) ?? false)
                     {
-                        <div class="notification-item unread">
-                            <div>
-                                <p>
-                                    <strong>@notification.from_to</strong> отправил(а) сообщение:
-                                    <span>"@notification.message"</span>
-                                </p>
-                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                        @foreach (var notification in Model?.Where(n => n.id_users == currentUserId && !n.read) ?? Enumerable.Empty<notification>())
+                        {
+                            <div class="notification-item unread">
+                                <div>
+                                    <p>
+                                        <strong>@notification.from_to</strong> отправил(а) сообщение:
+                                        <span>"@notification.message"</span>
+                                    </p>
+                                    <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                                </div>
+                                <form action="@Url.Action("MarkAsRead", new { notificationId = notification.id })" method="post">
+                                    <button type="submit" class="btn-mark-as-read">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <form action="@Url.Action("MarkAsRead", new { notificationId = notification.id })" method="post">
-                                <button type="submit" class="btn-mark-as-read">
-                                    <i class="fas fa-check-circle"></i>
-                                </button>
-                            </form>
-                        </div>
+                        }
                     }
-                }
-
-                // Выводим прочитанные уведомления
-                if (readNotifications != null && readNotifications.Any())
-                {
-                    <h3>Прочитанные уведомления</h3>
-                    @foreach (var notification in readNotifications)
+                    else
                     {
-                        <div class="notification-item read">
-                            <div>
-                                <p>
-                                    <strong>@notification.from_to</strong> отправил(а) сообщение:
-                                    <span>"@notification.message"</span>
-                                </p>
-                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
-                            </div>
-                        </div>
+                        <p>Нет непрочитанных уведомлений</p>
                     }
-                }
+                </div>
 
-                // Если нет уведомлений
-                if (!unreadNotifications.Any() && !readNotifications.Any())
+                <!-- Прочитанные уведомления -->
+                <div id="readNotifications" class="notification-section" style="display:none;">
+                    @if (Model?.Any(n => n.id_users == currentUserId && n.read) ?? false)
+                    {
+                        @foreach (var notification in Model?.Where(n => n.id_users == currentUserId && n.read) ?? Enumerable.Empty<notification>())
+                        {
+                            <div class="notification-item read">
+                                <div>
+                                    <p>
+                                        <strong>@notification.from_to</strong> отправил(а) сообщение:
+                                        <span>"@notification.message"</span>
+                                    </p>
+                                    <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>Нет прочитанных уведомлений</p>
+                    }
+                </div>
+
+                <!-- Если нет уведомлений в принципе -->
+                @if (!(Model?.Any(n => n.id_users == currentUserId) ?? false))
                 {
                     <p>Нет уведомлений</p>
                 }
@@ -79,3 +89,20 @@
         </section>
     </main>
 </div>
+
+<script>
+    // Переключение между вкладками
+    document.getElementById('unreadTab').addEventListener('click', function() {
+        document.getElementById('unreadNotifications').style.display = 'block';
+        document.getElementById('readNotifications').style.display = 'none';
+        document.getElementById('unreadTab').classList.add('active');
+        document.getElementById('readTab').classList.remove('active');
+    });
+
+    document.getElementById('readTab').addEventListener('click', function() {
+        document.getElementById('readNotifications').style.display = 'block';
+        document.getElementById('unreadNotifications').style.display = 'none';
+        document.getElementById('readTab').classList.add('active');
+        document.getElementById('unreadTab').classList.remove('active');
+    });
+</script>
