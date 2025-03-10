@@ -18,17 +18,14 @@ namespace DLForum.Service
         {
             try
             {
-                // Выполняем запрос к базе данных, чтобы получить изображения по идентификатору темы
                 var response = await _client.From<images>().Where(x => x.TopicId == topicId).Get();
 
-                return response.Models.ToList(); // Возвращаем список изображений
+                return response.Models.ToList(); 
             }
             catch (Exception ex)
             {
-                // В случае ошибки возвращаем пустой список и записываем ошибку
-                // (или можно сделать логирование)
                 Console.WriteLine("Ошибка: " + ex.Message);
-                return new List<images>(); // Возвращаем пустой список в случае ошибки
+                return new List<images>(); 
             }
         }
     }

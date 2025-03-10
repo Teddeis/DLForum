@@ -160,15 +160,81 @@
                     </form>
                 }
 
-                <!-- Форма для отмены темы -->
-                @if (@Model.Status == "false")
-                {
-                <form method="post" asp-controller="Topic" asp-action="UpdateStatusToNone" asp-route-topicId="@Model.Id">
-                        <button type="submit" class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #e34234;">
-                            <i style="font-size: 18px; margin-right: 5px;"></i> Отменить тему
-                        </button>
-                    </form>
+            @if (Model.Status == "false")
+            {
+                <!-- Кнопка для открытия модального окна -->
+                <button type="button" class="btn btn-light text-white mx-1"
+                        style="border-radius: 10px; background-color: #e34234;"
+                        onclick="openCancelModal(@Model.Id)">
+                    <i style="font-size: 18px; margin-right: 5px;"></i> Отменить тему
+                </button>
+            }
+
+
+            <style>
+                
+            </style>
+
+
+            <!-- Модальное окно -->
+            <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content p-4" style="border-radius: 12px;">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title text-danger">Отмена темы</h5>
+                            <button type="button" class="close btn btn-light" onclick="closeCancelModal()" aria-label="Закрыть">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted">Укажите причину отмены темы:</p>
+                            <textarea id="cancelReason" rows="4" class="form-control" placeholder="Введите причину..." required></textarea>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" onclick="closeCancelModal()">Отмена</button>
+                            <button type="button" class="btn btn-danger" onclick="submitCancel()">Подтвердить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма (скрытая) для отправки данных на сервер -->
+            <form id="cancelForm" method="post" asp-controller="Topic" asp-action="UpdateStatusToNone">
+                <input type="hidden" name="topicId" value="@Model.Id">
+                <input type="hidden" name="userId" value="@Model.UserId">
+                <input type="hidden" id="cancelReasonInput" name="message"> <!-- Исправлено: теперь совпадает с параметром в контроллере -->
+            </form>
+
+            <script>
+                function openCancelModal() {
+                    let modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+                    modal.show();
                 }
+
+                function closeCancelModal() {
+                    let modalEl = document.getElementById('cancelModal');
+                    let modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+                }
+
+                function submitCancel() {
+                    let reason = document.getElementById("cancelReason").value.trim();
+                    if (!reason) {
+                        alert("Введите причину отмены!");
+                        return;
+                    }
+
+                    // Записываем причину отмены в скрытое поле формы
+                    document.getElementById("cancelReasonInput").value = reason;
+
+                    // Закрываем модальное окно перед отправкой
+                    closeCancelModal();
+
+                    // Отправляем форму
+                    document.getElementById("cancelForm").submit();
+                }
+            </script>
+
             </div>
         </div>
 </body>

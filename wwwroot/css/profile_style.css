@@ -448,3 +448,34 @@ a {
         color: var(--text-color);
         border-color: var(--primary-color);
     }
+
+.btn-mark-as-read {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none; 
+    border-radius: 5px;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .btn-mark-as-read i {
+        font-size: 10px; /* Размер иконки */
+    }
+
+
+div[style*="height: 65px;"] {
+    display: none;
+}
+
+div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: #202020; margin: 0px; padding: 0px;"] {
+    display: none !important;
+}
+
+center {
+    display: none !important;
+}

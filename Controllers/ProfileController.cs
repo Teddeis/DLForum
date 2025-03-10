@@ -12,12 +12,14 @@ namespace DLForum.Controllers
     public class ProfileController : Controller
     {
         private readonly ProfileUserService _userService;
+        private readonly NotificationService _notificationService;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
 
-        public ProfileController(ProfileUserService userService, IConfiguration configuration, IWebHostEnvironment environment)
+        public ProfileController(ProfileUserService userService,NotificationService notificationService, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
@@ -242,9 +244,34 @@ namespace DLForum.Controllers
             return View();
         }
 
-        public IActionResult Notification()
+        public async Task<IActionResult> Notification()
         {
-            return View();
+            // Получаем ID текущего пользователя из сессии
+            int? currentUserId = HttpContext.Session.GetInt32("ID");
+
+            if (currentUserId == null)
+            {
+                return Unauthorized(); // Если ID нет, запрещаем доступ
+            }
+
+            // Получаем уведомления текущего пользователя
+            var notifications = await _notificationService.GetUserNotificationsAsync(currentUserId.Value);
+
+            return View(notifications);
+        }
+
+        // Обновление статуса уведомления
+        [HttpPost]
+        public async Task<IActionResult> MarkAsRead(int notificationId)
+        {
+            var notification = await _notificationService.GetNotificationByIdAsync(notificationId);
+            if (notification != null)
+            {
+                notification.read = true;
+                await _notificationService.UpdateNotificationAsync(notification);
+            }
+
+            return RedirectToAction("Notification");
         }
     }
 }

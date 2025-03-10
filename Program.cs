@@ -44,6 +44,14 @@ internal class Program
         builder.Services.AddScoped<ProfileUserService>();
         builder.Services.AddScoped<SearchService>();
         builder.Services.AddScoped<FavoriteService>();
+        builder.Services.AddScoped<NotificationService>();
+
+        builder.Services.AddScoped<NotificationCountFilter>();
+
+        builder.Services.AddControllersWithViews(options =>
+        {
+            options.Filters.Add<NotificationCountFilter>(); 
+        });
 
 
 

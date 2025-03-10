@@ -82,17 +82,17 @@ public class DetailsController : Controller
 
             if (topic == null)
             {
-                return NotFound(); // Возвращаем ошибку, если тема не найдена
+                return NotFound(); 
             }
 
             var images = await _imageService.GetImagesByTopicIdAsync(id);
 
-            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList(); // Only keep the URL
+            var imageUrls = images.Select(img => new { img.ImageUrl }).ToList(); 
 
 
-            ViewBag.Images = imageUrls; // Send simplified list
+            ViewBag.Images = imageUrls; 
 
-            return View(topic); // Отправляем тему в представление
+            return View(topic); 
         }
         catch (Exception ex)
         {

@@ -5,12 +5,14 @@ public class TopicController : Controller
 {
     private readonly TopicService _supabaseService;
     private readonly CommentService _commentService;
+    private readonly NotificationService _notificationService;
 
 
-    public TopicController(TopicService supabaseService, CommentService commentService)
+    public TopicController(TopicService supabaseService, CommentService commentService, NotificationService notificationService)
     {
         _supabaseService = supabaseService;
         _commentService = commentService;
+        _notificationService = notificationService;
     }
 
     // Метод для отображения всех тем
@@ -86,19 +88,14 @@ public class TopicController : Controller
 
     // Метод для отмены статуса темы (Отменить тему)
     [HttpPost]
-    public async Task<IActionResult> UpdateStatusToNone(int topicId)
+    public async Task<IActionResult> UpdateStatusToNone(int topicId, int userId,string message)
     {
         try
         {
             // Обновляем статус темы на false
             var updatedTopic = await _supabaseService.DeleteTopicStatusAsync(topicId, false);
 
-            if (updatedTopic == null)
-            {
-                // Если тема не была обновлена (не найдена), возвращаем ошибку
-                ViewBag.ErrorMessage = "Тема не найдена!";
-                return View("Error");
-            }
+            var messages = await _notificationService.AddNotificationAsync(userId, message, "System", false,DateTime.Now);
 
             // Перенаправляем на страницу темы после отмены статуса
             return RedirectToAction("TopicList", new { id = topicId });
@@ -111,7 +108,7 @@ public class TopicController : Controller
         }
     }
 
-    // Отмена темы и полное её удаление:
+    // Полное удаление темы владельцем:
     [HttpPost]
     public async Task<IActionResult> Delete(int topicId)
     {

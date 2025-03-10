@@ -1,4 +1,5 @@
 ﻿using DLForum.Models;
+using DLForum.Models.Topic;
 using Supabase;
 using static Supabase.Postgrest.Constants;
 
@@ -143,8 +144,16 @@ public class TopicService
         var topic = await GetTopicByIdAsync(topicId);
         if (topic == null) return false;
 
+        await _client.From<like>()
+                     .Where(c => c.TopicId == topic.Id)
+                     .Delete();
+
         await _client.From<comment>()
                      .Where(c => c.id_topics == topic.Id)
+                     .Delete();
+
+        await _client.From<favorite>()
+                     .Where(c => c.TopicId == topic.Id)
                      .Delete();
 
         await _client.From<Topic>()

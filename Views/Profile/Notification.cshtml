@@ -1,85 +1,81 @@
-﻿<link rel="stylesheet" type="text/css" href="/css/profile_style.css">
+﻿@using Profile
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model List<notification>
 
+@{
+    int? currentUserId = HttpContextAccessor.HttpContext?.Session.GetInt32("ID");
 
+    // Отладка: вывести текущий ID пользователя
+    Console.WriteLine($"Current User ID: {currentUserId}");
+}
 
-<div class="notification-page ">
-    <!-- Левая панель фильтров -->
-    <div class="filter-panel">
-        <h4>Фильтр</h4>
-        <div class="filter-group">
-            <label>
-                <input type="radio" name="filter" checked>
-                Все
-            </label>
-            <label>
-                <input type="radio" name="filter">
-                Непрочитанные
-            </label>
-            <label>
-                <input type="radio" name="filter">
-                Прочитанные
-            </label>
-        </div>
-        <h4>Сортировка</h4>
-        <div class="filter-group">
-            <label>
-                <input type="radio" name="sort" checked>
-                Сначала новые
-            </label>
-            <label>
-                <input type="radio" name="sort">
-                Сначала старые
-            </label>
-        </div>
-    </div>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/profile_style.css">
 
-    <!-- Основная область уведомлений -->
-    <div class="notification-content">
-        <!-- Вкладки -->
-        <div class="tabs">
-            <button class="tab active">Все <span>3</span></button>
-            <button class="tab">Ответы <span>1</span></button>
-            <button class="tab">Личные сообщения <span>2</span></button>
-        </div>
+<div class="notification-page">
+    <main class="notification-content">
+        <nav class="tabs">
+            <button class="tab active">Все <span>@(Model?.Count ?? 0)</span></button>
+        </nav>
 
-        <!-- Список уведомлений -->
-        <div class="notification-list">
-            <!-- Уведомление об ответе -->
-            <div class="notification-item">
-                <img src="https://via.placeholder.com/40" alt="Avatar" class="notification-avatar">
-                <div class="notification-details">
-                    <p class="notification-text">
-                        <strong>JohnDoe</strong> ответил на ваш комментарий:
-                        <span>"Спасибо за ваш совет, он мне помог!"</span>
-                    </p>
-                    <span class="notification-time">10 минут назад</span>
-                </div>
-            </div>
+        <section class="notification-list">
+            @if (currentUserId == null)
+            {
+                <p>Ошибка: Не удалось определить пользователя.</p>
+            }
+            else
+            {
+                var unreadNotifications = Model?.Where(n => n.id_users == currentUserId && !n.read).ToList();
+                var readNotifications = Model?.Where(n => n.id_users == currentUserId && n.read).ToList();
 
-            <!-- Уведомление о личном сообщении -->
-            <div class="notification-item">
-                <img src="https://via.placeholder.com/40" alt="Avatar" class="notification-avatar">
-                <div class="notification-details">
-                    <p class="notification-text">
-                        <strong>Admin</strong> отправил вам личное сообщение:
-                        <span>"Пожалуйста, проверьте правила форума."</span>
-                    </p>
-                    <span class="notification-time">30 минут назад</span>
-                </div>
-            </div>
+                // Выводим непрочитанные уведомления
+                if (unreadNotifications != null && unreadNotifications.Any())
+                {
+                    <h3>Непрочитанные уведомления</h3>
+                    @foreach (var notification in unreadNotifications)
+                    {
+                        <div class="notification-item unread">
+                            <div>
+                                <p>
+                                    <strong>@notification.from_to</strong> отправил(а) сообщение:
+                                    <span>"@notification.message"</span>
+                                </p>
+                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                            </div>
+                            <form action="@Url.Action("MarkAsRead", new { notificationId = notification.id })" method="post">
+                                <button type="submit" class="btn-mark-as-read">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                            </form>
+                        </div>
+                    }
+                }
 
-            <!-- Уведомление о новой теме -->
-            <div class="notification-item">
-                <img src="https://via.placeholder.com/40" alt="Avatar" class="notification-avatar">
-                <div class="notification-details">
-                    <p class="notification-text">
-                        <strong>System</strong> добавил новую тему:
-                        <span>"Обновления на форуме: версии и планы"</span>
-                    </p>
-                    <span class="notification-time">1 час назад</span>
-                </div>
-            </div>
-        </div>
-    </div>
+                // Выводим прочитанные уведомления
+                if (readNotifications != null && readNotifications.Any())
+                {
+                    <h3>Прочитанные уведомления</h3>
+                    @foreach (var notification in readNotifications)
+                    {
+                        <div class="notification-item read">
+                            <div>
+                                <p>
+                                    <strong>@notification.from_to</strong> отправил(а) сообщение:
+                                    <span>"@notification.message"</span>
+                                </p>
+                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                            </div>
+                        </div>
+                    }
+                }
+
+                // Если нет уведомлений
+                if (!unreadNotifications.Any() && !readNotifications.Any())
+                {
+                    <p>Нет уведомлений</p>
+                }
+            }
+        </section>
+    </main>
 </div>
-
