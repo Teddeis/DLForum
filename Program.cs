@@ -68,8 +68,8 @@ internal class Program
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/Account/Login"; // Путь к странице входа
-                options.LogoutPath = "/Account/Logout"; // Путь к действию выхода
+                options.LoginPath = "/account/login"; // Путь к странице входа
+                options.LogoutPath = "/account/logout"; // Путь к действию выхода
             }).AddGoogle(options =>
             {
                 options.ClientId = builder.Configuration["Authentication:Google:ClientId"];

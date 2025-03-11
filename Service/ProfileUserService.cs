@@ -1,4 +1,6 @@
-﻿using AllTopics;
+﻿using System.Xml.Linq;
+using AllTopics;
+using DLForum.Models.Topic;
 using Microsoft.EntityFrameworkCore;
 using Supabase;
 using Supabase.Gotrue;
@@ -101,4 +103,40 @@ public class ProfileUserService
 
         return response.Models ?? new List<favoritelist>();
     }
+
+
+
+    public async Task<UserProfileDto> GetUserProfileDataAsync(int userId)
+    {
+        var user = await _client.From<users>()
+            .Where(u => u.id == userId)
+            .Single();
+
+        if (user == null)
+            return null;
+
+        var topicsTask = _client.From<Topic>().Where(t => t.UserId == userId).Get();
+        var commentsTask = _client.From<comment>().Where(c => c.id_users == userId).Get();
+        var favoritesTask = _client.From<favorite>().Where(f => f.UserId == userId).Get();
+
+        await Task.WhenAll(topicsTask, commentsTask, favoritesTask);
+
+        return new UserProfileDto
+        {
+            User = user,
+            Topics = topicsTask.Result.Models.ToList(),     // Достаем реальные данные
+            Comments = commentsTask.Result.Models.ToList(),
+            Favorites = favoritesTask.Result.Models.ToList()
+        };
+    }
+
+
+    public class UserProfileDto
+    {
+        public users User { get; set; }
+        public List<Topic> Topics { get; set; }
+        public List<comment> Comments { get; set; }
+        public List<favorite> Favorites { get; set; }
+    }
+
 }

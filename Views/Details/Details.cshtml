@@ -17,7 +17,7 @@
             <div class="nav-right">
                 @if (isOwner)
                 {
-                    <form method="post" asp-controller="Topic" asp-action="Delete"
+                    <form method="post" asp-controller="topic" asp-action="delete"
                           onsubmit="return confirm('Вы уверены, что хотите удалить эту тему?');"
                           class="delete-topic-form">
                         <input type="hidden" name="topicId" value="@Model.Id" />
@@ -57,7 +57,7 @@
                         @foreach (var category in Model.Categories.Split(','))
                         {
 
-                            <a class="category-tag" href="/Home/CategoriesSearch?category=@category.Trim()">@category.Trim()</a>
+                            <a class="category-tag" href="/home/categoriessearch?category=@category.Trim()">@category.Trim()</a>
                         }
                     </div>
                     <h1 class="title">@Model.Title</h1>
@@ -195,7 +195,7 @@
                             </span>
 
                             <a class="comment-author back-link"
-                               href="@Url.Action("Users", "Profile", new { id = comment.id_users })">
+                               href="@Url.Action("users", "profile", new { id = comment.id_users })">
                                  @comment.users.username
                             </a>
                             <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">

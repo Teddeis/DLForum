@@ -24,14 +24,14 @@ namespace DLForum.Controllers
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> profile()
         {
             // Получение текущего пользователя из сессии
             var currentUser = HttpContext.Session.GetInt32("ID");
 
             if (currentUser == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("login", "account");
             }
 
             // Асинхронно получаем данные о темах и комментариях пользователя
@@ -53,7 +53,7 @@ namespace DLForum.Controllers
 
 
 
-        public async Task<IActionResult> Users(int id)
+        public async Task<IActionResult> users(int id)
         {
             // Получаем пользователя по ID
             var user = await _userService.GetUserByIdAsync(id);
@@ -97,13 +97,13 @@ namespace DLForum.Controllers
                 var userId = HttpContext.Session.GetInt32("ID");
                 if (userId == null)
                 {
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("login", "account");
                 }
 
                 var user = await _userService.GetUserByIdAsync(userId.Value);
                 if (user == null)
                 {
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("login", "account");
                 }
 
                 var supabaseUrl = _configuration["Supabase:Url"];
@@ -177,7 +177,7 @@ namespace DLForum.Controllers
                 HttpContext.Session.SetString("Gender", updatedUser.gender ?? "");
                 HttpContext.Session.SetString("About", updatedUser.about ?? "");
 
-                return RedirectToAction("Settings");
+                return RedirectToAction("settings");
             }
             catch (Exception ex)
             {
@@ -194,25 +194,25 @@ namespace DLForum.Controllers
             var userId = HttpContext.Session.GetInt32("ID");
             if (!userId.HasValue)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("login", "account");
             }
 
             var user = await _userService.GetUserByIdAsync(userId.Value);
             if (user == null || !passwordHasher.VerifyHashedPassword(user, user.password_hash, currentPassword).Equals(PasswordVerificationResult.Success))
             {
                 ModelState.AddModelError("", "Неверный текущий пароль.");
-                return View("Settings");
+                return View("settings");
             }
 
             if (newPassword != confirmPassword)
             {
                 ModelState.AddModelError("", "Пароли не совпадают.");
-                return View("Settings");
+                return View("settings");
             }
 
             user.password_hash = passwordHasher.HashPassword(user, newPassword);
             await _userService.UpdateUserAsync(user);
-            return RedirectToAction("Settings");
+            return RedirectToAction("settings");
         }
 
         [HttpPost]
@@ -222,7 +222,7 @@ namespace DLForum.Controllers
             var userId = HttpContext.Session.GetInt32("ID");
             if (!userId.HasValue)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("login", "account");
             }
 
             var user = await _userService.GetUserByIdAsync(userId.Value);
@@ -236,7 +236,7 @@ namespace DLForum.Controllers
             await _userService.UpdateUserAsync(user);
             HttpContext.Session.SetString("Email", newEmail);
 
-            return RedirectToAction("Settings");
+            return RedirectToAction("settings");
         }
 
         public IActionResult Settings()
@@ -244,7 +244,7 @@ namespace DLForum.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Notification()
+        public async Task<IActionResult> notification()
         {
             // Получаем ID текущего пользователя из сессии
             int? currentUserId = HttpContext.Session.GetInt32("ID");
@@ -271,7 +271,7 @@ namespace DLForum.Controllers
                 await _notificationService.UpdateNotificationAsync(notification);
             }
 
-            return RedirectToAction("Notification");
+            return RedirectToAction("notification");
         }
     }
 }

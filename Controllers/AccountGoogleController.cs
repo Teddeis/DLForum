@@ -31,7 +31,7 @@ public class AccountGoogleController : Controller
         if (!authenticateResult.Succeeded)
         {
             Console.WriteLine("Authentication failed.");
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("login", "account");
         }
 
         // Получение данных из Claims
@@ -43,7 +43,7 @@ public class AccountGoogleController : Controller
         if (string.IsNullOrEmpty(email))
         {
             Console.WriteLine("No email found.");
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("login", "account");
         }
 
         // Проверка, есть ли пользователь в базе данных
@@ -98,6 +98,6 @@ public class AccountGoogleController : Controller
         Console.WriteLine($"User signed in: {user.username}");
 
         // Редирект на главную страницу
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("index", "home");
     }
 }

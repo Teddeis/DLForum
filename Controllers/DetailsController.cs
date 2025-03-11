@@ -19,8 +19,8 @@ public class DetailsController : Controller
         _favoriteService = favoriteService;
     }
 
-    [HttpGet("/Details/{id}")]
-    public async Task<IActionResult> Details(int id)
+    [HttpGet("/details/{id}")]
+    public async Task<IActionResult> details(int id)
     {
         try
         {
@@ -72,8 +72,8 @@ public class DetailsController : Controller
 
 
     // Метод для отображения подробной информации о теме для админа
-    [HttpGet("/DetailsAdmin/{id}")]
-    public async Task<IActionResult> DetailsAdmin(int id)
+    [HttpGet("/details_admin/{id}")]
+    public async Task<IActionResult> detailsadmin(int id)
     {
         try
         {

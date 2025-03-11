@@ -21,7 +21,7 @@ namespace DLForum.Controllers
         }
 
         // Метод для отображения главной страницы с пагинацией
-        public async Task<IActionResult> Home(int pageNumber = 1)
+        public async Task<IActionResult> home(int pageNumber = 1)
         {
 
             try
@@ -49,7 +49,7 @@ namespace DLForum.Controllers
             }
         }
 
-        public async Task<IActionResult> Categories(string category, int pageNumber = 1)
+        public async Task<IActionResult> categories(string category, int pageNumber = 1)
         {
             try
             {

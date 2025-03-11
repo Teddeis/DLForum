@@ -16,12 +16,12 @@ public class TopicController : Controller
     }
 
     // Метод для отображения всех тем
-    public async Task<IActionResult> TopicList(int pageNumber = 1)
+    public async Task<IActionResult> topiclist(int pageNumber = 1)
     {
         try
         {
             // Здесь вы можете задать максимально возможное количество тем для подгрузки.
-            int pageSize = 100;  // или другой подходящий лимит
+            int pageSize = 10;  // или другой подходящий лимит
 
             // Получаем все темы с пагинацией
             var (topics, totalCount) = await _supabaseService.GetTopicsByPageAsyncAdmin(1, pageSize);
@@ -37,7 +37,7 @@ public class TopicController : Controller
     }
 
     // Остальные методы контроллера
-    public IActionResult Topic()
+    public IActionResult topic()
     {
         return View();
     }
@@ -51,12 +51,12 @@ public class TopicController : Controller
 
         if (userId == null)
         {
-            return RedirectToAction("Login", "Account"); // Перенаправление на страницу входа
+            return RedirectToAction("login", "account"); // Перенаправление на страницу входа
         }
         // Добавляем новую тему в Supabase
         await _supabaseService.AddTopicAsync(userId.Value, title, content, author.ToString(), categories, tags);
 
-        return RedirectToAction("Index", "Home"); // Перенаправляем на главную страницу после добавления
+        return RedirectToAction("index", "home"); // Перенаправляем на главную страницу после добавления
     }
 
     // Метод для обновления статуса темы на true (Принять тему)
@@ -76,7 +76,7 @@ public class TopicController : Controller
             }
 
             // Перенаправляем на страницу темы после обновления статуса
-            return RedirectToAction("TopicList", new { id = topicId });
+            return RedirectToAction("topic-list", new { id = topicId });
         }
         catch (Exception ex)
         {
@@ -98,7 +98,7 @@ public class TopicController : Controller
             var messages = await _notificationService.AddNotificationAsync(userId, message, "System", false,DateTime.Now,"Системное");
 
             // Перенаправляем на страницу темы после отмены статуса
-            return RedirectToAction("TopicList", new { id = topicId });
+            return RedirectToAction("topic-list", new { id = topicId });
         }
         catch (Exception ex)
         {

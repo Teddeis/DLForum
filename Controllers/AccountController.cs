@@ -15,13 +15,13 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Register()
+    public IActionResult register()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(string email, string password)
+    public async Task<IActionResult> register(string email, string password)
     {
         var user = await _authService.RegisterAsync(email, password);
 
@@ -41,7 +41,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(string email, string password)
+    public async Task<IActionResult> login(string email, string password)
     {
         // Проверка входных данных
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
@@ -52,7 +52,7 @@ public class AccountController : Controller
 
         try
         {
-            // Вызов вашего сервиса авторизации
+            // Вызов сервиса авторизации
             var user = await _authService.LoginAsync(email, password);
             if (user == null)
             {
