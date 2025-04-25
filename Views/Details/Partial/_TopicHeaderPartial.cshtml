@@ -1,0 +1,17 @@
+@model Topic
+
+<div class="content-info">
+    <div class="author-section">
+        <span class="author">Автор: @Model.Author</span>
+        <div class="category-badge">
+            @foreach (var category in Model.Categories.Split(','))
+            {
+                <a class="category-tag" href="/home/index?load=/home/categories?category=@category.Trim()">
+                    @category.Trim()
+                </a>
+            }
+        </div>
+    </div>
+    <h1 class="title">@Model.Title</h1>
+    <p class="description">@Html.Raw(Model.Content)</p>
+</div> 

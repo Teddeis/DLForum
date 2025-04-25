@@ -1,4 +1,5 @@
-﻿using DLForum.Models;
+﻿using System.Linq;
+using DLForum.Models;
 using DLForum.Models.Topic;
 using Supabase;
 using static Supabase.Postgrest.Constants;
@@ -33,24 +34,30 @@ public class TopicService
     }
 
     // Получение тем с пагинацией (только одобренные)
-    public async Task<(List<Topic>, int)> GetTopicsByPageAsync(int pageNumber, int pageSize)
+    public async Task<(List<Topic>, int)> GetTopicsByPageAsync(int pageNumber, int pageSize, string sortOrder = "newest")
     {
         var offset = (pageNumber - 1) * pageSize;
 
-        var response = await _client.From<Topic>()
-            .Where(t => t.Status == "true")
-            .Order(t => t.CreatedAt, Ordering.Descending)
+        var query = _client.From<Topic>()
+            .Where(t => t.Status == "true");
+
+        query = sortOrder switch
+        {
+            "newest" => query.Order(t => t.CreatedAt, Ordering.Descending),
+            "oldest" => query.Order(t => t.CreatedAt, Ordering.Ascending),
+            _ => query.Order(t => t.CreatedAt, Ordering.Descending)
+        };
+
+        var response = await query
             .Limit(pageSize)
             .Offset(offset)
             .Get();
 
-        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true").Order(t => t.CreatedAt, Ordering.Descending).Get()).Models.Count;
+        var totalCount = (await _client.From<Topic>().Where(t => t.Status == "true").Get()).Models.Count;
 
         return (response.Models.ToList(), totalCount);
     }
 
-
-    
     public async Task<(List<Topic>, int)> GetTopicsByPageCategoriesAsync(string categories, int pageNumber, int pageSize)
     {
         var offset = (pageNumber - 1) * pageSize;
@@ -72,7 +79,6 @@ public class TopicService
         return (response.Models.ToList(), totalCount);
     }
 
-
     // Получение тем с пагинацией для Популярное (только одобренные)
     public async Task<(List<Topic>, int)> GetTopicsByPagePopularAsync(int pageNumber, int pageSize)
     {
@@ -89,7 +95,6 @@ public class TopicService
 
         return (response.Models.ToList(), totalCount);
     }
-
 
     // Получение тем с пагинацией для админов (неодобренные)
     public async Task<(List<Topic>, int)> GetTopicsByPageAsyncAdmin(int pageNumber, int pageSize)
@@ -130,12 +135,12 @@ public class TopicService
         }
 
         var topicToUpdate = topic.Models.First();
-        topicToUpdate.Status = newStatus.ToString(); 
+        topicToUpdate.Status = newStatus.ToString();
 
         // Обновляем тему в базе данных
         var response = await _client.From<Topic>().Where(t => t.Id == topicId).Delete(topicToUpdate);
 
-        return response.Models.FirstOrDefault(); 
+        return response.Models.FirstOrDefault();
     }
 
     // Удаление темы
@@ -162,7 +167,6 @@ public class TopicService
 
         return true;
     }
-
 
     // Получение темы по ID
     public async Task<Topic?> GetTopicByIdAsync(int topicId)

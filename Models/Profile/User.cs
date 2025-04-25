@@ -16,7 +16,7 @@ public class users : BaseModel
     public string gender { get; set; } = "Не указан";
     public string about { get; set; } = "Пусто";
     public string avatar_url { get; set; } = "https://feehcmjymwvyhganwaqw.supabase.co/storage/v1/object/public/default//DLFDefault.png";
-    public string you_background { get; set; } = "Пусто";
+    public string you_background { get; set; } = "https://feehcmjymwvyhganwaqw.supabase.co/storage/v1/object/public/default//DLFBanner.png";
 
 
     private static Random _random = new Random();

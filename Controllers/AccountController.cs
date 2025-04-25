@@ -8,7 +8,6 @@ public class AccountController : Controller
 {
     private readonly UserService _authService;
 
-    // Единый конструктор
     public AccountController(UserService authService)
     {
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
@@ -43,7 +42,6 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> login(string email, string password)
     {
-        // Проверка входных данных
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             ModelState.AddModelError("", "Email и пароль обязательны.");
@@ -52,15 +50,12 @@ public class AccountController : Controller
 
         try
         {
-            // Вызов сервиса авторизации
             var user = await _authService.LoginAsync(email, password);
             if (user == null)
             {
                 ModelState.AddModelError("", "Неверный email или пароль.");
                 return View();
             }
-
-            // Сохранение данных пользователя в сессию
             HttpContext.Session.SetInt32("ID", user.id);
             HttpContext.Session.SetString("Email", user.email);
             HttpContext.Session.SetString("UserName", user.username);
@@ -70,27 +65,21 @@ public class AccountController : Controller
             HttpContext.Session.SetString("AvatarUrl", user.avatar_url);
             HttpContext.Session.SetString("Background", user.you_background);
 
-            // Редирект на главную страницу
             return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
         {
-            // Логирование ошибки
             ModelState.AddModelError("", "Произошла ошибка. Попробуйте позже.");
             return View();
         }
     }
 
-    // Метод для выхода из аккаунта
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        // Очистка данных сессии
         HttpContext.Session.Clear();
-
         return RedirectToAction("Index", "Home");
     }
 }

@@ -1,39 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using DLForum.Service;
+using Supabase;
 
-public class SearchController : ControllerBase
+public class SearchController : Controller
 {
-    private readonly SearchService _searchService;
+    private readonly Client _client;
 
-    public SearchController(SearchService searchService)
+    public SearchController(SupabaseClientService clientService)
     {
-        _searchService = searchService;
+        _client = clientService.Client;
     }
 
-
+    [HttpGet]
     public async Task<IActionResult> Search(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return BadRequest("Не найдено");
+            return Json(new List<object>());
         }
 
         try
         {
-            var suggestions = await _searchService.GetSuggestionsAsync(query);
+            // Получаем только одобренные темы, содержащие поисковый запрос
+            var response = await _client.From<Topic>()
+                .Where(t => t.Status == "true")
+                .Get();
 
-            // Если нет результатов
-            if (suggestions == null || !suggestions.Any())
+            var topics = response.Models;
+
+            var results = topics.Where(t => 
+                (t.Title?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (t.Categories?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (t.Tags?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false)
+            )
+            .Select(t => new
             {
-                return NotFound("Не найдено");
-            }
+                title = t.Title,
+                category = t.Categories,
+                tags = t.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(tag => tag.Trim()).ToList(),
+                url = $"/details/{t.Id}",
+                imageUrl = t.ImageUrl,
+                author = t.Author,
+                commentsCount = t.CommentsCount,
+                likesCount = t.LikesCount
+            })
+            .Take(10)
+            .ToList();
 
-            return Ok(suggestions);
+            return Json(results);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "Внутренняя ошибка сервера");
+            return Json(new List<object>());
         }
     }
 }
-
-

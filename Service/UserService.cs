@@ -1,5 +1,4 @@
 ﻿using Supabase;
-using Supabase.Interfaces;
 
 public class UserService
 {

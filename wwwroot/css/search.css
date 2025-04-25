@@ -1,0 +1,242 @@
+﻿/* Переменные темы (добавьте в :root если их нет) */
+:root {
+    --bg-color: var(--card-bg);
+    --border-color: var(--search-bar-border);
+    --hover-bg-color: var(--button-hover-color);
+    --secondary-text-color: var(--placeholder-color);
+    --tag-bg-color: var(--button-color);
+    --tag-text-color: var(--text-color);
+}
+
+/* Контейнер результатов поиска */
+.search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 8px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Элемент результата поиска */
+.search-item {
+    padding: 12px;
+    margin: 4px 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: all 0.2s ease;
+    background: var(--bg-color);
+    border: 1px solid transparent;
+}
+
+    .search-item:hover {
+        border-color: var(--border-color);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+/* Изображение в результате */
+.search-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.search-item:hover .search-item-image {
+    transform: scale(1.05);
+}
+
+/* Контейнер контента */
+.search-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Ссылка */
+.search-link {
+    text-decoration: none;
+    color: var(--text-color);
+    display: block;
+}
+
+/* Заголовок */
+.search-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Метаданные */
+.search-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: var(--secondary-text-color);
+}
+
+    .search-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: transform 0.2s ease;
+    }
+
+        .search-meta span:hover {
+            transform: translateY(-1px);
+        }
+
+    .search-meta i {
+        font-size: 1em;
+    }
+
+/* Категория */
+.search-category {
+    font-size: 0.9em;
+    color: var(--secondary-text-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .search-category i {
+        font-size: 1em;
+        color: #007bff;
+    }
+
+/* Контейнер тегов */
+.search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+/* Отдельный тег */
+.search-tag {
+    background: var(--tag-bg-color);
+    color: var(--tag-text-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+    .search-tag:hover {
+        transform: translateY(-1px);
+        background: var(--button-hover-color);
+    }
+
+.search-item.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px;
+    text-align: center;
+    color: var(--secondary-text-color);
+}
+
+.search-item.empty i {
+    font-size: 50px;
+    color: #007bff;
+}
+
+@keyframes bounceCenter {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) translateX(-50%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%);
+    }
+}
+
+/* Скроллбар */
+.search-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+    .search-results::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-text-color);
+    }
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+    .search-results {
+        width: 95%;
+        max-height: 400px;
+    }
+
+    .search-item {
+        padding: 10px;
+    }
+
+    .search-item-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .search-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.85em;
+    }
+
+    .search-tag {
+        font-size: 0.8em;
+        padding: 3px 10px;
+    }
+
+    .search-item.empty {
+        padding: 30px;
+    }
+
+        .search-item.empty i {
+            font-size: 40px;
+        }
+}

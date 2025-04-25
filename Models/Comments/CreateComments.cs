@@ -1,5 +1,4 @@
-﻿using Supabase.Gotrue;
-using Supabase.Postgrest.Attributes;
+﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
 [Table("comments")]

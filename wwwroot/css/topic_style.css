@@ -347,4 +347,50 @@ div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; botto
     display: none !important;
 }
 
+@media (max-width: 768px) {
+    body {
+        padding: 0 15px; /* Отступы по бокам для мобильных устройств */
+    }
 
+    .navbar {
+        flex-direction: column; /* Вертикальное расположение элементов в навбаре */
+        align-items: flex-start;
+    }
+
+    .search-bar {
+        max-width: 100%; /* Убираем ограничение по ширине */
+        margin: 10px 0;
+    }
+
+    .card {
+        padding: 0.75rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .editor-textarea {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .category-badge {
+        font-size: 12px;
+        padding: 8px 15px;
+    }
+
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .toolbar-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .mb-3 {
+        font-size: 1rem;
+    }
+}

@@ -24,18 +24,14 @@ public class DetailsController : Controller
     {
         try
         {
-            // Получаем данные по теме
             var topic = await _topicService.GetTopicByIdAsync(id);
             if (topic == null)
             {
                 return NotFound();
             }
-
-            // Получаем комментарии и пользователей
             var comments = await _commentService.GetCommentsByTopicIdAsync(id);
             var images = await _imageService.GetImagesByTopicIdAsync(id);
 
-            // Упрощаем данные об изображениях
             var imageUrls = images.Select(img => new { img.ImageUrl }).ToList();
 
             var userId = HttpContext.Session.GetInt32("ID");
@@ -55,12 +51,10 @@ public class DetailsController : Controller
             ViewBag.IsFavorite = isFavorite;
             ViewBag.IsLike = isLike;
 
-            // Передаем саму модель (topic) в представление
             return View(topic);
         }
         catch (Exception ex)
         {
-            // Логируем ошибку, если возникла
             ViewBag.ErrorMessage = ex.Message;
             return View("Error");
         }
@@ -71,8 +65,7 @@ public class DetailsController : Controller
 
 
 
-    // Метод для отображения подробной информации о теме для админа
-    [HttpGet("/details_admin/{id}")]
+    [HttpGet("/admin/{id}")]
     public async Task<IActionResult> detailsadmin(int id)
     {
         try
@@ -149,8 +142,6 @@ public class DetailsController : Controller
 
         try
         {
-            // Логирование полученных данных
-            Console.WriteLine($"Полученные данные: parentId={parentId}, id_topic={id_topic}, replyText={replyText}");
 
             if (string.IsNullOrWhiteSpace(replyText))
             {
@@ -159,7 +150,6 @@ public class DetailsController : Controller
             }
             else
             {
-                // Добавляем новый ответ
                 await _commentService.AddReplyAsync(userId.Value, parentId, replyText);
                 TempData["SuccessMessage"] = "Ответ успешно добавлен!";
             }
@@ -182,7 +172,7 @@ public class DetailsController : Controller
 
         if (userId == null)
         {
-            return Json(new { error = "NotLoggedIn" }); // Вернуть ошибку, если пользователь не авторизован
+            return Json(new { error = "NotLoggedIn" });
         }
 
         var isFavorite = await _favoriteService.IsFavorite(userId.Value, id_topics);
@@ -207,7 +197,7 @@ public class DetailsController : Controller
 
         if (userId == null)
         {
-            return Json(new { error = "NotLoggedIn" }); // Ошибка, если пользователь не авторизован
+            return Json(new { error = "NotLoggedIn" });
         }
 
         var isLike = await _favoriteService.IsLike(userId.Value, id_topics);
@@ -221,16 +211,43 @@ public class DetailsController : Controller
             await _favoriteService.AddLike(userId.Value, id_topics);
         }
 
-        // Инвертируем состояние
         isLike = !isLike;
-
-        // Подсчитываем актуальное количество лайков
         var likeCount = await _favoriteService.GetLikeCount(id_topics);
-
-        // Обновляем количество лайков в `topics`
         await _topicService.UpdateLikesCount(id_topics, likeCount);
 
         return Json(new { isLike, likeCount });
     }
 
+
+
+
+    [HttpPost]
+    public async Task<IActionResult> CreateReport(int id_topic,string owr, string report)
+    {
+        var userId = HttpContext.Session.GetInt32("ID");
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        if (string.IsNullOrWhiteSpace(report))
+        {
+            TempData["ErrorMessage"] = "Репорт не может быть пустым.";
+        }
+
+        try
+        {
+
+            await _commentService.AddReportAsync(userId.Value, owr, report);
+
+            TempData["SuccessMessage"] = "Жалоба успешно отправлена!";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ИСКЛЮЧЕНИЕ: {ex.Message}");
+            TempData["ErrorMessage"] = "Не удалось добавить комментарий: " + ex.Message;
+        }
+
+        return RedirectToAction("Details", new { id = id_topic });
+    }
 }

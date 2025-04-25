@@ -4,6 +4,7 @@ using DLForum.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DLForum.Models.Comments;
 
 public class CommentService
 {
@@ -121,6 +122,23 @@ public class CommentService
         }
 
         return comments;
+    }
+
+
+    // Метод для добавления комментария
+    public async Task<report?> AddReportAsync(int userId, string owr, string content)
+    {
+        var reports = new report
+        {
+            id_users = userId,
+            owr = owr,
+            reason = content,
+            created = DateTime.Now,
+        };
+
+        var response = await _client.From<report>().Insert(reports);
+
+        return response.Models.FirstOrDefault();
     }
 
 }

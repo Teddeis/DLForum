@@ -1,78 +1,111 @@
-﻿using Supabase;
-using DLForum.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static Supabase.Postgrest.Constants;
+using Microsoft.Extensions.Caching.Memory;
+
 
 public class SearchService
 {
-    private readonly Client _client;
+    private readonly IMemoryCache _cache;
+    private readonly Supabase.Client _supabaseClient;
 
-    public SearchService(SupabaseClientService clientService)
+    public SearchService(IMemoryCache cache, Supabase.Client supabaseClient)
     {
-        _client = clientService.Client;
+        _cache = cache;
+        _supabaseClient = supabaseClient;
     }
 
-    public async Task<List<object>> GetSuggestionsAsync(string query)
+    public async Task<List<SearchResult>> GetSuggestionsAsync(string query)
     {
-        if (string.IsNullOrWhiteSpace(query))
+        query = query.ToLower();
+
+        // Разбираем запрос на компоненты
+        var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var tags = terms.Where(t => t.StartsWith("#")).Select(t => t.Substring(1)).ToList();
+        var category = terms.FirstOrDefault(t => t.StartsWith("category:"))?.Substring(9)?.ToLower();
+        var searchTerms = terms.Where(t => !t.StartsWith("#") && !t.StartsWith("category:")).ToList();
+
+        // Получаем темы из кэша или Supabase
+        var topics = await GetCachedTopicsAsync();
+
+        // Фильтруем результаты
+        var results = topics.Where(topic =>
         {
-            throw new ArgumentException("Query не может быть пустым");
+            bool matchesSearch = searchTerms.Count == 0 ||
+                searchTerms.Any(term => topic.Title.ToLower().Contains(term));
+
+            bool matchesTags = tags.Count == 0 ||
+                tags.All(tag => topic.Tags.Any(t => t.ToLower() == tag.ToLower()));
+
+            bool matchesCategory = string.IsNullOrEmpty(category) ||
+                topic.Category.ToLower() == category;
+
+            return matchesSearch && matchesTags && matchesCategory;
+        }).ToList();
+
+        return results;
+    }
+
+    private async Task<List<SearchResult>> GetCachedTopicsAsync()
+    {
+        const string CacheKey = "AllTopics";
+
+        if (!_cache.TryGetValue(CacheKey, out List<SearchResult> topics))
+        {
+            // Получаем данные из Supabase
+            var response = await _supabaseClient
+                .From<Topic>()
+                .Select("*")
+                .Order("created_at", Supabase.Postgrest.Constants.Ordering.Descending)
+                .Get();
+
+            var topicsList = response.Models;
+
+            topics = topicsList.Select(t => new SearchResult
+            {
+                Title = t.Title,
+                Category = t.Categories, // У вас это строка, возможно нужно разделить если там несколько категорий
+                Tags = t.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(tag => tag.Trim()).ToList() ?? new List<string>(),
+                Url = $"/topic/{t.Id}",
+                ImageUrl = t.ImageUrl,
+                Author = t.Author,
+                CommentsCount = t.CommentsCount,
+                LikesCount = t.LikesCount
+            }).ToList();
+
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
+            _cache.Set(CacheKey, topics, cacheOptions);
         }
 
-        try
+        return topics;
+    }
+
+    // Метод для обновления кэша при создании новой темы
+    public async Task AddToIndexAsync(Topic topic)
+    {
+        const string CacheKey = "AllTopics";
+
+        var searchResult = new SearchResult
         {
-            // Поиск тем с использованием оператора Like для каждого поля отдельно
-            var topicsResponse = await _client.From<Topic>()
-                .Filter(t => t.Title, Operator.Like, $"%{query}%")
-                .Select("id, title")
-                .Get();
+            Title = topic.Title,
+            Category = topic.Categories,
+            Tags = topic.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(tag => tag.Trim()).ToList() ?? new List<string>(),
+            Url = $"/details/{topic.Id}",
+            ImageUrl = topic.ImageUrl,
+            Author = topic.Author,
+            CommentsCount = topic.CommentsCount,
+            LikesCount = topic.LikesCount
+        };
 
-            var topics = topicsResponse.Models
-                .Select(t => t.Title)
-                .ToList();
+        var topics = await GetCachedTopicsAsync();
+        topics.Add(searchResult);
 
-            // Поиск тем по тегам
-            var topicsTagsResponse = await _client.From<Topic>()
-                .Filter(t => t.Tags, Operator.Like, $"%{query}%")
-                .Select("id, title")
-                .Get();
+        _cache.Set(CacheKey, topics, new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10)));
+    }
 
-            var topicsTags = topicsTagsResponse.Models
-                .Select(t => t.Title)
-                .ToList();
-
-            // Поиск тем по категориям
-            var topicsCategoriesResponse = await _client.From<Topic>()
-                .Filter(t => t.Categories, Operator.Like, $"%{query}%")
-                .Select("id, title")
-                .Get();
-
-            var topicsCategories = topicsCategoriesResponse.Models
-                .Select(t => t.Title)
-                .ToList();
-
-            // Объединяем все найденные темы
-            var allTopics = topics.Concat(topicsTags).Concat(topicsCategories).ToList();
-
-            // Поиск пользователей с использованием оператора Like
-            var usersResponse = await _client.From<users>()
-                .Filter(u => u.username, Operator.Like, $"%{query}%")
-                .Select("id, username, avatar_url")
-                .Get();
-
-            var users = usersResponse.Models
-                .Select(u => u.username)
-                .ToList();
-
-            // Объединяем все списки и возвращаем
-            return allTopics.Concat(users).ToList<object>();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Ошибка при поиске данных в Supabase", ex);
-        }
+    public void InvalidateCache()
+    {
+        const string CacheKey = "AllTopics";
+        _cache.Remove(CacheKey);
     }
 }
-

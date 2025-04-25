@@ -267,3 +267,36 @@ div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; botto
 center {
     display: none !important;
 }
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 0.75rem;
+    }
+
+    .search-bar {
+        max-width: 100%;
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    .user-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+        max-width: 300px;
+        right: 10px;
+    }

@@ -1,0 +1,38 @@
+@model CommentsViewModel
+
+@if (!Model.IsBanned)
+{
+    <div class="post-comment">
+        <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
+            <textarea name="comment" placeholder="Добавить новый ответ..."></textarea>
+            <input hidden name="id_topic" value="@Model.TopicId" />
+            <button class="btn btn-primary" type="submit">Ответить</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="banned-message">
+        <label style="color: #cc0000">Вы не можете отправлять сообщения, тк Ваш аккаунт заблокирован...</label>
+    </div>
+}
+
+<hr class="comments-separator">
+<span class="comments-title">Ответы</span>
+
+@if (Model.Comments != null && Model.Comments.Any())
+{
+    <ul class="comments-list">
+        @foreach (var comment in Model.Comments)
+        {
+            @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", comment)
+        }
+    </ul>
+}
+else
+{
+    <div class="no-comments">
+        <i class="bi bi-chat-dots"></i>
+        <p>Комментариев пока нет. Будьте первым!</p>
+    </div>
+} 

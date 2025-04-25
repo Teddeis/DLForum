@@ -134,35 +134,35 @@
 
 
 
-        <script>
-                                                $(document).ready(function () {
-                // Обработчик клика на номера страниц пагинации
-                $('.pagination .page-link').click(function (e) {
-                    e.preventDefault(); // Отменяем стандартное поведение ссылки
+    <script>
+                                            $(document).ready(function () {
+            // Обработчик клика на номера страниц пагинации
+            $('.pagination .page-link').click(function (e) {
+                e.preventDefault(); // Отменяем стандартное поведение ссылки
 
-                    // Получаем номер страницы из data-page атрибута
-                    var pageNumber = $(this).data('page');
-                    var category = $(this).data("category") || ""; // Получаем категорию
+                // Получаем номер страницы из data-page атрибута
+                var pageNumber = $(this).data('page');
+                var category = $(this).data("category") || ""; // Получаем категорию
 
-                    // Показываем индикатор загрузки
-                    $('#loading-indicator').show();
+                // Показываем индикатор загрузки
+                $('#loading-indicator').show();
 
-                    // Загружаем новый контент для выбранной страницы
-                        $('#dynamic-content').load('/Home/Categories?category=' + category + '&pageNumber=' + pageNumber, function (response, status, xhr) {
-                        // Скрываем индикатор загрузки после загрузки контента
-                        $('#loading-indicator').hide();
+                // Загружаем новый контент для выбранной страницы
+                    $('#dynamic-content').load('/Home/Categories?category=' + category + '&pageNumber=' + pageNumber, function (response, status, xhr) {
+                    // Скрываем индикатор загрузки после загрузки контента
+                    $('#loading-indicator').hide();
 
-                        if (status === "error") {
-                            $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
-                        }
-                    });
-
-                    // Обновляем активную страницу в пагинации
-                    $('.pagination .page-item').removeClass('active');
-                    $(this).parent().addClass('active');
+                    if (status === "error") {
+                        $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
+                    }
                 });
-            });
 
-        </script>
+                // Обновляем активную страницу в пагинации
+                $('.pagination .page-item').removeClass('active');
+                $(this).parent().addClass('active');
+            });
+        });
+
+    </script>
 
 </body>

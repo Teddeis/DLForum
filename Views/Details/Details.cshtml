@@ -1,402 +1,53 @@
 ﻿@model Topic
-
+@using System.Text.Json
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = @Model.Title;
-    @inject IHttpContextAccessor HttpContextAccessor
-    bool isOwner = HttpContextAccessor.HttpContext.Session.GetInt32("ID") == @Model.UserId; // Проверка, является ли текущий пользователь владельцем темы
-    bool isBanned = HttpContextAccessor.HttpContext.Session.GetString("Role") == "banned"; // Проверка, является ли текущий пользователь заблокированным
-
+    var userContext = new UserContext(HttpContextAccessor.HttpContext.Session);
+    bool isOwner = userContext.IsOwner(Model.UserId);
+    bool isBanned = userContext.IsBanned();
 }
-        <link rel="stylesheet" type="text/css" href="/css/details_style.css">
 
-<body>
+<link rel="stylesheet" type="text/css" href="/css/details_style.css">
+
     <div class="container">
         <!-- Навигация -->
-        <nav>
-            <a href="javascript:void(0);" class="back-link" onclick="window.location.href=document.referrer;">← Назад</a>
-            <div class="nav-right">
-                @if (isOwner)
-                {
-                    <form method="post" asp-controller="topic" asp-action="delete"
-                          onsubmit="return confirm('Вы уверены, что хотите удалить эту тему?');"
-                          class="delete-topic-form">
-                        <input type="hidden" name="topicId" value="@Model.Id" />
-                        <button type="submit" class="delete-topic-btn">
-                            <i class="bi bi-trash"></i> Удалить
-                        </button>
-                    </form>
-                }
-            </div>
-        </nav>
+    @await Html.PartialAsync("~/Views/Details/Partial/_NavigationPartial.cshtml", new NavigationViewModel
+{
+    IsOwner = isOwner,
+    TopicId = Model.Id
+})
 
-        <!-- Заголовок, описание, автор, лайки и комментарии -->
+    <!-- Основной контент -->
         <div class="main-content">
-            <div class="content-info">
-                <!-- Имя автора -->
-                <div class="content-info">
-                    <div style="text-align: center;">
+        @await Html.PartialAsync("~/Views/Details/Partial/_TopicHeaderPartial.cshtml", Model)
 
-                        <div style="text-align: left;">
-                        <span class="author">Автор: @Model.Author</span>
-                        </div>
-                            <div style="text-align: right;">
-                            <form class="favorite-form" asp-controller="Details" asp-action="ToggleFavorite" method="post">
-                                <input hidden name="id_topics" value="@Model.Id">
-                                <button type="submit" class="favorite-btn" style="background: none; border: none; cursor: pointer;">
-                                    <i class="bi @(ViewBag.IsFavorite == true ? "bi-bookmark-fill" : "bi-bookmark")"
-                                       style="color: @(ViewBag.IsFavorite == true ? "gold" : "var(--text-color)")"></i>
-                                </button>
-                            </form>
-                        </div>
-
-
-
-                    </div>
-                    <div class="category-badge mt-auto" style="text-align: right;">
-                        <!-- Каждая категория отображается отдельно -->
-                        @foreach (var category in Model.Categories.Split(','))
-                        {
-
-                            <a class="category-tag" href="/home/categoriessearch?category=@category.Trim()">@category.Trim()</a>
-                        }
-                    </div>
-                    <h1 class="title">@Model.Title</h1>
-                    <p class="description">@Html.Raw(Model.Content)</p>
-                </div>
-
-                @if (ViewBag.Images != null && ViewBag.Images.Count > 0)
-                {
-                    <div class="image-gallery">
-                        <!-- Отображаем первую картинку -->
-                        <img id="currentImage" src="@ViewBag.Images[0].ImageUrl" alt="Full-size Image" class="img-fluid rounded" />
-
-                        <!-- Кнопки для переключения -->
-                        <button id="prevButton" class="nav-button prev-btn" onclick="changeImage(-1)">←</button>
-                        <button id="nextButton" class="nav-button next-btn" onclick="changeImage(1)">→</button>
-                    </div>
-                }
-
-            </div>
-            <div class="interactions" style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
-
-                <!-- Теги -->
-                <div>
-                    @if (!string.IsNullOrEmpty(Model.Tags))
-                    {
-                        var tags = Model.Tags.Split(',').Select(t => t.Trim()).ToList();
-                        var displayedTags = tags.Take(5).ToList(); // Первые 5 тегов
-                        var hiddenTags = tags.Skip(5).ToList(); // Остальные теги
-                        var remainingCount = hiddenTags.Count;
-
-                        // Разбиваем видимые теги на группы по 6 тегов
-                        var displayedGrouped = displayedTags
-                        .Select((tag, index) => new { tag, index })
-                        .GroupBy(x => x.index / 5)  // Группируем по индексу, чтобы сделать группы по 6 тегов
-                        .Select(g => g.Select(x => x.tag).ToList()) // Извлекаем теги
-                        .ToList();
-
-
-                        // Отображаем видимые теги
-                        foreach (var tagGroup in displayedGrouped)
-                        {
-                            <div class="tags-row mb-1">
-                                @foreach (var category in tagGroup)
-                                {
-                                    <span class="tags me-1">@category</span>
-                                }
-
-                            </div>
-                        }
-
-                        // Если есть скрытые теги
-                        if (remainingCount > 0)
-                        {
-                            if (remainingCount > 0)
-                            {
-                                <button class="hide-tags btn" style="font-size: 14px; text-decoration:none;" onclick="toggleTags(this)">
-                                    +@remainingCount
-                                </button>
-                            }
-                            <div class="hidden-tags" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
-                                @foreach (var hiddenGroup in hiddenTags.Select((tag, index) => new { tag, index })
-                               .GroupBy(x => x.index / 5) // Теги по группам 5
-                               .Select(g => g.Select(x => x.tag).ToList()))
-                                {
-                                    <div class="tags-row mb-1">
-                                        @foreach (var category in hiddenGroup)
-                                        {
-                                            <span class="tags me-1">@category</span>
-                                        }
-                                    </div>
-                                }
-                            </div>
-
-                        }
-                    }
-                </div>
-
-                    <div class="interactions">
-                    <form class="like-form" asp-controller="Details" asp-action="ToggleLike" method="post">
-                        <input hidden name="id_topics" value="@Model.Id">
-                        <button type="submit" class="like-btn" style="background: none; border: none; cursor: pointer;">
-                            <i class="bi @(ViewBag.IsLike == true ? "bi-heart-fill" : "bi-heart")"
-                               style="color: @(ViewBag.IsLike == true ? "red" : "var(--text-color)")"></i>
-                            <span class="like-count" style="color: var(--text-color)"> @Model.LikesCount</span>
-                        </button>
-                    </form>
-
-                </div>
+        <!-- Галерея изображений -->
+        <!-- Теги и взаимодействия -->
+        <div class="interactions-container">
+            @await Html.PartialAsync("~/Views/Details/Partial/_TagsPartial.cshtml", Model.Tags)
+            @await Html.PartialAsync("~/Views/Details/Partial/_InteractionsPartial.cshtml", new InteractionsViewModel
+       {
+           TopicId = Model.Id,
+           LikesCount = Model.LikesCount,
+           IsLiked = ViewBag.IsLike,
+           IsFavorite = ViewBag.IsFavorite
+       })
             </div>
         </div>
-
-        @if(!isBanned)
-        {
-      
-        <!-- Форма добавления комментария -->
-        <div class="post-comment">
-                <form method="post" asp-controller="Details" asp-action="CreateComment" class="comment-form">
-                <textarea name="comment" id="comment" placeholder="Добавить новый ответ..."></textarea>
-                    <input hidden name="id_topic" id="id_topic" value="@Model.Id" />
-                <button class="btn btn-primary btn-group-sm mt-1" type="submit">Ответить</button>
-            </form>
-        </div>
-        }
-        else
-        {
-            <!-- Форма добавления комментария -->
-            <div>
-                <label name="comment" style="color: #cc0000">Вы не можете отправлять сообщения, тк Ваш аккаунт заблокирован...</label>
-            </div>
-        }
-        <!-- Разделение между комментарием и ответом -->
-        <hr class="comments-separator">
 
         <!-- Секция комментариев -->
-        <span class="comments-title">Ответы</span>
-        <h3></h3>
-        @if (ViewBag.Comments != null && ViewBag.Comments.Count > 0)
-        {
-            <ul class="comments-list">
-                @foreach (var comment in ViewBag.Comments)
-                {
-                    <li class="comment-item">
-                        <div class="comment-header d-flex align-items-center">
-                            <img src="@comment.users.avatar_url" alt="Avatar" class="rounded-circle"
-                                 style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
-
-                            <span class="user-role"
-                                  style="font-size: 14px; font-weight: bold; color: white;
-                                background-color: @(comment.users.role == "admin" ? "#dc3545"  /* Красный */
-                               : comment.users.role == "moderator" ? "#17a2b8" /* Голубой */
-                               : comment.users.role == "vip" ? "#ffd500" /* Голубой */
-                               : comment.users.role == "banned" ? "#6c757d" /* Серый */
-                               : "#007bff"); padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
-                                @comment.users.role
-                            </span>
-
-                            <a class="comment-author back-link"
-                               href="@Url.Action("users", "profile", new { id = comment.id_users })">
-                                 @comment.users.username
-                            </a>
-                            <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">
-                                @comment.created.ToString("HH:mm dd MMM yyyy")
-                            </span>
-                        </div>
-                        <div class="comment-body" style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
-                            <p style="margin: 0; white-space: pre-line;">@comment.comments</p> <!-- Текст комментария -->
-                            <div class="comment-actions d-flex align-items-center" style="margin-top: 8px;">
-                                <button class="btn btn-sm btn-outline-primary me-2 reply-button"
-                                        style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">
-                                    Ответить
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger"
-                                        style="font-size: 12px; padding: 2px 8px; border-radius: 12px;">
-                                    Пожаловаться
-                                </button>
-                            </div>
+    @await Html.PartialAsync("~/Views/Details/Partial/_CommentsPartial.cshtml", new CommentsViewModel
+{
+    IsBanned = isBanned,
+    TopicId = Model.Id,
+    Comments = ViewBag.Comments
+})
                         </div>
 
-
-                        <div class="reply-field mt-2" style="display: none;">
-                            <form method="post" asp-controller="Details" asp-action="CreateReply" class="comment-form">
-								<input hidden name="id_topic" id="id_topic" value="@Model.Id" />
-								<textarea name="comment" class="textarea" rows="2" placeholder="Напишите свой ответ..."></textarea>
-								<button class="btn btn-primary btn-sm mt-2">Отправить</button>
-							</form>
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <div class="no-comments">
-                <i class="bi bi-chat-dots"></i>
-                <p>Комментариев пока нет. Будьте первым!</p>
-            </div>
-        }
-    </div>
-
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Находим все кнопки "Ответить"
-            const replyButtons = document.querySelectorAll('.reply-button');
-
-            replyButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Ищем ближайшее поле для ответа
-                    const replyField = this.closest('.comment-item').querySelector('.reply-field');
-
-                    // Показываем или скрываем поле
-                    if (replyField.style.display === 'none' || !replyField.style.display) {
-                        replyField.style.display = 'block'; // Показать
-                    } else {
-                        replyField.style.display = 'none'; // Скрыть
-                    }
-                });
-            });
-        });
-    </script>
-
-
-    <script>
-        const images = [
-        @foreach (var image in ViewBag.Images)
-        {
-            <text>
-                            {
-                                url: '@image.ImageUrl'
-                            },
-            </text>
-        }
-        ];
-
-        let currentIndex = 0; // Начальный индекс изображения
-
-        // Функция для смены изображения
-        function changeImage(direction) {
-            currentIndex += direction;
-
-            // Если индекс выходит за пределы массива, возвращаем в начало или в конец
-            if (currentIndex < 0) {
-                currentIndex = images.length - 1;
-            } else if (currentIndex >= images.length) {
-                currentIndex = 0;
-            }
-
-            // Обновление изображения
-            document.getElementById('currentImage').src = images[currentIndex].url;
-        }
-    </script>
-
-    <script>
-        function toggleTags(button) {
-            const hiddenTags = button.nextElementSibling; // Скрытые теги
-            const isOpen = hiddenTags.style.maxHeight !== "0px" && hiddenTags.style.maxHeight !== ""; // Проверяем состояние
-
-            if (isOpen) {
-                // Скрываем теги
-                hiddenTags.style.maxHeight = "0"; // Сворачиваем
-                button.textContent = `+${hiddenTags.querySelectorAll('.tags').length}`; // Меняем текст на "+N"
-            } else {
-                // Показываем теги
-                hiddenTags.style.maxHeight = `${hiddenTags.scrollHeight}px`; // Устанавливаем высоту
-                button.textContent = "⮝"; // Меняем текст на "Скрыть"
-            }
-        }
-    </script>
-
-    <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                document.querySelectorAll(".favorite-form").forEach(function (form) {
-                    form.addEventListener("submit", function (e) {
-                        e.preventDefault(); // Останавливаем стандартную отправку формы
-
-                        var button = form.querySelector(".favorite-btn i");
-                        var formData = new FormData(form);
-
-                        fetch(form.action, {
-                            method: "POST",
-                            body: formData
-                        })
-                        .then(response => response.json()) // Ожидаем JSON-ответ
-                        .then(data => {
-                            // Если возвращаемое состояние избранного true, добавляем класс "bi-bookmark-fill"
-                if (data.isFavorite) {
-                    button.classList.add("bi-bookmark-fill");
-                    button.classList.remove("bi-bookmark");
-                    button.style.color = "gold"; // Цвет для состояния "избранное"
-                } else {
-                    button.classList.remove("bi-bookmark-fill");
-                    button.classList.add("bi-bookmark");
-                    button.style.color = "var(--text-color)"; // Цвет для состояния "не избранное"
-                }
-                        })
-                        .catch(error => {
-                            console.error("Ошибка при обработке запроса", error);
-                        });
-                    });
-                });
-            });
-
-    </script>
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".like-form").forEach(function (form) {
-                form.addEventListener("submit", function (e) {
-                    e.preventDefault(); // Останавливаем стандартную отправку формы
-
-                    var button = form.querySelector(".like-btn i");
-                    var likeCountSpan = form.querySelector(".like-count"); // Ссылка на счетчик лайков
-                    var formData = new FormData(form);
-
-                    // Переключаем состояние кнопки на клиенте сразу
-                    if (button.classList.contains("bi-heart")) {
-                        button.classList.add("bi-heart-fill");
-                        button.classList.remove("bi-heart");
-                        button.style.color = "red";
-                        likeCountSpan.textContent = parseInt(likeCountSpan.textContent) + 1; // Увеличиваем счетчик
-                    } else {
-                        button.classList.remove("bi-heart-fill");
-                        button.classList.add("bi-heart");
-                        button.style.color = "var(--text-color)";
-                        likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1; // Уменьшаем счетчик
-                    }
-
-                    fetch(form.action, {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                         if (data.error === "NotLoggedIn") {
-                             // Если пользователь не авторизован, перенаправляем на страницу входа
-                             window.location.href = "/Account/Login"; // Измените URL на нужный
-                             return;
-                         }
-                        likeCountSpan.textContent = data.likeCount;
-
-                        // Обновляем состояние кнопки лайка, если оно изменилось на сервере
-                        if (data.isLike) {
-                            button.classList.add("bi-heart-fill");
-                            button.classList.remove("bi-heart");
-                            button.style.color = "red";
-                        } else {
-                            button.classList.remove("bi-heart-fill");
-                            button.classList.add("bi-heart");
-                            button.style.color = "var(--text-color)";
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Ошибка при обработке запроса", error);
-                    });
-                });
-            });
-        });
-    </script>
-</body>
+@section Scripts {
+    <script src="~/js/details/tags.js"></script>
+    <script src="~/js/details/imageGallery.js"></script>
+    <script src="~/js/details/interactions.js"></script>
+    <script src="~/js/details/comments.js"></script>
+}

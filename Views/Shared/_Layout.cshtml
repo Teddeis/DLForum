@@ -3,10 +3,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DLForum - обсуждения, темы, веселье!</title>
+
+    <script>
+        (function() {
+          const savedTheme = localStorage.getItem('theme') || 'dark';
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
-
     <link rel="stylesheet" type="text/css" href="/css/login_reg_layout_style.css">
+    <link rel="stylesheet" type="text/css" href="/css/profile_style.css">
+    <link rel="stylesheet" type="text/css" href="/css/search.css">
+    <script src="/js/infinite-scroll.js"></script>
 
 
 </head>
@@ -15,7 +25,7 @@
     <header>
         <nav class="navbar">
             <!-- Логотип -->
-            <a asp-controller="home" asp-action="index" class="navbar-brand">DLForum</a>
+            <a class="navbar-brand" asp-controller="home" asp-action="index">DLForum</a>
 
             <!-- Поисковая строка -->
             <div class="search-bar">
@@ -49,7 +59,7 @@
                     </a>
                     <div class="dropdown">
                         <a class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="user-avatar" />
+                            <img src="@Url.Content($"{@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")}")" alt="User Avatar" class="user-avatar rounded-circle me-3" />
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
@@ -84,27 +94,104 @@
     </div>
 
     <script>
-        // Скрипт для переключения темы
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-
-        // Функция переключения темы
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
 
-            // Меняем иконку
             themeIcon.className = newTheme === 'light' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
-
-            // Сохраняем выбор темы в localStorage
             localStorage.setItem('theme', newTheme);
         });
-
-        // Устанавливаем тему при загрузке страницы
-        const savedTheme = localStorage.getItem('theme') || 'dark'; // По умолчанию тёмная тема
+        const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         themeIcon.className = savedTheme === 'light' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+        <script>
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            let timeoutId;
+            let lastResults = []; // Хранение последних результатов
+
+            // Показ результатов при фокусе
+            searchInput.addEventListener('focus', () => {
+                if (lastResults.length > 0 && searchInput.value.trim()) {
+                    searchResults.style.display = 'block';
+                }
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(() => {
+                    const query = e.target.value.trim();
+
+                    if (query.length < 2) {
+                        searchResults.style.display = 'none';
+                        return;
+                    }
+
+                    fetch(`/Search/Search?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            lastResults = data; // Сохраняем результаты
+                            searchResults.innerHTML = '';
+
+                            if (data.length === 0) {
+                                searchResults.innerHTML = '<div class="search-item empty">Ничего не найдено</div>';
+                            } else {
+                                data.forEach(result => {
+                                    const resultItem = document.createElement('div');
+                                    resultItem.className = 'search-item';
+
+                                    const tagsHtml = result.tags
+                                        ? result.tags.map(tag => `<span class="search-tag">${tag}</span>`).join(' ')
+                                        : '';
+
+                                    resultItem.innerHTML = `
+                                        <a href="${result.url}" class="search-link">
+                                            <img src="${result.imageUrl}" alt="" class="search-item-image">
+                                            <div class="search-item-content">
+                                                <div class="search-title">${result.title}</div>
+                                                <div class="search-meta">
+                                                    <span><i class="bi bi-person"></i> ${result.author}</span>
+                                                    <span><i class="bi bi-chat"></i> ${result.commentsCount}</span>
+                                                    <span><i class="bi bi-heart"></i> ${result.likesCount}</span>
+                                                </div>
+                                                <div class="search-category">Категория: ${result.category}</div>
+                                                <div class="search-tags">${tagsHtml}</div>
+                                            </div>
+                                        </a>
+                                    `;
+
+                                    searchResults.appendChild(resultItem);
+                                });
+                            }
+
+                            searchResults.style.display = 'block';
+                        })
+                        .catch(error => {
+                            console.error('Ошибка поиска:', error);
+                            searchResults.innerHTML = '<div class="search-item empty">Произошла ошибка при поиске</div>';
+                            searchResults.style.display = 'block';
+                        });
+                }, 300);
+            });
+
+            // Закрытие при клике вне
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+
+            // Предотвращение закрытия при клике по результатам
+            searchResults.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
     </script>
 </body>
 </html>

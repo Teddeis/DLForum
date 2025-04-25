@@ -1,0 +1,24 @@
+@model InteractionsViewModel
+
+<div class="interactions-container">
+    <div class="interactions-left">
+        <form class="like-form" asp-controller="Details" asp-action="ToggleLike" method="post">
+            <input hidden name="id_topics" value="@Model.TopicId">
+            <button type="submit" class="action-button like-btn">
+                <i class="bi @(ViewBag.IsLike == true ? "bi-heart-fill" : "bi-heart")"
+                   style="color: @(ViewBag.IsLike == true ? "red" : "var(--text-color)")"></i>
+                <span class="like-count"> @Model.LikesCount</span>
+            </button>
+        </form>
+    </div>
+
+    <div class="interactions-right">
+        <form class="favorite-form" asp-controller="Details" asp-action="ToggleFavorite" method="post">
+            <input hidden name="id_topics" value="@Model.TopicId">
+            <button type="submit" class="action-button favorite-btn">
+                <i class="bi @(ViewBag.IsFavorite == true ? "bi-bookmark-fill" : "bi-bookmark")"
+                   style="color: @(ViewBag.IsFavorite == true ? "gold" : "var(--text-color)")"></i>
+            </button>
+        </form>
+    </div>
+</div>

@@ -6,19 +6,17 @@
 <link rel="stylesheet" type="text/css" href="/css/home_style.css">
 
 <body>
-    <!-- Основная часть контента справа -->
     <div class="col-md-12">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3">Обсуждения</h1>
         </div>
 
-
-        <div class="row">
+        <div class="row" id="topics-container">
             @if (Model.Any())
             {
                 @foreach (var topic in Model)
                 {
-                    <div class="col-12 mb-3">
+                    <div class="col-12 mb-3 topic-item">
                         <div class="d-flex border rounded p-3 overflow-hidden" style="max-width: 100%;">
                             <!-- Блок изображения -->
                             <div class="me-3 position-relative" style="flex-shrink: 0;">
@@ -86,7 +84,6 @@
                                             <i class="bi bi-chat me-1 ms-3"></i>@topic.CommentsCount
                                         </span>
                                         <small class="text-truncate">@topic.CreatedAt.ToString("HH:mm dd MMM yyyy")</small>
-
                                     </div>
                                 </div>
                             </a>
@@ -103,65 +100,148 @@
             }
         </div>
 
-        @if (ViewBag.TotalPages > 1)
-        {
-            <div class="d-flex justify-content-center mt-4">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                        {
-                            // Отображаем первую страницу всегда
-                            if (i == 1 || i == ViewBag.TotalPages || i == ViewBag.CurrentPage ||
-                            (i >= ViewBag.CurrentPage - 1 && i <= ViewBag.CurrentPage + 1) ||
-                            (ViewBag.CurrentPage <= 3 && i <= 5) ||
-                            (ViewBag.CurrentPage >= ViewBag.TotalPages - 2 && i >= ViewBag.TotalPages - 4))
-                            {
-                                if (ViewBag.CurrentPage == i)
-                                {
-                                    <li class="page-item active">
-                                        <span class="page-link">@i</span>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0);" data-page="@i">@i</a>
-                                    </li>
-                                }
-                            }
-                            else if (i == 2 || i == ViewBag.TotalPages - 1)
-                            {
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </nav>
+        <!-- Индикатор загрузки -->
+        <div id="loading-spinner" class="text-center d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Загрузка...</span>
             </div>
-        }
-
-
+        </div>
     </div>
 
     <script>
-           $(document).ready(function () {
-            $('.pagination .page-link').click(function (e) {
-                e.preventDefault();
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMoreContent = true;
 
-                var pageNumber = $(this).data('page');
+        // Функция для проверки, достиг ли пользователь конца страницы
+        function isNearBottom() {
+            return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 500;
+        }
 
-                $('#dynamic-content').load('/Home/Home?pageNumber=' + pageNumber, function (response, status, xhr) {
+        // Функция загрузки следующей страницы
+        async function loadMoreContent() {
+            if (isLoading || !hasMoreContent) return;
 
-                    if (status === "error") {
-                        $('#dynamic-content').html("<p>Ошибка загрузки содержимого</p>");
-                    }
-                });
+            isLoading = true;
+            currentPage++;
+            
+            // Показываем спиннер
+            document.getElementById('loading-spinner').classList.remove('d-none');
 
-                $('.pagination .page-item').removeClass('active');
-                $(this).parent().addClass('active');
+            try {
+                const response = await fetch(`/Home/LoadMoreTopics?pageNumber=${currentPage}`);
+                const data = await response.json();
+
+                if (data.topics && data.topics.length > 0) {
+                    // Добавляем новые темы
+                    const container = document.getElementById('topics-container');
+                    data.topics.forEach(topic => {
+                        container.insertAdjacentHTML('beforeend', createTopicHtml(topic));
+                    });
+
+                    // Проверяем, есть ли еще темы
+                    hasMoreContent = data.hasMorePages;
+                } else {
+                    hasMoreContent = false;
+                }
+            } catch (error) {
+                console.error('Ошибка при загрузке тем:', error);
+            } finally {
+                isLoading = false;
+                document.getElementById('loading-spinner').classList.add('d-none');
+            }
+        }
+
+        // Функция создания HTML для темы
+        function createTopicHtml(topic) {
+            return `
+                <div class="col-12 mb-3 topic-item">
+                    <div class="d-flex border rounded p-3 overflow-hidden" style="max-width: 100%;">
+                        <div class="me-3 position-relative" style="flex-shrink: 0;">
+                            <img src="${topic.imageUrl}" alt="Thumbnail"
+                                 class="rounded thumbnail"
+                                 style="width: 80px; height: 80px; object-fit: cover; max-width: 100%;"
+                                 data-fullsize="${topic.imageUrl}">
+                        </div>
+                        <a href="/details/${topic.id}"
+                           class="flex-grow-1 text-dark text-decoration-none"
+                           style="min-width: 0;">
+                            <div class="d-flex flex-column">
+                                <div class="mb-2 d-flex align-items-center flex-wrap">
+                                    <span class="text-primary me-2" style="font-size: 12px; white-space: nowrap;">Автор: ${topic.author}</span>
+                                    ${createTagsHtml(topic.tags)}
+                                </div>
+                                <h5 class="mb-1 fw-bold text-truncate" style="max-width: 100%;">
+                                    ${topic.title.substring(0, 100)}
+                                </h5>
+                                <div class="mb-2 d-flex flex-wrap">
+                                    ${createCategoriesHtml(topic.categories)}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center text-muted">
+                                    <span>
+                                        <i class="bi bi-heart me-1"></i>${topic.likesCount}
+                                        <i class="bi bi-chat me-1 ms-3"></i>${topic.commentsCount}
+                                    </span>
+                                    <small class="text-truncate">${formatDate(topic.createdAt)}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Вспомогательные функции для форматирования
+        function createTagsHtml(tags) {
+            if (!tags) return '';
+            const tagArray = tags.split(',');
+            const displayedTags = tagArray.slice(0, 3);
+            const remainingCount = tagArray.length - displayedTags.length;
+
+            let html = displayedTags
+                .map(tag => `<span class="tags me-1 text-truncate" style="max-width: 100px;">${tag.trim()}</span>`)
+                .join('');
+
+            if (remainingCount > 0) {
+                html += `<span class="tags">+ ${remainingCount}</span>`;
+            }
+
+            return html;
+        }
+
+        function createCategoriesHtml(categories) {
+            if (!categories) return '';
+            const categoryArray = categories.split(',');
+            const displayedCategories = categoryArray.slice(0, 3);
+            const remainingCount = categoryArray.length - displayedCategories.length;
+
+            let html = displayedCategories
+                .map(category => `<span class="badge bg-primary me-1 text-truncate" style="max-width: 100px;">${category.trim()}</span>`)
+                .join('');
+
+            if (remainingCount > 0) {
+                html += `<span class="badge bg-secondary">+ ${remainingCount}</span>`;
+            }
+
+            return html;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
             });
-        });
+        }
 
+        // Слушатель прокрутки
+        window.addEventListener('scroll', () => {
+            if (isNearBottom()) {
+                loadMoreContent();
+            }
+        });
     </script>
 </body>

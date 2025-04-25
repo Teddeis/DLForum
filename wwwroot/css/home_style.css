@@ -80,10 +80,66 @@ body {
 
 .nav-link {
     color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
 }
 
+    .nav-link i {
+        font-size: 1.1em;
+    }
+
     .nav-link:hover {
-        color: var(--link-color);
+        background-color: var(--button-color);
+        color: var(--text-color);
+        transform: translateY(-1px);
+    }
+
+    /* Активная ссылка */
+    .nav-link.active {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+/* Специальные стили для ссылки "Главная" */
+.nav-link-home {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+}
+
+    .nav-link-home i {
+        font-size: 1.1em;
+    }
+
+    .nav-link-home:hover {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        transform: translateY(-1px);
+    }
+
+    .nav-link-home.active {
+        background-color: var(--button-color);
+        color: var(--text-color);
+        font-weight: 600;
     }
 
 .thumbnail {
@@ -118,21 +174,31 @@ body {
     margin-top: 40px;
     text-align: center;
     color: #555;
-    animation: fadeIn 1s ease-out; /* Плавное появление */
+    animation: bounceCenter 1.5s infinite; /* Изменили анимацию */
 }
 
     .no-topic i {
         font-size: 50px;
         color: #007bff;
-        animation: bounce 1.5s infinite; /* Подпрыгивающая иконка */
+        /* Убрали отдельную анимацию для иконки */
     }
 
-    .no-topic p {
-        font-size: 18px;
-        font-weight: 600;
-        margin-top: 10px;
-        color: var(--text-color); /* Цвет текста */
+/* Добавьте новую анимацию */
+@keyframes bounceCenter {
+    0%, 100% {
+        transform: translateY(0);
     }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.back-link {
+    font-size: 16px;
+    color: var(--text-color);
+    text-decoration: none;
+}
 
 /* Стили для пагинации */
 .pagination .page-item.active .page-link {
@@ -150,4 +216,115 @@ div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; botto
 
 center {
     display: none !important;
+}
+
+.sort-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: var(--button-color);
+    color: var(--text-color);
+    border: none;
+    transition: all 0.2s ease;
+}
+
+    .sort-btn:hover {
+        background-color: var(--button-hover-color);
+        transform: translateY(-1px);
+    }
+
+    .sort-btn.active {
+        background-color: var(--button-hover-color);
+        font-weight: 600;
+    }
+
+    .sort-btn i {
+        font-size: 0.9em;
+    }
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .user-actions {
+        gap: 5px;
+    }
+
+    .btn {
+        padding: 4px 12px;
+        font-size: 14px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 18px;
+    }
+
+    .card-body p {
+        font-size: 14px;
+    }
+
+    .thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+
+    .tags {
+        font-size: 9px;
+        padding: 1px 8px;
+    }
+
+    .no-topic {
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+        .no-topic i {
+            font-size: 40px;
+        }
+
+        .no-topic p {
+            font-size: 16px;
+        }
+
+    .back-link {
+        font-size: 14px;
+    }
+
+    .pagination .page-item .page-link {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+
+    .sort-buttons {
+        gap: 5px;
+    }
+
+    .sort-btn {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+}
+
+#loading-spinner {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
 }

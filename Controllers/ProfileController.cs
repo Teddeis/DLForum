@@ -14,19 +14,17 @@ namespace DLForum.Controllers
         private readonly ProfileUserService _userService;
         private readonly NotificationService _notificationService;
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _environment;
 
-        public ProfileController(ProfileUserService userService,NotificationService notificationService, IConfiguration configuration, IWebHostEnvironment environment)
+        public ProfileController(ProfileUserService userService,NotificationService notificationService, IConfiguration configuration)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
+        [HttpGet ("profile")]
         public async Task<IActionResult> profile()
         {
-            // Получение текущего пользователя из сессии
             var currentUser = HttpContext.Session.GetInt32("ID");
 
             if (currentUser == null)
@@ -34,17 +32,15 @@ namespace DLForum.Controllers
                 return RedirectToAction("login", "account");
             }
 
-            // Асинхронно получаем данные о темах и комментариях пользователя
             var topics = await _userService.GetTopicsByAuthorAsync((int)currentUser);
             var comments = await _userService.GetCommentsByAuthorAsync((int)currentUser);
             var favorites = await _userService.GetFavorite((int)currentUser);
 
-            // Создаем модель для передачи в представление
             var profile = new Profile.Profile
             {
-                user = new users { id = (int)currentUser }, // id пользователя
-                TopicsList = topics, // Полученные темы
-                CommentsList = comments, // Полученные комментарии
+                user = new users { id = (int)currentUser },
+                TopicsList = topics,
+                CommentsList = comments,
                 FavoritesList = favorites
             };
 
@@ -52,7 +48,7 @@ namespace DLForum.Controllers
         }
 
 
-
+        [HttpGet("profile/{id}")]
         public async Task<IActionResult> users(int id)
         {
             // Получаем пользователя по ID
@@ -62,35 +58,32 @@ namespace DLForum.Controllers
                 return NotFound("Пользователь не найден.");
             }
 
-            // Асинхронно получаем данные о темах и комментариях текущего пользователя
             var topics = await _userService.GetTopicsByIdAsync(user.id);
             var comments = await _userService.GetCommentsByIdAsync(user.id);
 
-            // Создаем модель профиля
             var profile = new Profile.Profile
             {
                 user = new users
                 {
-                    id = user.id, // Передаем ID пользователя
-                    username = user.username, // Передаем имя пользователя
-                    email = user.email, // Передаем email пользователя
-                    role = user.role, // Передаем роль пользователя (если есть)
-                    avatar_url = user.avatar_url, // Передаем аватар пользователя (если есть)
+                    id = user.id,
+                    username = user.username,
+                    email = user.email,
+                    role = user.role,
+                    avatar_url = user.avatar_url,
                     gender = user.gender,
                     you_background = user.you_background,
                     about = user.about
                 },
-                TopicsList = topics, // Список тем
-                CommentsList = comments // Список комментариев
+                TopicsList = topics,
+                CommentsList = comments
             };
 
-            // Передаем профиль в представление
             return View(profile);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(Profile.ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
+        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
         {
             try
             {
@@ -181,11 +174,11 @@ namespace DLForum.Controllers
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error updating profile: {ex.Message}");
                 ModelState.AddModelError(string.Empty, "An error occurred while updating the profile.");
                 return View(model);
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
@@ -239,28 +232,27 @@ namespace DLForum.Controllers
             return RedirectToAction("settings");
         }
 
+        [HttpGet("settings")]
         public IActionResult Settings()
         {
             return View();
         }
 
+        [HttpGet("notification")]
         public async Task<IActionResult> notification()
         {
-            // Получаем ID текущего пользователя из сессии
             int? currentUserId = HttpContext.Session.GetInt32("ID");
 
             if (currentUserId == null)
             {
-                return Unauthorized(); // Если ID нет, запрещаем доступ
+                return Unauthorized();
             }
 
-            // Получаем уведомления текущего пользователя
             var notifications = await _notificationService.GetUserNotificationsAsync(currentUserId.Value);
 
             return View(notifications);
         }
 
-        // Обновление статуса уведомления
         [HttpPost]
         public async Task<IActionResult> MarkAsRead(int notificationId)
         {

@@ -37,6 +37,7 @@ public class TopicController : Controller
     }
 
     // Остальные методы контроллера
+    [HttpGet ("create-topic")]
     public IActionResult topic()
     {
         return View();
@@ -76,7 +77,7 @@ public class TopicController : Controller
             }
 
             // Перенаправляем на страницу темы после обновления статуса
-            return RedirectToAction("topic-list", new { id = topicId });
+            return RedirectToAction("topiclist", new { id = topicId });
         }
         catch (Exception ex)
         {
@@ -98,7 +99,7 @@ public class TopicController : Controller
             var messages = await _notificationService.AddNotificationAsync(userId, message, "System", false,DateTime.Now,"Системное");
 
             // Перенаправляем на страницу темы после отмены статуса
-            return RedirectToAction("topic-list", new { id = topicId });
+            return RedirectToAction("topiclist", new { id = topicId });
         }
         catch (Exception ex)
         {
@@ -122,7 +123,7 @@ public class TopicController : Controller
                 return View("Error");
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("index", "home");
         }
         catch (Exception ex)
         {

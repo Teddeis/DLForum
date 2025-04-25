@@ -1,0 +1,26 @@
+@model string
+
+@if (!string.IsNullOrEmpty(Model))
+{
+    var tags = Model.Split(',').Select(t => t.Trim()).ToList();
+    var displayedTags = tags.Take(5).ToList();
+    var hiddenTags = tags.Skip(5).ToList();
+
+    <div class="tags-container">
+        @foreach (var tag in displayedTags)
+        {
+            <span class="tag">@tag</span>
+        }
+
+        @if (hiddenTags.Any())
+        {
+            <button class="show-more-tags" data-count="@hiddenTags.Count">+@hiddenTags.Count</button>
+            <div class="hidden-tags">
+                @foreach (var tag in hiddenTags)
+                {
+                    <span class="tag">@tag</span>
+                }
+            </div>
+        }
+    </div>
+}

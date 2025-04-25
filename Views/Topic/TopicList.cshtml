@@ -17,7 +17,7 @@
                     <div class="card" style="border-radius: 20px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
                         <div class="card-body">
                             <!-- Ссылка на страницу с деталями темы -->
-                            <a href="@Url.Action("DetailsAdmin", "Details", new { id = topic.Id })" class="card-title-link" style="text-decoration: none;">
+                            <a href="@Url.Action("detailsadmin", "details", new { id = topic.Id })" class="card-title-link" style="text-decoration: none;">
                                 <h5 class="card-title">@topic.Title.Substring(0, Math.Min(50, topic.Title.Length))</h5>
                             </a>
 
@@ -66,7 +66,7 @@
                 @for (int i = 1; i <= ViewBag.TotalPages; i++)
                 {
                     <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("TopicList", new { pageNumber = i })">@i</a>
+                        <a class="page-link" href="@Url.Action("topiclist", new { pageNumber = i })">@i</a>
                     </li>
                 }
             </ul>

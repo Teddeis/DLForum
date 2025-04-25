@@ -42,7 +42,6 @@ internal class Program
         builder.Services.AddScoped<DetailsService>();
         builder.Services.AddScoped<ImageService>();
         builder.Services.AddScoped<ProfileUserService>();
-        builder.Services.AddScoped<SearchService>();
         builder.Services.AddScoped<FavoriteService>();
         builder.Services.AddScoped<NotificationService>();
 
@@ -54,39 +53,35 @@ internal class Program
         });
 
 
-
-
         // Подключение сессий
         builder.Services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(30);
-            options.Cookie.HttpOnly = true; // Доступ только через HTTP
-            options.Cookie.IsEssential = true; // Куки обязательны для работы приложения
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
         });
 
 
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/account/login"; // Путь к странице входа
-                options.LogoutPath = "/account/logout"; // Путь к действию выхода
+                options.LoginPath = "/account/login";
+                options.LogoutPath = "/account/logout"; 
             }).AddGoogle(options =>
             {
                 options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                options.CallbackPath = "/signin-google"; // Строка для обратного вызова
+                options.CallbackPath = "/signin-google";
             });
 
-        // Регистрация HttpContextAccessor для доступа к текущему контексту
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
-            app.UseHsts(); // Для повышения безопасности в продакшене
+            app.UseExceptionHandler("/home/error");
+            app.UseHsts();
         }
 
         app.UseHttpsRedirection();
@@ -94,16 +89,14 @@ internal class Program
 
         app.UseRouting();
 
-        // Подключение сессий перед авторизацией
         app.UseSession();
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Настройка маршрутов
         app.MapDefaultControllerRoute();
 
 
-        app.UseDeveloperExceptionPage(); // Ensure this is enabled in development mode.
+        app.UseDeveloperExceptionPage();
 
         app.Run();
     }

@@ -26,13 +26,11 @@ public class ProfileUserService
     {
         try
         {
-            // Perform the update operation
             var response = await _client
                 .From<users>()
-                .Where(x => x.id == user.id) // Filter by ID
+                .Where(x => x.id == user.id)
                 .Update(user);
 
-            // Return the updated user or null if no update occurred
             return response.Models.FirstOrDefault();
         }
         catch (PostgrestException ex)

@@ -1,0 +1,66 @@
+@model comment
+@{
+    var currentUserId = Context.Session.GetInt32("ID");
+}
+
+<ul class="comments-list">
+    <li class="comment-item">
+    <div class="comment-header d-flex align-items-center">
+        <img src="@Model.users.avatar_url" alt="Avatar" class="rounded-circle"
+             style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
+
+        <span class="user-role"
+              style="font-size: 14px; font-weight: bold; color: white;
+                     background-color: @(Model.users.role == "admin" ? "#dc3545"
+                                     : Model.users.role == "moderator" ? "#17a2b8"
+                                     : Model.users.role == "vip" ? "#ffd500"
+                                     : Model.users.role == "banned" ? "#6c757d"
+                                     : "#007bff");
+                     padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
+            @Model.users.role
+        </span>
+
+        @{
+            if (currentUserId == Model.id_users)
+            {
+                <a class="comment-author back-link" href="@Url.Action("profile", "profile")">
+                    @Model.users.username
+                </a>
+            }
+            else
+            {
+                <a class="comment-author back-link"
+                   href="@Url.Action("users", "profile", new { id = Model.id_users })">
+                    @Model.users.username
+                </a>
+            }
+        }
+        <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">
+            @Model.created.ToString("HH:mm dd MMM yyyy")
+        </span>
+    </div>
+    <div class="comment-body" style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
+        <p style="margin: 0; white-space: pre-line;">@Model.comments</p>
+        <div class="comment-actions d-flex align-items-center" style="margin-top: 8px;">
+            @{
+                if (currentUserId != Model.id_users)
+                {
+                    <button class="btn btn-sm btn-outline-primary me-2 reply-button"
+                            style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">
+                        Ответить
+                    </button>
+                    if (currentUserId != null)
+                    {
+                        <button class="btn btn-sm btn-outline-danger me-2 report-button"
+                                style="font-size: 12px; padding: 2px 8px; border-radius: 15px;"
+                                data-bs-toggle="modal" data-bs-target="#reportModal"
+                                data-user-id="@Model.id_users">
+                            Пожаловаться
+                        </button>
+                    }
+                }
+            }
+        </div>
+    </div>
+</li> 
+</ul>
