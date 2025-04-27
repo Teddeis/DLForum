@@ -1,0 +1,132 @@
+/* Стили для мобильной навигации */
+:root {
+    --mobile-nav-height: 60px;
+    --mobile-nav-bg: var(--background-color);
+    --mobile-nav-border: var(--search-bar-border);
+    --mobile-nav-text: var(--text-color);
+    --mobile-nav-active: #bb86fc;
+}
+
+[data-theme="light"] {
+    --mobile-nav-active: #007bff;
+}
+
+/* Базовые стили для логотипа */
+.navbar-brand .full-name {
+    display: inline;
+}
+
+.navbar-brand .short-name {
+    display: none;
+}
+
+/* Базовые стили нижней навигации */
+.bottom-nav {
+    display: none;
+}
+header .container-fluid {
+    max-height: 5px; /* например 600px, можешь подогнать сколько надо */
+    margin: 0 auto; /* чтобы оно было по центру */
+}
+
+/* Мобильные стили */
+@media screen and (max-width: 768px) {
+    body {
+        padding-bottom: var(--mobile-nav-height) !important;
+    }
+
+    /* Логотип */
+    .navbar-brand .full-name {
+        display: none !important;
+    }
+
+    .navbar-brand .short-name {
+        display: inline !important;
+    }
+
+    /* Скрываем элементы на мобильной версии */
+    .user-actions .btn:not(#themeToggle) {
+        display: none !important;
+    }
+
+    .user-actions .dropdown {
+        display: none !important;
+    }
+
+    /* Нижняя навигация */
+    .bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--mobile-nav-height);
+        background-color: var(--mobile-nav-bg);
+        border-top: 1px solid var(--mobile-nav-border);
+        justify-content: space-around;
+        align-items: center;
+        padding: 5px 0;
+        z-index: 9999;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--mobile-nav-text);
+        text-decoration: none;
+        font-size: 12px;
+        padding: 8px;
+        width: 25%;
+        text-align: center;
+        transition: color 0.3s ease;
+    }
+
+    .bottom-nav-item i {
+        font-size: 22px;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .bottom-nav-item span {
+        font-size: 11px;
+        display: block;
+        white-space: nowrap;
+    }
+
+    .bottom-nav-item.active {
+        color: var(--mobile-nav-active);
+    }
+
+    .bottom-nav-item:hover {
+        color: var(--mobile-nav-active);
+    }
+
+    /* Корректировка отступов */
+    .main-content,
+    .container,
+    .container-fluid {
+        margin-bottom: calc(var(--mobile-nav-height) + 10px) !important;
+        padding-bottom: 20px !important;
+    }
+
+    .card {
+        margin-bottom: 15px !important;
+    }
+
+    .pagination {
+        margin-bottom: calc(var(--mobile-nav-height) + 20px) !important;
+    }
+
+    /* Улучшение поисковой строки на мобильных */
+    .search-bar {
+        flex: 1;
+        margin: 0 10px;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+} 

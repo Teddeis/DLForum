@@ -106,7 +106,6 @@ namespace DLForum.Controllers
 
                 var storage = supabase.Storage;
 
-        // Загрузка аватара в Supabase Storage
         if (avatar != null && avatar.Length > 0)
         {
             string avatarFileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
@@ -125,7 +124,6 @@ namespace DLForum.Controllers
             }
         }
 
-        // Загрузка баннера в Supabase Storage
         if (banner != null && banner.Length > 0)
         {
             string bannerFileName = $"{Guid.NewGuid()}{Path.GetExtension(banner.FileName)}";
@@ -222,6 +220,12 @@ namespace DLForum.Controllers
             if (!passwordHasher.VerifyHashedPassword(user, user.password_hash, password).Equals(PasswordVerificationResult.Success))
             {
                 ModelState.AddModelError("", "Неверный пароль.");
+                return View("Settings");
+            }
+
+            if (await _userService.EmailExistsAsync(newEmail, user.id))
+            {
+                ModelState.AddModelError("newEmail", "Данная почта уже используется.");
                 return View("Settings");
             }
 

@@ -10,6 +10,8 @@
     --placeholder-color: #848586;
     --card-bg: #2a2a2d; /* Темный фон карточек */
     --link-color: #4d4d4d; /* Цвет ссылок на темной теме */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --loader-color: #fff;
 }
 
 [data-theme="light"] {
@@ -23,6 +25,8 @@
     --placeholder-color: #666666;
     --card-bg: #f8f9fa; /* Светлый фон карточек */
     --link-color: #0066cc; /* Цвет ссылок на светлой теме */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --loader-color: #333;
 }
 
 body {
@@ -174,25 +178,12 @@ body {
     margin-top: 40px;
     text-align: center;
     color: #555;
-    animation: bounceCenter 1.5s infinite; /* Изменили анимацию */
 }
 
     .no-topic i {
         font-size: 50px;
         color: #007bff;
-        /* Убрали отдельную анимацию для иконки */
     }
-
-/* Добавьте новую анимацию */
-@keyframes bounceCenter {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-20px);
-    }
-}
 
 .back-link {
     font-size: 16px;
@@ -327,4 +318,304 @@ center {
 .spinner-border {
     width: 3rem;
     height: 3rem;
+}
+
+/* Стили для логотипа */
+.navbar-brand {
+    font-size: 24px;
+    color: var(--text-color) !important;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar-brand .short-name {
+    display: none;
+}
+
+/* Стили нижней навигации */
+.bottom-nav {
+    display: none;
+}
+
+/* Мобильные стили */
+@media screen and (max-width: 768px) {
+    body {
+        padding-bottom: 60px !important;
+    }
+
+    /* Логотип */
+    .navbar-brand .full-name {
+        display: none !important;
+    }
+
+    .navbar-brand .short-name {
+        display: inline !important;
+    }
+
+    /* Нижняя навигация */
+    .bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background-color: var(--background-color);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        padding: 5px 0;
+        z-index: 9999;
+    }
+
+    .bottom-nav-item, 
+    .bottom-nav .dropdown > a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 12px;
+        padding: 5px;
+        width: 20%;
+        text-align: center;
+    }
+
+    .bottom-nav-item i,
+    .bottom-nav .dropdown i {
+        font-size: 20px;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .bottom-nav-item span,
+    .bottom-nav .dropdown span {
+        font-size: 11px;
+        display: block;
+        white-space: nowrap;
+    }
+
+    .bottom-nav .dropdown {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bottom-nav .dropdown > a {
+        padding: 5px;
+        background: none;
+        border: none;
+        width: auto;
+    }
+
+    .bottom-nav .dropdown-menu {
+        margin-bottom: 10px;
+        background-color: var(--background-color);
+        border: 1px solid var(--border-color);
+        min-width: 200px;
+    }
+
+    .bottom-nav .dropdown-item {
+        color: var(--text-color);
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .bottom-nav .dropdown-item:hover {
+        background-color: var(--button-color);
+    }
+
+    .bottom-nav .dropdown-divider {
+        border-color: var(--border-color);
+    }
+
+    .bottom-nav form {
+        margin: 0;
+    }
+
+    .bottom-nav .dropdown-item button {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0;
+    }
+
+    /* Скрываем обычную навигацию */
+    .nav-link {
+        display: none !important;
+    }
+
+    /* Корректировка отступов контента */
+    .main-content,
+    .container,
+    .container-fluid {
+        margin-bottom: 70px !important;
+        padding-bottom: 20px !important;
+    }
+
+    /* Корректировка карточек */
+    .card {
+        margin-bottom: 15px !important;
+    }
+
+    /* Корректировка пагинации */
+    .pagination {
+        margin-bottom: 80px !important;
+    }
+}
+
+#loading-spinner {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Основной контент */
+.main-content {
+    transition: margin-bottom 0.3s ease;
+}
+
+/* Обновленные стили для навигации */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: var(--navbar-color);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.menu-item {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    color: var(--text-color);
+    text-decoration: none;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.menu-link:hover {
+    background-color: var(--button-color);
+    transform: translateX(4px);
+}
+
+.menu-link i {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.menu-link span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Стили для выпадающего меню категорий */
+
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 16px;
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    text-align: left;
+    border-radius: 6px;
+}
+
+.category-item:hover {
+    opacity: 1;
+    background-color: var(--button-color);
+    transform: translateX(4px);
+}
+
+.category-item i {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.category-item span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Анимация стрелки */
+.categories-toggle {
+    position: relative;
+}
+
+.categories-toggle .bi-chevron-down {
+    transition: transform 0.3s ease;
+    position: absolute;
+    right: 16px;
+}
+
+[aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* Мобильные стили */
+@media screen and (max-width: 768px) {
+    .nav-menu {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .menu-link {
+        padding: 10px 14px;
+    }
+
+    .menu-link i {
+        font-size: 18px;
+    }
+
+    .menu-link span {
+        font-size: 14px;
+    }
+
+    .category-item {
+        padding: 8px 14px;
+    }
+
+    .category-item i {
+        font-size: 16px;
+    }
+
+    .category-item span {
+        font-size: 13px;
+    }
 }

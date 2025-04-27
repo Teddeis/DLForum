@@ -300,3 +300,50 @@ center {
         max-width: 300px;
         right: 10px;
     }
+
+    .auth-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .auth-header {
+        text-align: center;
+    }
+
+    .auth-title {
+        font-size: 24px;
+    }
+
+    .auth-form {
+        padding: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .form-control {
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .auth-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .auth-footer {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .auth-link {
+        font-size: 14px;
+    }
+}

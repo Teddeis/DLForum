@@ -78,18 +78,26 @@
     <div class="card p-4" style="width: 1000px; border-radius: 15px;">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" id="your-topics-tab" data-bs-toggle="tab" href="#your-topics" role="tab">Ваши темы</a>
+                <a class="nav-link active" id="your-topics-tab" data-bs-toggle="tab" href="#your-topics" role="tab">
+                    <span>Ваши темы</span>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments" role="tab">Комментарии</a>
+                <a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments" role="tab">
+                    <span>Комментарии</span>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="favorites-tab" data-bs-toggle="tab" href="#favorites" role="tab">Избранное</a>
+                <a class="nav-link" id="favorites-tab" data-bs-toggle="tab" href="#favorites" role="tab">
+                    <span>Избранное</span>
+                </a>
             </li>
             @if (role == "moderator")
             {
                 <li class="nav-item">
-                    <a class="nav-link" id="moderation-tab" data-bs-toggle="tab" href="#moderation" role="tab">Проверка тем</a>
+                    <a class="nav-link" id="moderation-tab" data-bs-toggle="tab" href="#moderation" role="tab">
+                        <span>Проверка тем</span>
+                    </a>
                 </li>
             }
         </ul>
@@ -236,6 +244,7 @@
             }
         </div>
     </div>
+</div>
 
 
     <script>

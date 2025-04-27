@@ -16,6 +16,12 @@ public class ProfileUserService
         _client = clientService.Client; 
     }
 
+    public async Task<bool> EmailExistsAsync(string email, int excludeUserId)
+    {
+        var users = await _client.From<users>().Where(u => u.email == email && u.id != excludeUserId).Get();
+        return users.Models.Any();
+    }
+
     public async Task<users?> GetUserByIdAsync(int id)
     {
         var response = await _client.From<users>().Where(x => x.id == id).Get();
@@ -45,8 +51,6 @@ public class ProfileUserService
         }
     }
 
-
-    // Получение списка тем пользователя
     public async Task<List<Topic>> GetTopicsByAuthorAsync(int author)
     {
         var response = await _client.From<Topic>()
@@ -56,7 +60,6 @@ public class ProfileUserService
         return response.Models ?? new List<Topic>();
     }
 
-    // Получение списка комментариев пользователя
     public async Task<List<comment>> GetCommentsByAuthorAsync(int author)
     {
         var response = await _client.From<comment>()
@@ -68,7 +71,6 @@ public class ProfileUserService
     }
 
 
-    // Получение списка тем пользователя
     public async Task<List<Topic>> GetTopicsByIdAsync(int author)
     {
         var response = await _client.From<Topic>()
@@ -79,13 +81,12 @@ public class ProfileUserService
         return response.Models ?? new List<Topic>();
     }
 
-    // Получение списка комментариев пользователя
     public async Task<List<comment>> GetCommentsByIdAsync(int author)
     {
         var response = await _client
             .From<comment>()
-            .Select("id, id_topics, comments, users(id, username, avatar_url)")  // Включаем данные из таблицы users
-            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)  // Фильтруем по id_topics
+            .Select("id, id_topics, comments, users(id, username, avatar_url)") 
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author) 
             .Get();
 
         return response.Models ?? new List<comment>();
@@ -95,8 +96,8 @@ public class ProfileUserService
     {
         var response = await _client
             .From<favoritelist>()
-            .Select("id,id_user,id_topics, topics(id, title,created_at)")  // Включаем связанные данные из таблицы Topic
-            .Filter("id_user", Supabase.Postgrest.Constants.Operator.Equals, id)  // Фильтруем по id пользователя
+            .Select("id,id_user,id_topics, topics(id, title,created_at)") 
+            .Filter("id_user", Supabase.Postgrest.Constants.Operator.Equals, id)
             .Get();
 
         return response.Models ?? new List<favoritelist>();

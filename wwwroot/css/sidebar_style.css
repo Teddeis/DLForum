@@ -77,20 +77,42 @@
 /* Адаптивность */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s;
+        width: 100%;
+        height: calc(100vh - 60px); /* Учитываем высоту нижней навигации */
+        position: fixed;
+        top: 0;
+        left: -100%;
+        transition: left 0.3s ease;
+        z-index: 999; /* Меньше чем у нижней навигации */
+        padding-top: 0;
+        padding-bottom: 60px; /* Отступ для нижней навигации */
     }
 
         .sidebar.show {
-            transform: translateX(0);
+        left: 0;
         }
 
     .main-container {
         margin-left: 0;
+        padding-top: 60px;
+        padding-bottom: 60px; /* Отступ для нижней навигации */
     }
 
     .mobile-menu-btn {
-        display: block !important;
+        display: none; /* Скрываем кнопку меню, так как теперь есть нижняя навигация */
+    }
+
+    .nav-item {
+        padding: 12px 20px;
+    }
+
+    .nav-item i {
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .section-header {
+        padding: 10px 20px;
     }
 }
 
