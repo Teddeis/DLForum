@@ -27,11 +27,11 @@
 
             <!-- Переключатель для Прочитанных и Непрочитанных уведомлений -->
             <div class="read-unread-toggle">
-                <label class="switch">
+                <label class="containerss">
                     <input type="checkbox" id="readUnreadToggle">
-                    <span class="slider"></span>
+                    <span class="checkmark"></span>
                 </label>
-                <span id="readUnreadLabel" class="align-content-center">Показать только непрочитанные</span>
+                <span id="readUnreadLabel" class="align-content-center">Только непрочитанные</span>
             </div>
         </nav>
 
@@ -128,7 +128,7 @@
     </main>
 </div>
 
-<script>
+ <script>
     // Переключение между вкладками типов уведомлений
     document.getElementById('allTab').addEventListener('click', function() {
         document.getElementById('allNotifications').style.display = 'block';
@@ -177,13 +177,13 @@
         // Обновить метку на кнопке
         let label = document.getElementById('readUnreadLabel');
         if (isChecked) {
-            label.innerHTML = 'Показать все уведомления';
+            label.innerHTML = 'Все уведомления';
         } else {
-            label.innerHTML = 'Показать только непрочитанные';
+            label.innerHTML = 'Только непрочитанные';
         }
     });
 
     // Изначально показываем только непрочитанные уведомления
     document.getElementById('readUnreadToggle').checked = true;
-    document.getElementById('readUnreadLabel').innerHTML = 'Показать все уведомления';
-</script>
+    document.getElementById('readUnreadLabel').innerHTML = 'Все уведомления';
+ </script>

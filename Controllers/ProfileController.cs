@@ -83,7 +83,7 @@ namespace DLForum.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner)
+        public async Task<IActionResult> UpdateProfile(ProfileSettingsViewModel model, IFormFile avatar, IFormFile banner, string croppedAvatar, string croppedBanner)
         {
             try
             {
@@ -106,41 +106,69 @@ namespace DLForum.Controllers
 
                 var storage = supabase.Storage;
 
-        if (avatar != null && avatar.Length > 0)
-        {
-            string avatarFileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
-            using (var memoryStream = new MemoryStream())
-            {
-                await avatar.CopyToAsync(memoryStream);
-                byte[] avatarBytes = memoryStream.ToArray();
-
-                var bucket = storage.From("avatars");
-                var response = await bucket.Upload(avatarBytes, avatarFileName);
-
-                if (response != null)
+                if (!string.IsNullOrEmpty(croppedAvatar))
                 {
-                    user.avatar_url = $"{supabaseUrl}/storage/v1/object/public/avatars/{avatarFileName}";
+                    string avatarFileName = $"{Guid.NewGuid()}.jpg";
+                    var base64Data = croppedAvatar.Split(',')[1];
+                    byte[] avatarBytes = Convert.FromBase64String(base64Data);
+
+                    var bucket = storage.From("avatars");
+                    var response = await bucket.Upload(avatarBytes, avatarFileName);
+
+                    if (response != null)
+                    {
+                        user.avatar_url = $"{supabaseUrl}/storage/v1/object/public/avatars/{avatarFileName}";
+                    }
                 }
-            }
-        }
-
-        if (banner != null && banner.Length > 0)
-        {
-            string bannerFileName = $"{Guid.NewGuid()}{Path.GetExtension(banner.FileName)}";
-            using (var memoryStream = new MemoryStream())
-            {
-                await banner.CopyToAsync(memoryStream);
-                byte[] bannerBytes = memoryStream.ToArray();
-
-                var bucket = storage.From("banners");
-                var response = await bucket.Upload(bannerBytes, bannerFileName);
-
-                if (response != null)
+                else if (avatar != null && avatar.Length > 0)
                 {
-                    user.you_background = $"{supabaseUrl}/storage/v1/object/public/banners/{bannerFileName}";
+                    string avatarFileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await avatar.CopyToAsync(memoryStream);
+                        byte[] avatarBytes = memoryStream.ToArray();
+
+                        var bucket = storage.From("avatars");
+                        var response = await bucket.Upload(avatarBytes, avatarFileName);
+
+                        if (response != null)
+                        {
+                            user.avatar_url = $"{supabaseUrl}/storage/v1/object/public/avatars/{avatarFileName}";
+                        }
+                    }
                 }
-            }
-        }
+
+                if (!string.IsNullOrEmpty(croppedBanner))
+                {
+                    string bannerFileName = $"{Guid.NewGuid()}.jpg";
+                    var base64Data = croppedBanner.Split(',')[1];
+                    byte[] bannerBytes = Convert.FromBase64String(base64Data);
+
+                    var bucket = storage.From("banners");
+                    var response = await bucket.Upload(bannerBytes, bannerFileName);
+
+                    if (response != null)
+                    {
+                        user.you_background = $"{supabaseUrl}/storage/v1/object/public/banners/{bannerFileName}";
+                    }
+                }
+                else if (banner != null && banner.Length > 0)
+                {
+                    string bannerFileName = $"{Guid.NewGuid()}{Path.GetExtension(banner.FileName)}";
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await banner.CopyToAsync(memoryStream);
+                        byte[] bannerBytes = memoryStream.ToArray();
+
+                        var bucket = storage.From("banners");
+                        var response = await bucket.Upload(bannerBytes, bannerFileName);
+
+                        if (response != null)
+                        {
+                            user.you_background = $"{supabaseUrl}/storage/v1/object/public/banners/{bannerFileName}";
+                        }
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(model.username))
                 {

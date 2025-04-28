@@ -25,13 +25,11 @@
     <ul class="nav nav-tabs settings-nav mb-4" id="settingsTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
-                <i class="bi bi-person-fill"></i>
                 Профиль
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
-                <i class="bi bi-shield-lock-fill"></i>
                 Безопасность
             </button>
         </li>
@@ -52,6 +50,7 @@
                             Изменить
                             <input type="file" name="avatar" accept="image/*" style="display: none;" onchange="handleImageSelect(this, true)">
                         </label>
+                        <input type="hidden" name="croppedAvatar" id="croppedAvatar">
                     </div>
                 </div>
 
@@ -65,6 +64,7 @@
                             Изменить
                             <input type="file" name="banner" accept="image/*" style="display: none;" onchange="handleImageSelect(this, false)">
                         </label>
+                        <input type="hidden" name="croppedBanner" id="croppedBanner">
                     </div>
                 </div>
 
@@ -277,7 +277,12 @@ function cropImage(isAvatar) {
     
     // Обновляем превью
     const preview = isAvatar ? document.querySelector('.avatar-preview') : document.querySelector('.banner-preview');
-    preview.src = canvas.toDataURL();
+    const croppedData = canvas.toDataURL('image/jpeg');
+    preview.src = croppedData;
+    
+    // Сохраняем обрезанное изображение в скрытое поле
+    const hiddenInput = isAvatar ? document.getElementById('croppedAvatar') : document.getElementById('croppedBanner');
+    hiddenInput.value = croppedData;
     
     // Закрываем модальное окно
     if (currentModal) {

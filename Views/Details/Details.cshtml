@@ -9,6 +9,7 @@
 }
 
 <link rel="stylesheet" type="text/css" href="/css/details_style.css">
+<link rel="stylesheet" type="text/css" href="/css/mobile-nav.css">
 
     <div class="container">
         <!-- Навигация -->
@@ -23,6 +24,8 @@
         @await Html.PartialAsync("~/Views/Details/Partial/_TopicHeaderPartial.cshtml", Model)
 
         <!-- Галерея изображений -->
+
+
         <!-- Теги и взаимодействия -->
         <div class="interactions-container">
             @await Html.PartialAsync("~/Views/Details/Partial/_TagsPartial.cshtml", Model.Tags)
