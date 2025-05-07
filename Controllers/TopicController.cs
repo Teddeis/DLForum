@@ -57,6 +57,7 @@ public class TopicController : Controller
         // Добавляем новую тему в Supabase
         await _supabaseService.AddTopicAsync(userId.Value, title, content, author.ToString(), categories, tags);
 
+        TempData["SuccessMessage"] = "Тема отправлена на модерацию";
         return RedirectToAction("index", "home"); // Перенаправляем на главную страницу после добавления
     }
 

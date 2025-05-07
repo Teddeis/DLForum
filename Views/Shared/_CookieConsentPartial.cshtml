@@ -1,0 +1,102 @@
+<link rel="stylesheet" type="text/css" href="/css/cookie_style.css">
+
+
+@if (!Context.Request.Cookies.ContainsKey("CookieConsent"))
+{
+    <div id="cookieConsent" class="cookie-consent">
+        <div class="cookie-content">
+            <div class="cookie-header">
+                <h3>Настройки конфиденциальности</h3>
+                <p>Мы используем cookie-файлы для улучшения вашего опыта на нашем сайте. Выберите, какие cookie-файлы вы хотите разрешить.</p>
+            </div>
+            
+            <div class="cookie-options">
+                <div class="cookie-option">
+                    <div class="cookie-option-header">
+                        <h4>Необходимые cookie</h4>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="essentialCookies" checked disabled>
+                            <label class="form-check-label" for="essentialCookies">Всегда включены</label>
+                        </div>
+                    </div>
+                    <p class="cookie-description">Эти cookie необходимы для работы сайта и не могут быть отключены. Они обеспечивают базовую функциональность и безопасность.</p>
+                </div>
+
+                <div class="cookie-option">
+                    <div class="cookie-option-header">
+                        <h4>Функциональные cookie</h4>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="functionalCookies" checked>
+                            <label class="form-check-label" for="functionalCookies">Разрешить</label>
+                        </div>
+                    </div>
+                    <p class="cookie-description">Позволяют сайту запоминать ваши настройки и предпочтения (например, язык, тема оформления).</p>
+                </div>
+
+                <div class="cookie-option">
+                    <div class="cookie-option-header">
+                        <h4>Аналитические cookie</h4>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="analyticsCookies">
+                            <label class="form-check-label" for="analyticsCookies">Разрешить</label>
+                        </div>
+                    </div>
+                    <p class="cookie-description">Помогают нам понять, как посетители взаимодействуют с сайтом, чтобы мы могли улучшить его работу.</p>
+                </div>
+
+                <div class="cookie-option">
+                    <div class="cookie-option-header">
+                        <h4>Рекламные cookie</h4>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="advertisingCookies">
+                            <label class="form-check-label" for="advertisingCookies">Разрешить</label>
+                        </div>
+                    </div>
+                    <p class="cookie-description">Используются для показа релевантной рекламы и отслеживания эффективности рекламных кампаний.</p>
+                </div>
+            </div>
+
+            <div class="cookie-buttons">
+                <button onclick="acceptAllCookies()" class="btn btn-primary">Принять все</button>
+                <button onclick="saveCookiePreferences()" class="btn btn-secondary">Сохранить настройки</button>
+                <button onclick="rejectNonEssentialCookies()" class="btn btn-outline-secondary">Отклонить все</button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function acceptAllCookies() {
+        setCookie("CookieConsent", "true", 365);
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+
+    function saveCookiePreferences() {
+        const functional = document.getElementById('functionalCookies').checked;
+        const analytics = document.getElementById('analyticsCookies').checked;
+        const advertising = document.getElementById('advertisingCookies').checked;
+
+        if (functional || analytics || advertising) {
+            setCookie("CookieConsent", "true", 365);
+        } else {
+            setCookie("CookieConsent", "false", 365);
+        }
+
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+
+    function rejectNonEssentialCookies() {
+        setCookie("CookieConsent", "false", 365);
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+</script> 

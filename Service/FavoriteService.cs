@@ -18,7 +18,7 @@ namespace DLForum.Service
 
         public async Task<bool> IsFavorite(int userId, int topicId)
         {
-            var favorite = await _client.From<favorite>().Where(x=> x.TopicId == topicId && x.UserId == userId)
+            var favorite = await _client.From<favorite>().Where(x => x.TopicId == topicId && x.UserId == userId)
                 .Single();
 
             return favorite != null;

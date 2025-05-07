@@ -17,8 +17,8 @@ namespace DLForum.Controllers
         private readonly TopicService _topicService;
 
         public HomeController(
-            ILogger<HomeController> logger, 
-            SupabaseClientService supabase, 
+            ILogger<HomeController> logger,
+            SupabaseClientService supabase,
             IHttpContextAccessor httpContextAccessor,
             TopicService topicService)
         {
@@ -163,7 +163,7 @@ namespace DLForum.Controllers
                 ViewBag.TotalPages = totalPages;
                 ViewBag.SelectedCategory = category;
 
-                return PartialView(topics); 
+                return PartialView(topics);
             }
             catch (Exception ex)
             {

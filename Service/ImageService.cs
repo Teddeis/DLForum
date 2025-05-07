@@ -20,12 +20,12 @@ namespace DLForum.Service
             {
                 var response = await _client.From<images>().Where(x => x.TopicId == topicId).Get();
 
-                return response.Models.ToList(); 
+                return response.Models.ToList();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Ошибка: " + ex.Message);
-                return new List<images>(); 
+                return new List<images>();
             }
         }
     }

@@ -909,6 +909,7 @@ a {
 }
 
 
+
 div[style*="height: 65px;"] {
     display: none;
 }
@@ -920,8 +921,6 @@ div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; botto
 center {
     display: none !important;
 }
-
-
 
 /* Список уведомлений */
 .notification-list {

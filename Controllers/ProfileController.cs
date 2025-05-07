@@ -35,6 +35,7 @@ namespace DLForum.Controllers
             var topics = await _userService.GetTopicsByAuthorAsync((int)currentUser);
             var comments = await _userService.GetCommentsByAuthorAsync((int)currentUser);
             var favorites = await _userService.GetFavorite((int)currentUser);
+            var reports = await _userService.GetReportsAsync();
 
             var profile = new Profile.Profile
             {
@@ -186,7 +187,7 @@ namespace DLForum.Controllers
                 var updatedUser = await _userService.UpdateUserAsync(user);
                 if (updatedUser == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update user.");
+                    TempData["ErrorMessage"] = "❌ Ошибка в изменении данных, повторите попытку";
                     return View(model);
                 }
 
@@ -219,13 +220,13 @@ namespace DLForum.Controllers
             var user = await _userService.GetUserByIdAsync(userId.Value);
             if (user == null || !passwordHasher.VerifyHashedPassword(user, user.password_hash, currentPassword).Equals(PasswordVerificationResult.Success))
             {
-                ModelState.AddModelError("", "Неверный текущий пароль.");
+                TempData["ErrorMessage"] = "❌ Неверный текущий пароль";
                 return View("settings");
             }
 
             if (newPassword != confirmPassword)
             {
-                ModelState.AddModelError("", "Пароли не совпадают.");
+                TempData["ErrorMessage"] = "❌ Пароли не совпадают";
                 return View("settings");
             }
 
@@ -247,14 +248,14 @@ namespace DLForum.Controllers
             var user = await _userService.GetUserByIdAsync(userId.Value);
             if (!passwordHasher.VerifyHashedPassword(user, user.password_hash, password).Equals(PasswordVerificationResult.Success))
             {
-                ModelState.AddModelError("", "Неверный пароль.");
+                TempData["ErrorMessage"] = "❌ Не верный пароль";
                 return View("Settings");
             }
 
             if (await _userService.EmailExistsAsync(newEmail, user.id))
             {
-                ModelState.AddModelError("newEmail", "Данная почта уже используется.");
-                return View("Settings");
+                TempData["ErrorMessage"] = "❌ Данная почта уже используется";
+                return RedirectToAction("settings");
             }
 
             user.email = newEmail;
@@ -267,6 +268,13 @@ namespace DLForum.Controllers
         [HttpGet("settings")]
         public IActionResult Settings()
         {
+            int? currentUserId = HttpContext.Session.GetInt32("ID");
+
+            if (currentUserId == null)
+            {
+                return RedirectToAction("login", "account");
+            }
+
             return View();
         }
 
@@ -277,7 +285,7 @@ namespace DLForum.Controllers
 
             if (currentUserId == null)
             {
-                return Unauthorized();
+                return RedirectToAction("login","account");
             }
 
             var notifications = await _notificationService.GetUserNotificationsAsync(currentUserId.Value);

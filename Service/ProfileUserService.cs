@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using AllTopics;
+using DLForum;
 using DLForum.Models.Topic;
 using Microsoft.EntityFrameworkCore;
 using Supabase;
@@ -13,7 +14,7 @@ public class ProfileUserService
 
     public ProfileUserService(SupabaseClientService clientService)
     {
-        _client = clientService.Client; 
+        _client = clientService.Client;
     }
 
     public async Task<bool> EmailExistsAsync(string email, int excludeUserId)
@@ -64,7 +65,7 @@ public class ProfileUserService
     {
         var response = await _client.From<comment>()
             .Select("id, id_topics, comments, users(id, username, avatar_url)")  // Включаем данные из таблицы users
-            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author) 
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)
             .Get();
 
         return response.Models ?? new List<comment>();
@@ -85,8 +86,8 @@ public class ProfileUserService
     {
         var response = await _client
             .From<comment>()
-            .Select("id, id_topics, comments, users(id, username, avatar_url)") 
-            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author) 
+            .Select("id, id_topics, comments, users(id, username, avatar_url)")
+            .Filter("id_users", Supabase.Postgrest.Constants.Operator.Equals, author)
             .Get();
 
         return response.Models ?? new List<comment>();
@@ -96,7 +97,7 @@ public class ProfileUserService
     {
         var response = await _client
             .From<favoritelist>()
-            .Select("id,id_user,id_topics, topics(id, title,created_at)") 
+            .Select("id,id_user,id_topics, topics(id, title,created_at)")
             .Filter("id_user", Supabase.Postgrest.Constants.Operator.Equals, id)
             .Get();
 
@@ -129,6 +130,11 @@ public class ProfileUserService
         };
     }
 
+    public async Task<List<DLForum.Models.Comments.report>> GetReportsAsync()
+    {
+        var response = await _client.From<DLForum.Models.Comments.report>().Get();
+        return response.Models ?? new List<DLForum.Models.Comments.report>();
+    }
 
     public class UserProfileDto
     {

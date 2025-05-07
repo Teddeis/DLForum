@@ -1,6 +1,5 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
-using System;
 
 [Table("topics")]
 public class Topic : BaseModel

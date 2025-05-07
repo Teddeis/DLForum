@@ -1,0 +1,107 @@
+﻿:root {
+    --background-color: #1a1a1b; /* Тёмная тема */
+    --text-color: #d7dadc;
+    --navbar-color: #272729;
+    --button-color: #424245;
+    --button-hover-color: #5a5a5b;
+    --search-bar-bg: #272729;
+    --search-bar-border: #424245;
+    --placeholder-color: #848586;
+    --card-bg: #2a2a2d; /* Темный фон карточек */
+    --link-color: #4d4d4d; /* Цвет ссылок на темной теме */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --loader-color: #fff;
+}
+
+[data-theme="light"] {
+    --background-color: #ffffff; /* Светлая тема */
+    --text-color: #333333;
+    --navbar-color: #f8f9fa;
+    --button-color: #e7e7e7;
+    --button-hover-color: #d6d6d6;
+    --search-bar-bg: #f1f3f5;
+    --search-bar-border: #cccccc;
+    --placeholder-color: #666666;
+    --card-bg: #f8f9fa; /* Светлый фон карточек */
+    --link-color: #0066cc; /* Цвет ссылок на светлой теме */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --loader-color: #333;
+}
+
+.error-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--background-color);
+}
+
+.error-content {
+    max-width: 600px;
+    text-align: center;
+    padding: 2rem;
+    background: var(--background-color);
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.error-details {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+}
+
+    .error-details code {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+    }
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+@media (max-width: 576px) {
+    .error-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

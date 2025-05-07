@@ -8,6 +8,22 @@
 <link rel="stylesheet" type="text/css" href="/css/home_style.css">
 <link rel="stylesheet" type="text/css" href="/css/loader_style.css">
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="custom-toast" class="custom-toast show">
+        <div class="toast-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="toast-content">@TempData["SuccessMessage"]</div>
+        <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.getElementById('custom-toast')?.classList.remove('show');
+        }, 3500);
+        function closeToast() {
+            document.getElementById('custom-toast').classList.remove('show');
+        }
+    </script>
+}
 
 <div class="container mt-4">
     <div class="row">

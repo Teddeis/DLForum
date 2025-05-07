@@ -769,3 +769,32 @@ center {
     font-weight: 200;
     margin-left: 4px;
 }
+
+.modal-content {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--background-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--background-color);
+}
+
+.form-control {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-color: var(--background-color);
+}
+
+    .form-control:focus {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+#reportedUsername {
+    font-weight: bold;
+    color: red;
+}

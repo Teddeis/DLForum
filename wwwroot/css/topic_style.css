@@ -220,38 +220,6 @@ a {
         color: var(--text-color);
     }
 
-/* Поиск */
-.search-bar {
-    background-color: var(--search-bar-bg);
-    border: 1px solid var(--search-bar-border);
-    border-radius: 20px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    color: var(--text-color);
-    flex: 1;
-    max-width: 400px;
-    margin: 0 auto; /* Центрирование */
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-    .search-bar input {
-        background-color: transparent;
-        border: none;
-        outline: none;
-        color: var(--text-color);
-        width: 100%;
-        margin-left: 5px;
-    }
-
-        .search-bar input::placeholder {
-            color: var(--placeholder-color);
-        }
-
-    .search-bar i {
-        color: var(--placeholder-color);
-    }
-
 /* Пользовательские действия */
 .user-actions {
     display: flex;
@@ -313,13 +281,11 @@ a {
     margin-top: 40px;
     text-align: center;
     color: #555;
-    animation: fadeIn 1s ease-out;
 }
 
     .no-comments i {
         font-size: 50px;
         color: #007bff;
-        animation: bounce 1.5s infinite;
     }
 
     .no-comments p {

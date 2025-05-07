@@ -1,5 +1,6 @@
 using DLForum.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using DLForum.Extensions;
 
 internal class Program
 {
@@ -16,7 +17,7 @@ internal class Program
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors("AllowAll"); // Разрешаем все домены
+        app.UseCors("AllowAll"); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
@@ -35,7 +36,7 @@ internal class Program
             builder.Configuration["Supabase:Key"]
         ));
 
-        // Регистрация пользовательских сервисов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<TopicService>();
         builder.Services.AddScoped<CommentService>();
@@ -53,7 +54,7 @@ internal class Program
         });
 
 
-        // Подключение сессий
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         builder.Services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -80,9 +81,15 @@ internal class Program
 
         if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/home/error");
+            app.UseExceptionHandler("/Error/500");
             app.UseHsts();
         }
+        else
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
@@ -93,10 +100,9 @@ internal class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseCookieConsent();
+
         app.MapDefaultControllerRoute();
-
-
-        app.UseDeveloperExceptionPage();
 
         app.Run();
     }
