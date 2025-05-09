@@ -51,10 +51,25 @@
                         <div class="notification-item @(notification.read ? "read" : "unread")" style="display: @(notification.read ? "none" : "block")">
                             <div>
                                 <p>
-                                    <strong>@notification.from_to</strong> отправил(а) сообщение:
-                                    <span>"@notification.message"</span>
+                                    <strong>@notification.from_to</strong>
+                                    @if (notification.type == "Ответы")
+                                    {
+                                        <span>ответил(а) на ваш комментарий:</span>
+                                        <a href="/Details/@notification.message" class="notification-link" style="text-decoration: none; color: var(--primary-color)">
+                                            Перейти к ответу
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>отправил(а) сообщение:</span>
+                                        <span>"@notification.message"</span>
+                                    }
                                 </p>
-                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                                <div style="text-align: left;">
+                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
+                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
+                                </div>
+
                             </div>
                             <hr />
                             @if (!notification.read)
@@ -79,7 +94,10 @@
                                     <strong>@notification.from_to</strong> отправил(а) сообщение:
                                     <span>"@notification.message"</span>
                                 </p>
-                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                                <div style="text-align: left;">
+                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
+                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
+                                </div>
                             </div>
                             <hr />
                             @if (!notification.read)
@@ -101,10 +119,15 @@
                         <div class="notification-item @(notification.read ? "read" : "unread")" style="display: @(notification.read ? "none" : "block")">
                             <div>
                                 <p>
-                                    <strong>@notification.from_to</strong> отправил(а) ответ:
-                                    <span>"@notification.message"</span>
+                                    <strong>@notification.from_to</strong> ответил(а) на ваш комментарий:
+                                    <a href="/Details/@notification.message" class="notification-link" style="text-decoration: none; color: var(--primary-color)">
+                                        Перейти к ответу
+                                    </a>
                                 </p>
-                                <time>@notification.created_at.ToString("dd.MM.yyyy HH:mm")</time>
+                                <div style="text-align: left;">
+                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
+                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
+                                </div>
                             </div>
                             <hr />
                             @if (!notification.read)

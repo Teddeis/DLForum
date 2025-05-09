@@ -48,11 +48,28 @@
 })
 </div>
 
-@section Scripts {
-    <script src="~/js/details/tags.js"></script>
-    <script src="~/js/details/imageGallery.js"></script>
-    <script src="~/js/details/interactions.js"></script>
-}
+<script src="~/js/details/tags.js"></script>
+<script src="~/js/details/imageGallery.js"></script>
+<script src="~/js/details/interactions.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверяем наличие якоря комментария в URL
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#comment')) {
+            const commentId = hash.replace('#comment', '');
+            const comment = document.querySelector(`[data-comment-id="${commentId}"]`);
+            if (comment) {
+                // Добавляем класс для подсветки
+                comment.classList.add('highlight');
+                // Плавно прокручиваем к комментарию
+                comment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+</script>
+
+
 
 <!-- Модальное окно для жалобы -->
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

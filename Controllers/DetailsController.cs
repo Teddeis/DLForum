@@ -1,6 +1,7 @@
 ﻿using DLForum.Models.Topic;
 using DLForum.Service;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
 using Supabase.Gotrue;
 
 public class DetailsController : Controller
@@ -9,14 +10,16 @@ public class DetailsController : Controller
     private readonly CommentService _commentService; // Assuming a CommentService for fetching comments
     private readonly ImageService _imageService;
     private readonly FavoriteService _favoriteService;
+    private readonly NotificationService _notificationService;
 
 
-    public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService, FavoriteService favoriteService)
+    public DetailsController(DetailsService topicService, CommentService commentService, ImageService imageService, FavoriteService favoriteService, NotificationService notificationService)
     {
         _topicService = topicService;
         _commentService = commentService;
         _imageService = imageService;
         _favoriteService = favoriteService;
+        _notificationService = notificationService; 
     }
 
     [HttpGet("/details/{id}")]
@@ -40,12 +43,10 @@ public class DetailsController : Controller
 
             if (userId != null)
             {
-                // Проверяем, является ли эта тема избранной для текущего пользователя
                 isFavorite = await _favoriteService.IsFavorite(userId.Value, id);
                 isLike = await _favoriteService.IsLike(userId.Value, id);
             }
 
-            // Передаем данные через ViewBag
             ViewBag.Comments = comments;
             ViewBag.Images = imageUrls;
             ViewBag.IsFavorite = isFavorite;
@@ -155,16 +156,37 @@ public class DetailsController : Controller
         if (string.IsNullOrWhiteSpace(comment))
         {
             TempData["ErrorMessage"] = "Ответ не может быть пустым.";
-            return RedirectToAction("Details", new { id = id_topic });
+            return RedirectToAction("details", new { id = id_topic });
         }
 
         try
         {
-            await _commentService.AddReplyAsync(userId.Value, id_topic, comment, parent_id);
+            var parentComment = await _commentService.GetCommentByIdAsync(parent_id);
+            if (parentComment == null)
+            {
+                TempData["ErrorMessage"] = "Родительский комментарий не найден.";
+                return RedirectToAction("details", new { id = id_topic });
+            }
+
+            var reply = await _commentService.AddReplyAsync(userId.Value, id_topic, comment, parent_id);
+
+            // Создаем уведомление для автора родительского комментария
+            if (parentComment.id_users != userId.Value)
+            {
+                // Изменяем формат сообщения, чтобы оно содержало только ID темы
+                var message = $"{id_topic}#comment{reply.Id}";
+                await _notificationService.AddNotificationAsync(
+                    parentComment.id_users,
+                    message,
+                    HttpContext.Session.GetString("UserName") ?? "Пользователь",
+                    false,
+                    DateTime.Now,
+                    "Ответы"
+                );
+            }
 
             var commentCount = await _favoriteService.GetCommentCount(id_topic);
             await _topicService.UpdateCommentCount(id_topic, commentCount);
-
 
             TempData["SuccessMessage"] = "Ответ успешно добавлен!";
         }

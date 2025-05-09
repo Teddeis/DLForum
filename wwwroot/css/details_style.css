@@ -657,6 +657,21 @@ body {
     background: var(--button-hover-color);
 }
 
+.comment-item.highlight {
+    animation: highlight-comment 2s ease-out;
+    border: 2px solid #007bff;
+}
+
+@keyframes highlight-comment {
+    0% {
+        background-color: rgba(0, 123, 255, 0.2);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
 div[style*="height: 65px;"] {
     display: none;
 }

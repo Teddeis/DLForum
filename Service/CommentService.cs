@@ -136,4 +136,29 @@ public class CommentService
         return response.Models.FirstOrDefault();
     }
 
+    // Получить комментарий по ID
+    public async Task<comment?> GetCommentByIdAsync(int commentId)
+    {
+        var response = await _client
+            .From<comment>()
+            .Select("id, comments, id_users, created, parent_id, id_topics")
+            .Filter("id", Supabase.Postgrest.Constants.Operator.Equals, commentId)
+            .Get();
+
+        var comment = response.Models.FirstOrDefault();
+
+        if (comment != null)
+        {
+            // Загружаем информацию о пользователе
+            var userResponse = await _client
+                .From<users>()
+                .Select("id, username, avatar_url, role")
+                .Filter("id", Supabase.Postgrest.Constants.Operator.Equals, comment.id_users)
+                .Get();
+
+            comment.users = userResponse.Models.FirstOrDefault();
+        }
+
+        return comment;
+    }
 }
