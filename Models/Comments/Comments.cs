@@ -12,6 +12,7 @@ public class comment : BaseModel
     public int id_topics { get; set; }
     public string comments { get; set; }
     public DateTime created { get; set; }
+    public int? parent_id { get; set; }
     public users users { get; set; } // Навигационное свойство
 
 }

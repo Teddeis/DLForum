@@ -46,11 +46,107 @@
     TopicId = Model.Id,
     Comments = ViewBag.Comments
 })
-                        </div>
+</div>
 
 @section Scripts {
     <script src="~/js/details/tags.js"></script>
     <script src="~/js/details/imageGallery.js"></script>
     <script src="~/js/details/interactions.js"></script>
-    <script src="~/js/details/comments.js"></script>
 }
+
+<!-- Модальное окно для жалобы -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Отправить жалобу</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Details" asp-action="CreateReport" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="reportCommentId" name="id_topic" />
+                    <input type="hidden" id="reportUserId" name="owr" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Жалоба на пользователя: <span id="reportedUsername"></span></label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">Причина жалобы:</label>
+                        <textarea class="form-control" id="reportReason" name="report" rows="4" required
+                                  placeholder="Опишите причину вашей жалобы..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger">Отправить жалобу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Добавь этот скрипт после модального окна -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reportButtons = document.querySelectorAll('.report-button');
+        const reportModal = document.getElementById('reportModal');
+        
+        reportButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.getAttribute('data-comment-id');
+                const userId = this.getAttribute('data-user-id');
+                const username = this.getAttribute('data-username');
+                
+                document.getElementById('reportCommentId').value = commentId;
+                document.getElementById('reportUserId').value = userId;
+                document.getElementById('reportedUsername').textContent = username;
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('click', function (e) {
+        // Открытие/скрытие ветки
+        if (e.target && e.target.classList.contains('toggle-replies-btn')) {
+            const commentItem = e.target.closest('.comment-item');
+            const repliesList = commentItem.querySelector('.replies-list');
+            if (repliesList) {
+                if (repliesList.style.display === 'none' || repliesList.style.display === '') {
+                    repliesList.style.display = 'block';
+                    e.target.textContent = 'Скрыть ответы';
+                } else {
+                    repliesList.style.display = 'none';
+                    e.target.textContent = 'Показать ответы';
+                }
+            }
+        }
+        // Открытие/скрытие формы ответа одной кнопкой
+        if (e.target && e.target.classList.contains('reply-btn')) {
+            const commentId = e.target.getAttribute('data-comment-id');
+            const commentItem = e.target.closest('.comment-item');
+            const container = commentItem.querySelector('.reply-form-container');
+            if (!container.querySelector('form')) {
+                container.innerHTML = `
+                    <hr style="color:var(--background-color)"/>
+                    <form class="reply-form" method="post" action="/Details/CreateReply">
+                        <input type="hidden" name="id_topic" value="${window.topicId}" />
+                        <input type="hidden" name="parent_id" value="${commentId}" />
+                        <textarea name="comment" required placeholder="Ваш ответ..."></textarea>
+                        <button type="submit">Отправить</button>
+                    </form>
+                `;
+                e.target.textContent = 'Скрыть форму';
+                e.target.classList.remove('btn-outline-primary');
+                e.target.classList.add('btn-outline-secondary');
+            } else {
+                container.innerHTML = '';
+                e.target.textContent = 'Ответить';
+                e.target.classList.remove('btn-outline-secondary');
+                e.target.classList.add('btn-outline-primary');
+            }
+        }
+    });
+    window.topicId = document.querySelector('input[name="id_topic"]')?.value;
+</script>

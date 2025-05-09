@@ -20,12 +20,19 @@ else
 <hr class="comments-separator">
 <span class="comments-title">Ответы</span>
 
+
 @if (Model.Comments != null && Model.Comments.Any())
 {
     <ul class="comments-list">
-        @foreach (var comment in Model.Comments)
+        @foreach (var comment in Model.Comments.Where(c => c.parent_id == null))
         {
-            @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", comment)
+            @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", new CommentItemViewModel
+            {
+                Comment = comment,
+                AllComments = Model.Comments,
+                TopicId = Model.TopicId,
+                IsBanned = Model.IsBanned
+            })
         }
     </ul>
 }
@@ -35,4 +42,4 @@ else
         <i class="bi bi-chat-dots"></i>
         <p>Комментариев пока нет. Будьте первым!</p>
     </div>
-} 
+}

@@ -112,8 +112,6 @@ public class DetailsController : Controller
 
         try
         {
-            Console.WriteLine($"Полученные данные: id_user={userId}, id_topic={id_topic}, comment={comment}");
-
             await _commentService.AddCommentAsync(userId.Value, id_topic, comment);
 
             var commentCount = await _favoriteService.GetCommentCount(id_topic);
@@ -130,33 +128,48 @@ public class DetailsController : Controller
         return RedirectToAction("Details", new { id = id_topic });
     }
 
+    // Получить ответы на комментарий (AJAX)
+    [HttpGet]
+    public async Task<IActionResult> GetReplies(int parentId)
+    {
+        var replies = await _commentService.GetRepliesAsync(parentId);
+        return Json(replies.Select(r => new {
+            id = r.Id,
+            user = new { r.users?.username, r.users?.avatar_url },
+            content = r.comments,
+            created = r.created.ToString("g"),
+            parent_id = r.parent_id
+        }));
+    }
+
+    // Создать ответ на комментарий
     [HttpPost]
-    public async Task<IActionResult> CreateReply(int parentId, int id_topic, string replyText)
+    public async Task<IActionResult> CreateReply(int id_topic, int parent_id, string comment)
     {
         var userId = HttpContext.Session.GetInt32("ID");
-
         if (userId == null)
         {
             return RedirectToAction("Login", "Account");
         }
 
+        if (string.IsNullOrWhiteSpace(comment))
+        {
+            TempData["ErrorMessage"] = "Ответ не может быть пустым.";
+            return RedirectToAction("Details", new { id = id_topic });
+        }
+
         try
         {
+            await _commentService.AddReplyAsync(userId.Value, id_topic, comment, parent_id);
 
-            if (string.IsNullOrWhiteSpace(replyText))
-            {
-                Console.WriteLine("ОШИБКА: Ответ пустой!");
-                ModelState.AddModelError("Reply", "Ответ не может быть пустым.");
-            }
-            else
-            {
-                await _commentService.AddReplyAsync(userId.Value, parentId, replyText);
-                TempData["SuccessMessage"] = "Ответ успешно добавлен!";
-            }
+            var commentCount = await _favoriteService.GetCommentCount(id_topic);
+            await _topicService.UpdateCommentCount(id_topic, commentCount);
+
+
+            TempData["SuccessMessage"] = "Ответ успешно добавлен!";
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ИСКЛЮЧЕНИЕ: {ex.Message}");
             TempData["ErrorMessage"] = "Не удалось добавить ответ: " + ex.Message;
         }
 

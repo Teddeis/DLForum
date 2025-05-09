@@ -1,119 +1,94 @@
-@model comment
+@model CommentItemViewModel
 @{
     var currentUserId = Context.Session.GetInt32("ID");
+    var hasReplies = Model.AllComments != null && Model.AllComments.Any(c => c.parent_id == Model.Comment.Id);
 }
 
-<ul class="comments-list">
-    <li class="comment-item">
-        <div class="comment-header d-flex align-items-center">
-            <img src="@Model.users.avatar_url" alt="Avatar" class="rounded-circle"
-                 style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
-
-            <span class="user-role"
-                  style="font-size: 14px; font-weight: bold; color: white;
-                         background-color: @(Model.users.role == "admin" ? "#dc3545"
-                                         : Model.users.role == "moderator" ? "#17a2b8"
-                                         : Model.users.role == "vip" ? "#ffd500"
-                                         : Model.users.role == "banned" ? "#6c757d"
-                                         : "#007bff");
-                         padding: 2px 6px; border-radius: 12px; margin-right: 5px;">
-                @Model.users.role
-            </span>
-
-            @{
-                if (currentUserId == Model.id_users)
-                {
-                    <a class="comment-author back-link" href="@Url.Action("profile", "profile")">
-                        @Model.users.username
-                    </a>
-                }
-                else
-                {
-                    <a class="comment-author back-link"
-                       href="@Url.Action("users", "profile", new { id = Model.id_users })">
-                        @Model.users.username
-                    </a>
-                }
+<li class="comment-item" data-comment-id="@Model.Comment.Id">
+    <div class="comment-header">
+        <img src="@Model.Comment.users.avatar_url" alt="Avatar" class="rounded-circle"
+             style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;" />
+             <span class="user-role"
+              style="font-size: 13px; font-weight: bold; color: white;
+                     background-color: @(Model.Comment.users?.role == "admin" ? "#dc3545"
+                                     : Model.Comment.users?.role == "moderator" ? "#17a2b8"
+                                     : Model.Comment.users?.role == "vip" ? "#ffd500"
+                                     : Model.Comment.users?.role == "banned" ? "#6c757d"
+                                     : "#007bff");
+                     padding: 2px 8px; border-radius: 12px; margin-right: 7px;">
+            @Model.Comment.users?.role
+        </span>
+        @{
+            if (currentUserId == Model.Comment.id_users)
+            {
+                <a class="comment-author back-link" href="@Url.Action("profile", "profile")">
+                    @Model.Comment.users?.username
+                </a>
             }
-            <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">
-                @Model.created.ToString("HH:mm dd MMM yyyy")
-            </span>
-        </div>
-        <div class="comment-body" style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
-            <p style="margin: 0; white-space: pre-line;">@Model.comments</p>
-            <div class="comment-actions d-flex align-items-center" style="margin-top: 8px;">
-                @{
-                    if (currentUserId != Model.id_users)
-                    {
-                        <button class="btn btn-sm btn-outline-primary me-2 reply-button"
-                                style="font-size: 12px; padding: 2px 8px; border-radius: 15px;">
-                            Ответить
-                        </button>
-                        if (currentUserId != null)
-                        {
-                            <button class="btn btn-sm btn-outline-danger me-2 report-button"
-                                    style="font-size: 12px; padding: 2px 8px; border-radius: 15px;"
-                                    data-bs-toggle="modal" data-bs-target="#reportModal"
-                                    data-comment-id="@Model.Id"
-                                    data-user-id="@Model.id_users"
-                                    data-username="@Model.users.username">
-                                Пожаловаться
-                            </button>
-                        }
-                    }
-                }
-            </div>
-        </div>
-    </li>
-</ul>
-
-<!-- Модальное окно для жалобы -->
-<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Отправить жалобу</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form asp-controller="Details" asp-action="CreateReport" method="post">
-                <div class="modal-body">
-                    <input type="hidden" id="reportCommentId" name="id_topic" />
-                    <input type="hidden" id="reportUserId" name="owr" />
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Жалоба на пользователя: <span id="reportedUsername"></span></label>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="reportReason" class="form-label">Причина жалобы:</label>
-                        <textarea class="form-control" id="reportReason" name="report" rows="4" required
-                                  placeholder="Опишите причину вашей жалобы..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-danger">Отправить жалобу</button>
-                </div>
-            </form>
-        </div>
+            else
+            {
+                <a class="comment-author back-link"
+                   href="@Url.Action("users", "profile", new { id = Model.Comment.id_users })">
+                    @Model.Comment.users?.username
+                </a>
+            }
+        }
+        <span class="comment-time" style="font-size: 12px; color: #888; margin-left: 8px;">
+            @Model.Comment.created.ToString("HH:mm dd MMM yyyy")
+        </span>
     </div>
-</div>
+    <div class="comment-body">
+        <p style="margin: 0; white-space: pre-line;">@Model.Comment.comments</p>
+    </div>
+    <div class="comment-actions">
+        @{
+            <button class="btn btn-sm btn-outline-primary reply-btn"
+                    style="font-size: 12px; padding: 2px 8px; border-radius: 15px;"
+                    data-comment-id="@Model.Comment.Id">
+                Ответить
+            </button>
+            if (currentUserId != Model.Comment.id_users && !Model.IsBanned)
+            {
+                <button class="btn btn-sm btn-outline-danger report-button"
+                        style="font-size: 12px; padding: 2px 8px; border-radius: 15px;"
+                        data-bs-toggle="modal" data-bs-target="#reportModal"
+                        data-comment-id="@Model.Comment.Id"
+                        data-user-id="@Model.Comment.id_users"
+                        data-username="@Model.Comment.users?.username">
+                    Пожаловаться
+                </button>
+            }
+            if (hasReplies)
+            {
+                <button class="toggle-replies-btn btn btn-sm btn-outline-secondary"
+                        type="button"
+                        data-comment-id="@Model.Comment.Id"
+                        style="font-size: 12px; padding: 2px 8px; border-radius: 15px; color:var(--text-color)">
+                    Скрыть ответы
+                </button>
+            }
+        }
+    </div>
+    <div class="reply-form-container"></div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const reportButtons = document.querySelectorAll('.report-button');
-        const reportModal = document.getElementById('reportModal');
-        
-        reportButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const commentId = this.getAttribute('data-comment-id');
-                const userId = this.getAttribute('data-user-id');
-                const username = this.getAttribute('data-username');
-                
-                document.getElementById('reportCommentId').value = commentId;
-                document.getElementById('reportUserId').value = userId;
-                document.getElementById('reportedUsername').textContent = username;
-            });
-        });
-    });
-</script>
+    @if (hasReplies)
+    {
+        <ul class="replies-list" style="display: block;">
+            @foreach (var reply in Model.AllComments.Where(c => c.parent_id == Model.Comment.Id))
+            {
+                @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", new CommentItemViewModel
+   {
+       Comment = reply,
+       AllComments = Model.AllComments,
+       TopicId = Model.TopicId,
+       IsBanned = Model.IsBanned
+   })
+            }
+        </ul>
+    }
+</li>
+
+
+
+
+
