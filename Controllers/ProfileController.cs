@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Supabase.Gotrue;
 using DLForum.Models.Topic;
+using DLForum.Service;
 
 namespace DLForum.Controllers
 {

@@ -99,6 +99,11 @@ public class DetailsController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateComment(int id_topic, string comment)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role == "banned")
+        {
+            return Forbid("Забаненные пользователи не могут оставлять комментарии.");
+        }
         var userId = HttpContext.Session.GetInt32("ID");
         if (userId == null)
         {
@@ -147,6 +152,11 @@ public class DetailsController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateReply(int id_topic, int parent_id, string comment)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role == "banned")
+        {
+            return RedirectToAction("Index", "Home");
+        }
         var userId = HttpContext.Session.GetInt32("ID");
         if (userId == null)
         {
@@ -284,5 +294,22 @@ public class DetailsController : Controller
         }
 
         return RedirectToAction("Details", new { id = id_topic });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCommentThread(int commentId)
+    {
+        var comment = await _commentService.GetCommentByIdAsync(commentId);
+        if (comment == null)
+            return NotFound();
+        var allComments = await _commentService.GetCommentsByTopicIdAsync(comment.id_topics);
+        var model = new CommentItemViewModel
+        {
+            Comment = comment,
+            AllComments = allComments,
+            TopicId = comment.id_topics,
+            IsBanned = false // или получить из сессии
+        };
+        return PartialView("~/Views/Details/Partial/_CommentItemPartial.cshtml", model);
     }
 }

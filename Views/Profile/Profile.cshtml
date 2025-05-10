@@ -92,14 +92,6 @@
                         <span>Избранное</span>
                     </a>
                 </li>
-                @if (role == "moderator")
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" id="moderation-tab" data-bs-toggle="tab" href="#moderation" role="tab">
-                            <span>Проверка тем</span>
-                        </a>
-                    </li>
-                }
             </ul>
 
             <div class="tab-content mt-3">
@@ -229,21 +221,7 @@
                     }
                 </div>
             </div>
-            @if (role == "moderator")
-            {
-                <div class="tab-pane fade" id="moderation" role="tabpanel" aria-labelledby="moderation-tab">
-                    <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #5a4bf1;" asp-area="" asp-controller="topic" asp-action="topiclist">
-                        <i class="bi bi-pencil-square" style="font-size: 18px; margin-right: 5px;"></i>
-                        Проверить тему
-                    </a>
-                    <a class="btn btn-light text-lg-center text-center text-white mx-1" style="border-radius: 10px; background-color: #940000;" asp-area="" asp-controller="report" asp-action="reports">
-                        <i class="bi bi-pencil-square" style="font-size: 18px; margin-right: 5px;"></i>
-                        Жалобы
-                    </a>
-                </div>
-            }
         </div>
-    </div>
     </div>
 
 

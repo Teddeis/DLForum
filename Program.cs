@@ -17,7 +17,7 @@ internal class Program
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors("AllowAll"); // ��������� ��� ������
+        app.UseCors("AllowAll");
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
@@ -36,7 +36,6 @@ internal class Program
             builder.Configuration["Supabase:Key"]
         ));
 
-        // ����������� ���������������� ��������
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<TopicService>();
         builder.Services.AddScoped<CommentService>();
@@ -54,7 +53,6 @@ internal class Program
         });
 
 
-        // ����������� ������
         builder.Services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(30);

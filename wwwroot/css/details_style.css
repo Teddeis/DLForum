@@ -155,13 +155,69 @@ textarea {
     padding: 0;
 }
 
+/* --- Комментарии: только лесенка --- */
+.comments-list > .comment-item {
+    background: var(--background-color) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: none !important;
+    margin-bottom: 16px !important;
+    padding: 16px 20px !important;
+    position: relative;
+}
+
 .comment-item {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid var(--comment-border);
-    border-radius: 15px;
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    background: var(--background-color) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 16px !important;
+    padding: 16px 20px !important;
+    position: relative;
+    margin-left: 32px !important;
+}
+
+.comment-item::before {
+    content: "";
+    position: absolute;
+    top: 24px;
+    left: -32px;
+    width: 32px;
+    height: 2px;
+    background: #bbb;
+    z-index: 0;
+}
+.comment-item::after {
+    content: "";
+    position: absolute;
+    top: 24px;
+    left: -32px;
+    width: 2px;
+    height: calc(100% - 24px);
+    background: #bbb;
+    z-index: 0;
+}
+.comments-list > .comment-item::before,
+.comments-list > .comment-item::after {
+    display: none !important;
+}
+[data-theme="dark"] .comment-item::before,
+[data-theme="dark"] .comment-item::after {
+    background: #444;
+}
+
+@media (max-width: 768px) {
+    .comment-item {
+        margin-left: 12px !important;
+        padding: 12px 8px !important;
+    }
+    .comment-item::before {
+        left: -12px;
+        width: 12px;
+    }
+    .comment-item::after {
+        left: -12px;
+        width: 2px;
+    }
 }
 
 .comment-header {
@@ -181,6 +237,7 @@ textarea {
 .comment-body {
     line-height: 1.5;
 }
+
 .comment-actions {
     margin-top: 10px;
 }
@@ -340,8 +397,8 @@ textarea {
 
 
 .favorite-btn {
-    background: none; 
-    border: none; 
+    background: none;
+    border: none;
     cursor: pointer;
 }
 
@@ -616,18 +673,24 @@ body {
     margin-left: 0;
 }
 
-.replies-list {
-    margin-left: 30px; /* Отступ для вложенных ответов */
-    border-left: 2px solid #33333322;
-    padding-left: 15px;
-}
+@media (max-width: 768px) {
+    .replies-list > .reply-wrapper > .comment-item {
+        margin-left: 8px !important;
+        border-left: none !important;
+        background: rgba(60,60,60,0.04) !important;
+    }
 
-.comment-item {
-    margin-bottom: 15px;
-    background: var(--background-color);
-    border-radius: 15px;
-    padding: 15px;
-    border: 1px solid #33333322;
+    .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .comment-item {
+        margin-left: 4px !important;
+        border-left: none !important;
+        background: rgba(60,60,60,0.02) !important;
+    }
+
+    .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .comment-item {
+        margin-left: 2px !important;
+        border-left: none !important;
+        background: transparent !important;
+    }
 }
 
 .reply-form textarea {
@@ -653,9 +716,9 @@ body {
     transition: background 0.2s;
 }
 
-.reply-form button:hover {
-    background: var(--button-hover-color);
-}
+    .reply-form button:hover {
+        background: var(--button-hover-color);
+    }
 
 .comment-item.highlight {
     animation: highlight-comment 2s ease-out;
@@ -750,41 +813,41 @@ center {
     color: var(--text-color);
 }
 
-.action-button:hover {
-    background-color: rgba(128, 128, 128, 0.1);
-}
+    .action-button:hover {
+        background-color: rgba(128, 128, 128, 0.1);
+    }
 
 .like-btn {
     font-size: 1.2rem;
 }
 
-.like-btn i {
-    transition: transform 0.3s ease, color 0.3s ease;
-}
+    .like-btn i {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
 
-.like-btn:hover i {
-    transform: scale(1.1);
-}
+    .like-btn:hover i {
+        transform: scale(1.1);
+    }
 
-.like-btn i.bi-heart-fill {
-    color: #ff4b4b !important;
-}
+    .like-btn i.bi-heart-fill {
+        color: #ff4b4b !important;
+    }
 
 .favorite-btn {
     font-size: 1.2rem;
 }
 
-.favorite-btn i {
-    transition: transform 0.3s ease, color 0.3s ease;
-}
+    .favorite-btn i {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
 
-.favorite-btn:hover i {
-    transform: scale(1.1);
-}
+    .favorite-btn:hover i {
+        transform: scale(1.1);
+    }
 
-.favorite-btn i.bi-bookmark-fill {
-    color: #ffd700 !important;
-}
+    .favorite-btn i.bi-bookmark-fill {
+        color: #ffd700 !important;
+    }
 
 /* Добавьте эти стили в ваш CSS файл */
 .interactions-container {
@@ -812,9 +875,9 @@ center {
     transition: all 0.3s ease;
 }
 
-.action-button:hover {
-    background-color: rgba(128, 128, 128, 0.1);
-}
+    .action-button:hover {
+        background-color: rgba(128, 128, 128, 0.1);
+    }
 
 .like-btn i, .favorite-btn i {
     font-size: 1.2rem;
@@ -859,4 +922,35 @@ center {
 #reportedUsername {
     font-weight: bold;
     color: red;
+}
+
+/* Стили для адаптивного отображения веток комментариев */
+@media (min-width: 769px) {
+    .replies-list .replies-list {
+        margin-left: 20px;
+    }
+        /* Скрываем комментарии глубже 5 уровня */
+        .replies-list .replies-list .replies-list .replies-list .replies-list {
+            display: none;
+        }
+}
+
+@media (max-width: 768px) {
+    .replies-list {
+        margin-left: 15px;
+        padding-left: 10px;
+    }
+
+        .replies-list .replies-list {
+            margin-left: 10px;
+        }
+            /* Скрываем комментарии глубже 3 уровня на мобильных */
+            .replies-list .replies-list .replies-list {
+                display: none;
+            }
+}
+
+/* Ограничение глубины вложенности (скрываем всё, что глубже 4 уровня) */
+.replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .replies-list > .reply-wrapper {
+    display: none !important;
 }

@@ -2,6 +2,9 @@
 @{
     var currentUserId = Context.Session.GetInt32("ID");
     var hasReplies = Model.AllComments != null && Model.AllComments.Any(c => c.parent_id == Model.Comment.Id);
+    var replies = Model.AllComments?.Where(c => c.parent_id == Model.Comment.Id).ToList() ?? new List<comment>();
+    var showLimit = 5; // ПК по умолчанию
+    var hasHidden = replies.Count > showLimit;
 }
 
 <li class="comment-item" data-comment-id="@Model.Comment.Id">
@@ -64,7 +67,7 @@
                         type="button"
                         data-comment-id="@Model.Comment.Id"
                         style="font-size: 12px; padding: 2px 8px; border-radius: 15px; color:var(--text-color)">
-                    Скрыть ответы
+                    Показать ответы
                 </button>
             }
         }
@@ -74,15 +77,32 @@
     @if (hasReplies)
     {
         <ul class="replies-list" style="display: block;">
-            @foreach (var reply in Model.AllComments.Where(c => c.parent_id == Model.Comment.Id))
+            @for (int i = 0; i < replies.Count; i++)
             {
-                @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", new CommentItemViewModel
-   {
-       Comment = reply,
-       AllComments = Model.AllComments,
-       TopicId = Model.TopicId,
-       IsBanned = Model.IsBanned
-   })
+                if (hasHidden && i >= showLimit)
+                {
+                    <li class="reply-wrapper hidden-reply" style="display:none;" data-parent="@Model.Comment.Id" data-reply-idx="@i">
+                        @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", new CommentItemViewModel
+                        {
+                            Comment = replies[i],
+                            AllComments = Model.AllComments,
+                            TopicId = Model.TopicId,
+                            IsBanned = Model.IsBanned
+                        })
+                    </li>
+                }
+                else
+                {
+                    <li class="reply-wrapper" data-parent="@Model.Comment.Id" data-reply-idx="@i">
+                        @await Html.PartialAsync("~/Views/Details/Partial/_CommentItemPartial.cshtml", new CommentItemViewModel
+                        {
+                            Comment = replies[i],
+                            AllComments = Model.AllComments,
+                            TopicId = Model.TopicId,
+                            IsBanned = Model.IsBanned
+                        })
+                    </li>
+                }
             }
         </ul>
     }

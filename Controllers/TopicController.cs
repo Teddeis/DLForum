@@ -46,6 +46,11 @@ public class TopicController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateTopic(string title, string content, string categories, string tags)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role == "banned")
+        {
+            return Forbid("Забаненные пользователи не могут создавать темы.");
+        }
         var userId = HttpContext.Session.GetInt32("ID");
         var author = HttpContext.Session.GetString("UserName");
 

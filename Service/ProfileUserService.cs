@@ -2,6 +2,7 @@
 using AllTopics;
 using DLForum;
 using DLForum.Models.Topic;
+using DLForum.Models.Comments;
 using Microsoft.EntityFrameworkCore;
 using Supabase;
 using Supabase.Gotrue;
@@ -134,6 +135,63 @@ public class ProfileUserService
     {
         var response = await _client.From<DLForum.Models.Comments.report>().Get();
         return response.Models ?? new List<DLForum.Models.Comments.report>();
+    }
+
+    public async Task<List<users>> GetAllUsersAsync()
+    {
+        var response = await _client.From<users>().Get();
+        return response.Models ?? new List<users>();
+    }
+
+    public async Task<comment?> GetCommentByIdAsync(int commentId)
+    {
+        var response = await _client.From<comment>()
+            .Where(c => c.Id == commentId)
+            .Get();
+        return response.Models.FirstOrDefault();
+    }
+
+    public async Task DeleteCommentAsync(int commentId)
+    {
+        await _client.From<comment>()
+            .Where(c => c.Id == commentId)
+            .Delete();
+    }
+
+    public async Task<Topic?> GetTopicByIdAsync(int topicId)
+    {
+        var response = await _client.From<Topic>()
+            .Where(t => t.Id == topicId)
+            .Get();
+        return response.Models.FirstOrDefault();
+    }
+
+    public async Task DeleteTopicAsync(int topicId)
+    {
+        await _client.From<Topic>()
+            .Where(t => t.Id == topicId)
+            .Delete();
+    }
+
+    public async Task ResolveReportAsync(int reportId)
+    {
+        await _client.From<report>()
+            .Where(r => r.Id == reportId)
+            .Delete();
+    }
+
+    public async Task<List<Topic>> GetAllTopicsAsync()
+    {
+        var response = await _client.From<Topic>().Get();
+        return response.Models ?? new List<Topic>();
+    }
+
+    public async Task<report?> GetReportByIdAsync(int reportId)
+    {
+        var response = await _client.From<report>()
+            .Where(r => r.Id == reportId)
+            .Get();
+        return response.Models.FirstOrDefault();
     }
 
     public class UserProfileDto

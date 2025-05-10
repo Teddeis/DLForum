@@ -5,6 +5,7 @@
     ViewData["Title"] = @Model.Title;
     var userContext = new UserContext(HttpContextAccessor.HttpContext.Session);
     bool isOwner = userContext.IsOwner(Model.UserId);
+    string isAdmin = HttpContextAccessor.HttpContext.Session.GetString("Role");
     bool isBanned = userContext.IsBanned();
 }
 
@@ -15,6 +16,7 @@
         <!-- Навигация -->
     @await Html.PartialAsync("~/Views/Details/Partial/_NavigationPartial.cshtml", new NavigationViewModel
 {
+    IsAdmin = isAdmin,
     IsOwner = isOwner,
     TopicId = Model.Id
 })
@@ -130,12 +132,22 @@
             const commentItem = e.target.closest('.comment-item');
             const repliesList = commentItem.querySelector('.replies-list');
             if (repliesList) {
-                if (repliesList.style.display === 'none' || repliesList.style.display === '') {
-                    repliesList.style.display = 'block';
-                    e.target.textContent = 'Скрыть ответы';
+                const hiddenReplies = repliesList.querySelectorAll('.hidden-reply');
+                if (hiddenReplies.length > 0) {
+                    const isHidden = hiddenReplies[0].style.display === 'none' || hiddenReplies[0].style.display === '';
+                    hiddenReplies.forEach(el => {
+                        el.style.display = isHidden ? '' : 'none';
+                    });
+                    e.target.textContent = isHidden ? 'Скрыть ответы' : 'Показать ответы';
                 } else {
-                    repliesList.style.display = 'none';
-                    e.target.textContent = 'Показать ответы';
+                    // fallback: просто скрыть/показать всю ветку
+                    if (repliesList.style.display === 'none' || repliesList.style.display === '') {
+                        repliesList.style.display = 'block';
+                        e.target.textContent = 'Скрыть ответы';
+                    } else {
+                        repliesList.style.display = 'none';
+                        e.target.textContent = 'Показать ответы';
+                    }
                 }
             }
         }
@@ -165,5 +177,21 @@
             }
         }
     });
+
+    // Адаптация лимита для мобилки
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.reply-wrapper').forEach((el, idx) => {
+                const parent = el.getAttribute('data-parent');
+                const all = document.querySelectorAll(`.reply-wrapper[data-parent='${parent}']`);
+                if (idx >= 3 && all.length > 3) {
+                    el.classList.add('hidden-reply');
+                    el.style.display = 'none';
+                }
+            });
+        }
+    });
     window.topicId = document.querySelector('input[name="id_topic"]')?.value;
 </script>
+
+            

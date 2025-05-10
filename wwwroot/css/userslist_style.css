@@ -1,0 +1,158 @@
+﻿/* Общие стили */
+:root {
+    --background-color: #1a1a1b; /* Тёмная тема */
+    --text-color: #d7dadc;
+    --navbar-color: #272729;
+    --button-color: #424245;
+    --button-hover-color: #5a5a5b;
+    --search-bar-bg: #272729;
+    --search-bar-border: #424245;
+    --placeholder-color: #848586;
+    --card-bg: #2a2a2d; /* Темный фон карточек */
+    --link-color: #4d4d4d; /* Цвет ссылок на темной теме */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --loader-color: #fff;
+}
+
+[data-theme="light"] {
+    --background-color: #ffffff; /* Светлая тема */
+    --text-color: #333333;
+    --navbar-color: #f8f9fa;
+    --button-color: #e7e7e7;
+    --button-hover-color: #d6d6d6;
+    --search-bar-bg: #f1f3f5;
+    --search-bar-border: #cccccc;
+    --placeholder-color: #666666;
+    --card-bg: #f8f9fa; /* Светлый фон карточек */
+    --link-color: #0066cc; /* Цвет ссылок на светлой теме */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --loader-color: #333;
+}
+
+.admin-users-card {
+    border-radius: 18px;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
+    background: var(--background-color);
+    border: 1px solid #23272b;
+    margin-bottom: 32px;
+}
+
+    .admin-users-card .card-body {
+        padding: 2rem;
+    }
+
+.admin-users-table th, .admin-users-table td {
+    vertical-align: middle;
+    text-align: center;
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.admin-users-table th {
+    background: var(--background-color);
+    color: var(--text-color);
+    border-top: none;
+}
+
+.admin-users-table tr {
+    transition: background 0.2s;
+}
+
+    .admin-users-table tr:hover {
+        background: rgba(0,123,255,0.05);
+    }
+
+.badge {
+    font-size: 0.95em;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.btn-group .btn {
+    min-width: 110px;
+    margin-right: 6px;
+}
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+
+.modal-content {
+    background: var(--background-color);
+    color: var(--text-color);
+    border-radius: 16px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #23272b;
+}
+
+.modal-footer {
+    border-top: 1px solid #23272b;
+}
+
+.admin-users-table .badge[style*='#dc3545'] {
+    background: #dc3545;
+    color: #fff;
+}
+
+.admin-users-table .badge[style*='#17a2b8'] {
+    background: #17a2b8;
+    color: #fff;
+}
+
+.admin-users-table .badge[style*='#ffd500'] {
+    background: #ffd500;
+    color: #222;
+}
+
+.admin-users-table .badge[style*='#6c757d'] {
+    background: #6c757d;
+    color: #fff;
+}
+
+.admin-users-table .badge[style*='#007bff'] {
+    background: #007bff;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .admin-users-card .card-body {
+        padding: 0.5rem;
+    }
+
+    .admin-users-table {
+        font-size: 13px;
+        min-width: 600px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .btn-group .btn {
+        min-width: 80px;
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .badge {
+        font-size: 0.85em;
+        padding: 0.3em 0.7em;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        padding: 0.5rem;
+    }
+
+    .modal-header, .modal-footer {
+        padding: 0.5rem 1rem;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+}

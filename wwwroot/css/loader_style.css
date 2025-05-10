@@ -44,6 +44,63 @@
         margin-bottom: 0;
     }
 
+/* Медиа-запросы для адаптации лоадера */
+@media (max-width: 768px) {
+    .banter-loader {
+        width: 54px;
+        height: 54px;
+        margin-left: -27px;
+        margin-top: -27px;
+    }
+
+    .banter-loader__box {
+        width: 15px;
+        height: 15px;
+        margin-right: 4px;
+    }
+
+    .banter-loader__box:nth-child(3n) {
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+
+    .banter-loader__box:nth-child(1):before, .banter-loader__box:nth-child(4):before {
+        margin-left: 19px;
+    }
+
+    .banter-loader__box:nth-child(3):before {
+        margin-top: 38px;
+    }
+}
+
+@media (max-width: 480px) {
+    .banter-loader {
+        width: 36px;
+        height: 36px;
+        margin-left: -18px;
+        margin-top: -18px;
+    }
+
+    .banter-loader__box {
+        width: 10px;
+        height: 10px;
+        margin-right: 3px;
+    }
+
+    .banter-loader__box:nth-child(3n) {
+        margin-right: 0;
+        margin-bottom: 3px;
+    }
+
+    .banter-loader__box:nth-child(1):before, .banter-loader__box:nth-child(4):before {
+        margin-left: 13px;
+    }
+
+    .banter-loader__box:nth-child(3):before {
+        margin-top: 26px;
+    }
+}
+
 @keyframes moveBox-1 {
     9.0909090909% {
         transform: translate(-26px, 0);

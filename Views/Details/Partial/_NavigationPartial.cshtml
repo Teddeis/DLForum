@@ -3,7 +3,7 @@
 <nav>
     <a href="javascript:void(0);" class="back-link" onclick="window.location.href=document.referrer;">← Назад</a>
     <div class="nav-right">
-        @if (Model.IsOwner)
+        @if (Model.IsOwner || Model.IsAdmin == "admin" || Model.IsAdmin == "moderator")
         {
             <form method="post" asp-controller="topic" asp-action="delete"
                   onsubmit="return confirm('Вы уверены, что хотите удалить эту тему?');"

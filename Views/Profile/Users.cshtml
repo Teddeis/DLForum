@@ -42,11 +42,36 @@
     </div>
 </div>
 
+
 <!-- Ваши темы, Комментарии, Друзья, Избранное-->
 <div class="d-flex justify-content-center align-items-center mt-4">
     <div class="card p-4" style="width: 1000px; border-radius: 15px;">
         <h4>Информация</h4>
         <div class="mt-3">
+                @if (Context.Session.GetString("Role") == "admin" || Context.Session.GetString("Role") == "moderator")
+                {
+                    if (Model.user.role != "banned")
+                    {
+                        <form asp-controller="Admin" asp-action="BanUser" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="@Model.user.id" />
+                            <button type="submit" class="btn btn-warning mt-2"
+                                    onclick="return confirm('Вы уверены, что хотите заблокировать этого пользователя?')">
+                                Наказать
+                            </button>
+                        </form>
+                    }
+                    else if (Context.Session.GetString("Role") == "admin" && Model.user.role == "banned")
+                    {
+                        <form asp-controller="Admin" asp-action="UnbanUser" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="@Model.user.id" />
+                            <button type="submit" class="btn btn-success mt-2"
+                                    onclick="return confirm('Вы уверены, что хотите разблокировать этого пользователя?')">
+                                Разблокировать
+                            </button>
+                        </form>
+                    }
+                }
+                <hr/>
             <p><strong>Пол:</strong> @Model.user.gender</p>
             <p><strong>О себе:</strong> @Model.user.about</p>
         </div>

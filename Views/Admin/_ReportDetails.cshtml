@@ -1,0 +1,55 @@
+@using DLForum.Models.Comments
+@model report
+
+<div class="report-details">
+    <div class="mb-3">
+        <h6>Информация о жалобе</h6>
+        <p><strong>ID жалобы:</strong> @Model.Id</p>
+        <p><strong>Отправитель:</strong> @Model.id_users</p>
+        <p><strong>Тип:</strong> @Model.owr</p>
+        <p><strong>Причина:</strong> @Model.reason</p>
+        <p><strong>Дата:</strong> @Model.created.ToString("dd.MM.yyyy HH:mm")</p>
+    </div>
+
+    <div class="mb-3">
+        <h6>Содержимое</h6>
+        <div id="reportedContent">
+            <!-- Здесь будет отображаться содержимое, на которое поступила жалоба -->
+            <p>Загрузка содержимого...</p>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <h6>Действия</h6>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger" onclick="deleteContent()">Удалить контент</button>
+            <button type="button" class="btn btn-warning" onclick="warnUser()">Предупредить пользователя</button>
+            <button type="button" class="btn btn-success" onclick="resolveReport()">Отметить как обработанную</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteContent() {
+        if (confirm('Вы уверены, что хотите удалить этот контент?')) {
+            // Отправка запроса на удаление
+            $.post('@Url.Action("DeleteReportedContent", "Admin")', { reportId: @Model.Id }, function() {
+                location.reload();
+            });
+        }
+    }
+
+    function warnUser() {
+        // Отправка предупреждения пользователю
+        $.post('@Url.Action("WarnUser", "Admin")', { reportId: @Model.Id }, function() {
+            alert('Предупреждение отправлено пользователю');
+        });
+    }
+
+    function resolveReport() {
+        // Отметка жалобы как обработанной
+        $.post('@Url.Action("ResolveReport", "Admin")', { reportId: @Model.Id }, function() {
+            location.reload();
+        });
+    }
+</script> 

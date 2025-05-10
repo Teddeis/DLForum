@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Панель администратора";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Панель администратора</h1>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Управление пользователями</h5>
+                    <p class="card-text">Просмотр, блокировка и разблокировка пользователей</p>
+                    <a href="/user-list" class="btn btn-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Жалобы</h5>
+                    <p class="card-text">Просмотр и обработка жалоб на контент</p>
+                    <a href="/reports" class="btn btn-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Модерация тем</h5>
+                    <p class="card-text">Просмотр и обработка новых тем на форуме</p>
+                    <a asp-controller="topic" asp-action="topiclist" class="btn btn-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Статистика</h5>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Всего пользователей
+                            <span class="badge bg-primary rounded-pill" id="totalUsers">Загрузка...</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Активных тем
+                            <span class="badge bg-success rounded-pill" id="activeTopics">Загрузка...</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Новых жалоб
+                            <span class="badge bg-warning rounded-pill" id="newReports">Загрузка...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Последние действия</h5>
+                    <div class="list-group" id="recentActions">
+                        <!-- Здесь будут отображаться последние действия -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Здесь будет код для загрузки статистики и последних действий
+        $(document).ready(function() {
+            // Загрузка статистики
+            $.get('@Url.Action("GetStatistics", "Admin")', function(data) {
+                $('#totalUsers').text(data.totalUsers);
+                $('#activeTopics').text(data.activeTopics);
+                $('#newReports').text(data.newReports);
+            });
+
+            // Загрузка последних действий
+            $.get('@Url.Action("GetRecentActions", "Admin")', function(data) {
+                const actionsList = $('#recentActions');
+                data.forEach(action => {
+                    actionsList.append(`
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">${action.description}</h6>
+                                <small>${action.time}</small>
+                            </div>
+                            <small>${action.user}</small>
+                        </div>
+                    `);
+                });
+            });
+        });
+    </script>
+} 
