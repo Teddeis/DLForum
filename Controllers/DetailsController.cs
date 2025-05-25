@@ -127,14 +127,12 @@ public class DetailsController : Controller
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ИСКЛЮЧЕНИЕ: {ex.Message}");
             TempData["ErrorMessage"] = "Не удалось добавить комментарий: " + ex.Message;
         }
 
         return RedirectToAction("Details", new { id = id_topic });
     }
 
-    // Получить ответы на комментарий (AJAX)
     [HttpGet]
     public async Task<IActionResult> GetReplies(int parentId)
     {
@@ -148,7 +146,6 @@ public class DetailsController : Controller
         }));
     }
 
-    // Создать ответ на комментарий
     [HttpPost]
     public async Task<IActionResult> CreateReply(int id_topic, int parent_id, string comment)
     {

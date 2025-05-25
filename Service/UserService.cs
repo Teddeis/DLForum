@@ -14,21 +14,18 @@ public class UserService
     {
         try
         {
-            // Проверка на существование пользователя
             var existingUser = await _client.From<users>()
                 .Filter("email", Supabase.Postgrest.Constants.Operator.Equals, email)
                 .Single();
 
             if (existingUser != null)
             {
-                return null; // Пользователь уже существует
+                return null;
             }
 
-            // Хэшируем пароль (используйте Identity или другой механизм)
             var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<users>();
             var hashedPassword = passwordHasher.HashPassword(null, password);
 
-            // Добавляем пользователя
             var newUser = new users
             {
                 email = email,
@@ -37,12 +34,11 @@ public class UserService
 
             var response = await _client.From<users>().Insert(newUser);
 
-            return response.Models.FirstOrDefault(); // Возвращаем нового пользователя
+            return response.Models.FirstOrDefault(); 
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in RegisterAsync: {ex.Message}");
-            return null; // Ошибка при регистрации
+            return null; 
         }
     }
 

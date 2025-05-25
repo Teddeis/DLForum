@@ -15,18 +15,14 @@ public class TopicController : Controller
         _notificationService = notificationService;
     }
 
-    // Метод для отображения всех тем
     public async Task<IActionResult> topiclist(int pageNumber = 1)
     {
         try
         {
-            // Здесь вы можете задать максимально возможное количество тем для подгрузки.
-            int pageSize = 10;  // или другой подходящий лимит
+            int pageSize = 10;  
 
-            // Получаем все темы с пагинацией
             var (topics, totalCount) = await _supabaseService.GetTopicsByPageAsyncAdmin(1, pageSize);
 
-            // Возвращаем темы в формате JSON
             return View(topics);
         }
         catch (Exception ex)
@@ -36,7 +32,6 @@ public class TopicController : Controller
         }
     }
 
-    // Остальные методы контроллера
     [HttpGet ("create-topic")]
     public IActionResult topic()
     {
@@ -57,13 +52,13 @@ public class TopicController : Controller
 
         if (userId == null)
         {
-            return RedirectToAction("login", "account"); // Перенаправление на страницу входа
+            return RedirectToAction("login", "account"); 
         }
-        // Добавляем новую тему в Supabase
+
         await _supabaseService.AddTopicAsync(userId.Value, title, content, author.ToString(), categories, tags);
 
         TempData["SuccessMessage"] = "Тема отправлена на модерацию";
-        return RedirectToAction("index", "home"); // Перенаправляем на главную страницу после добавления
+        return RedirectToAction("index", "home");
     }
 
     // Метод для обновления статуса темы на true (Принять тему)

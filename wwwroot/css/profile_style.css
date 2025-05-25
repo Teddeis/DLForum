@@ -1,9 +1,15 @@
-﻿/* Светлая тема (по умолчанию) */
+﻿/* === Переменные для тем === */
 :root {
-    --background-color: #ffffff;
-    --text-color: #333333;
-    --filter-panel-bg: #f7f7f7;
-    --filter-panel-border: #cccccc;
+    --background-color: #f7f7f7;
+    --text-color: #232324;
+    --primary-color: #bb86fc;
+    --secondary-color: #888;
+    --button-color: #eeeeee;
+    --button-hover-color: #d1c4e9;
+    --link-color: #bb86fc;
+    --card-border-color: #cccccc;
+    --search-bar-border: #cccccc;
+    --navbar-color: #f7f7f7;
     --tab-bg: #eeeeee;
     --tab-text-color: #555555;
     --tab-active-bg: #bb86fc;
@@ -13,55 +19,30 @@
     --notification-hover-bg: #eeeeee;
     --notification-avatar-border: #cccccc;
     --notification-time-color: #999999;
+    --placeholder-color: #888888;
+    --active-tab-bg: #bb86fc;
+    --avatar-border-color: #e0e0e0;
+    --card-bg: #fff;
+    --card-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+    --tab-text: #555;
+    --tab-active-text: #fff;
+    --notif-bar: #bb86fc;
+    --notif-bar-unread: #bb86fc;
+    --notif-bar-read: #e0e0e0;
+    --notif-date: #888;
 }
-
-@media (max-width: 768px) {
-    .settings-page {
-        background: #1a1a1b;
-        min-height: 100vh;
-    }
-    
-    .back-button {
-        color: #fff;
-        font-size: 24px;
-        text-decoration: none;
-        margin-right: 15px;
-    }
-    
-    .avatar-preview {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        margin-top: 10px;
-    }
-
-    .banner-preview {
-        width: 120px;
-        height: 40px;
-        border-radius: 8px;
-        object-fit: cover;
-        margin-top: 10px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .text-muted {
-        color: #888 !important;
-        font-size: 14px;
-        display: block;
-        margin-top: 5px;
-    }
-}
-
-/* Темная тема */
 [data-theme="dark"] {
-    --background-color: #1a1a1b;
-    --text-color: #d7dadc;
-    --filter-panel-bg: #2b2b2b;
-    --filter-panel-border: #444444;
-    --tab-bg: #2b2b2b;
+    --background-color: #232324;
+    --text-color: #f3eaff;
+    --primary-color: #bb86fc;
+    --secondary-color: #888;
+    --button-color: #272729;
+    --button-hover-color: #3c3c3d;
+    --link-color: #bb86fc;
+    --card-border-color: #343536;
+    --search-bar-border: #444444;
+    --navbar-color: #232324;
+    --tab-bg: #232324;
     --tab-text-color: #cccccc;
     --tab-active-bg: #bb86fc;
     --tab-active-text-color: #ffffff;
@@ -70,6 +51,20 @@
     --notification-hover-bg: #333333;
     --notification-avatar-border: #444444;
     --notification-time-color: #777777;
+    --placeholder-color: #888888;
+    --active-tab-bg: #bb86fc;
+    --avatar-border-color: #bb86fc;
+    --card-bg: #232324;
+    --card-shadow: 0 8px 32px 0 rgba(187,134,252,0.13), 0 1.5px 6px rgba(0,0,0,0.10);
+    --tab-text: #bb86fc;
+    --tab-active-text: #fff;
+    --notif-bar: #bb86fc;
+    --notif-bar-unread: #bb86fc;
+    --notif-bar-read: #444;
+    --notif-date: #bbaee0;
+}
+[data-theme="light"] {
+    /* Можно не дублировать, если совпадает с :root */
 }
 
 /* Основной стиль */
@@ -82,405 +77,249 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.notification-page {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    background: var(--background-color);
-}
+/* === Cтиль уведомлений и вкладок === */
 
-.notification-content {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 24px 0 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-/* Заголовок */
-.notification-content h1.h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--primary-color);
-    letter-spacing: 0.5px;
-    text-align: left;
-}
-
-/* Вкладки */
-.tabs {
-    display: flex;
-    gap: 8px;
-    background: var(--background-color);
-    border-radius: 12px;
-    padding: 4px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    margin-bottom: 0;
-    align-items: center;
-}
-.tab {
-    flex: 1 1 0;
-    padding: 8px 0;
-    background: none;
-    border: none;
-    border-radius: 8px;
-    color: var(--tab-text-color);
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    outline: none;
-}
-.tab.active {
-    background: var(--tab-active-bg);
-    color: var(--tab-active-text-color);
-    box-shadow: 0 2px 8px rgba(187,134,252,0.08);
-}
-.tab:active {
-    background: var(--tab-active-bg);
-    color: var(--tab-active-text-color);
-}
-
-/* Переключатель прочитанных */
-.read-unread-toggle {
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-    gap: 6px;
-}
-.switch {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    display: inline-block;
-}
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #444;
-    border-radius: 20px;
-    transition: background 0.3s;
-}
-.switch input:checked + .slider {
-    background: var(--primary-color);
-    box-shadow: 0 0 8px #bb86fc55;
-}
-.slider:before {
-    content: "";
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
-.switch input:checked + .slider:before {
-    transform: translateX(16px);
-}
-#readUnreadLabel {
-    font-size: 0.95em;
-    color: var(--text-color);
-    user-select: none;
-}
-
-/* Список уведомлений */
-.notification-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    background: none;
-    border-radius: 0;
-    padding: 0;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-/* Карточка уведомления */
 .notification-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: var(--notification-item-bg);
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    padding: 14px 16px 12px 14px;
-    border: none;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(187,134,252,0.13), 0 1.5px 6px rgba(0,0,0,0.10);
+    border-left: 5px solid var(--notif-bar);
+    width: 100%;
+    margin: 0 auto 18px auto;
+    padding: 22px 28px 16px 28px;
     position: relative;
-    min-height: 54px;
-    transition: box-shadow 0.2s, background 0.2s;
-}
-.notification-item.unread {
-    border-left: 4px solid var(--primary-color);
-    background: linear-gradient(90deg, #bb86fc11 0%, var(--notification-item-bg) 100%);
-}
-.notification-item .icon {
-    font-size: 1.3em;
-    margin-right: 6px;
-    color: var(--primary-color);
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-.notification-item .content {
-    flex: 1 1 0;
+    transition: box-shadow 0.25s, background 0.22s, border-color 0.22s;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 12px;
+    align-items: flex-start;
 }
-.notification-item .content p {
-    margin: 0;
-    font-size: 1em;
+
+    .notification-item.unread {
+        border-left: 5px solid var(--notif-bar-unread);
+        background: var(--card-bg);
+    }
+
+.notification-item.read {
+    border-left: 5px solid var(--notif-bar-read);
+}
+
+.notification-item:hover {
+    box-shadow: 0 16px 48px 0 rgba(187,134,252,0.18);
+    background: rgba(187,134,252,0.06);
+}
+
+.notification-item p {
+    margin: 0 0 8px 0;
+    font-size: 1.13em;
     color: var(--text-color);
     font-weight: 500;
-    line-height: 1.3;
+    line-height: 1.6;
+    word-break: break-word;
 }
-.notification-item .content time {
-    font-size: 0.85em;
-    color: var(--notification-time-color);
-    margin-top: 2px;
+.notification-item strong {
+    color: var(--primary-color);
+    font-weight: 700;
 }
-.notification-item .btn-mark-as-read {
-    background: none;
+
+.notification-item hr {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 10px 0 6px 0;
+    opacity: 0.22;
+}
+
+.notification-item form {
+    display: inline-block;
+    margin: 0;
+}
+
+.btn-mark-as-read {
+    background: #ede7f6;
     border: none;
     color: var(--primary-color);
-    font-size: 1.3em;
-    margin-left: 8px;
-    margin-top: 2px;
-    cursor: pointer;
+    font-size: 1.2em;
     border-radius: 50%;
+    cursor: pointer;
     transition: background 0.2s, color 0.2s, transform 0.1s;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 2px;
+    box-shadow: 0 2px 8px rgba(187,134,252,0.10);
 }
-.notification-item .btn-mark-as-read:hover {
-    background: #bb86fc22;
+[data-theme="dark"] .btn-mark-as-read {
+    background: #2d1a3a;
+}
+.btn-mark-as-read:hover {
+    background: var(--primary-color);
     color: #fff;
     transform: scale(1.1);
 }
 
-/* Заглушка "Нет уведомлений" */
-.no-notifications {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-    font-size: 1.1em;
-    padding: 40px 0 20px 0;
-    opacity: 0.8;
-    gap: 10px;
-}
-.no-notifications .icon {
-    font-size: 2.5em;
-    color: var(--primary-color);
-    opacity: 0.5;
+.notification-item div[style*='text-align: left'] {
+    font-size: 1em;
+    color: var(--notif-date);
+    opacity: 0.92;
+    margin-bottom: 2px;
+    gap: 12px;
 }
 
-/* --- Мобильная адаптация --- */
-@media (max-width: 768px) {
-    .notification-content {
-        max-width: 100vw;
-        padding: 6px 0 0 0;
-        gap: 7px;
-        background: var(--background-color);
-        box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-        border-radius: 0 0 14px 14px;
-        min-height: 100vh;
+.notification-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+.notification-link:hover {
+    color: #a47be5;
+}
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.tab {
+    background: var(--tab-bg);
+    color: var(--tab-text);
+    border: none;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin-right: 4px;
+}
+.tab.active {
+    background: var(--tab-active-bg);
+    color: var(--tab-active-text);
+}
+.tab:hover {
+    background: #a47be5;
+    color: #fff;
+}
+.tab:last-child {
+    margin-right: 0;
+}
+.read-unread-toggle {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 8px;
+}
+.containerss {
+    display: inline-block;
+    position: relative;
+    padding-left: 28px;
+    margin-right: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    user-select: none;
+}
+.containerss input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0; width: 0;
+}
+.checkmark {
+    position: absolute;
+    left: 0; top: 0;
+    height: 20px; width: 20px;
+    background-color: var(--tab-bg);
+    border-radius: 6px;
+    border: 2px solid var(--primary-color);
+    transition: background 0.2s;
+}
+[data-theme="dark"] .checkmark {
+    background-color: #232324;
+}
+.containerss input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+}
+.checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+.containerss input:checked ~ .checkmark:after {
+    display: block;
+}
+.containerss .checkmark:after {
+    left: 6px; top: 2px;
+    width: 5px; height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+@media (max-width: 600px) {
+    .notification-item {
+        width: 94vw;
+        min-width: 0;
+        margin: 8px auto;
+        padding: 14px 12px 10px 14px;
+        border-radius: 16px;
+        font-size: 1em;
+        box-sizing: border-box;
+        box-shadow: 0 8px 32px 0 rgba(187,134,252,0.13), 0 1.5px 6px rgba(0,0,0,0.10);
+        background: var(--card-bg);
     }
-    .notification-content h1.h3 {
-        font-size: 1.1rem;
-        margin-bottom: 4px;
-        padding-left: 8px;
+    .notif-row {
+        gap: 2px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    .notif-main, .notif-date {
+        font-size: 0.93em !important;
+        margin: 0 !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     .tabs {
-        display: flex;
-        gap: 0;
-        padding: 0 0 0 0;
-        border-radius: 8px;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        background: var(--background-color);
-        border-bottom: 1px solid var(--filter-panel-border);
-        margin-bottom: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        width: 100vw;
+        gap: 2px !important;
+        margin-bottom: 6px !important;
+        width: 80vw !important;
+        min-width: 0 !important;
     }
     .tab {
-        flex: 1 1 0;
-        min-width: 90px;
-        max-width: 100vw;
-        padding: 7px 0 7px 0;
-        border-radius: 12px 12px 0 0;
-        background: none;
-        border: none;
-        color: var(--tab-text-color);
-        font-size: 0.98em;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
-        position: relative;
-        z-index: 1;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        margin: 0 2px;
-    }
-    .tab.active {
-        background: var(--tab-active-bg);
-        color: var(--tab-active-text-color);
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(187,134,252,0.10);
-        transform: translateY(-1px) scale(1.01);
-        z-index: 2;
-    }
-    .tab:active {
-        transform: scale(0.98);
+        padding: 4px 7px !important;
+        font-size: 0.93em !important;
+        border-radius: 5px !important;
+        min-width: 0 !important;
+        width: auto;
+        box-sizing: border-box;
     }
     .read-unread-toggle {
-        margin-left: 0;
-        gap: 4px;
-        padding: 6px 6px 0 6px;
-        justify-content: flex-start;
-    }
-    .align-content-center {
-        font-size: 0.97em;
-        color: var(--text-color);
-        margin-left: 2px;
+        margin: 6px 0 0 0 !important;
+        width: 100vw !important;
+        min-width: 0 !important;
     }
     .containerss {
-        width: 26px;
-        height: 16px;
-        border: none;
-        background: none;
-        margin-right: 2px;
+        padding-top: 16px !important;
+        padding-left: 14px !important;
+        font-size: 0.93em !important;
     }
     .checkmark {
-        border-radius: 10px;
-        background: #444;
-        transition: background 0.3s;
+        height: 16px !important;
+        width: 16px !important;
+        border-radius: 4px !important;
     }
-    .containerss input:checked ~ .checkmark {
-        background: var(--primary-color);
-        box-shadow: 0 0 8px #bb86fc55;
+    .btn-mark-as-read {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.93em !important;
+        margin-top: 0 !important;
     }
-    .checkmark:after {
-        left: 3px;
-        top: 3px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #fff;
-        transition: transform 0.3s;
-    }
-    .notification-list {
-        gap: 7px;
-        max-height: 60vh;
-        padding: 0 1px;
-        background: none;
-    }
-    .notification-item {
-        padding: 9px 7px 9px 10px;
-        border-radius: 8px;
-        min-height: 36px;
-        font-size: 0.97em;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        margin-bottom: 0;
-        align-items: center;
-        background: var(--notification-item-bg);
-        position: relative;
-        border: 1px solid var(--notification-item-border);
-        transition: box-shadow 0.2s, background 0.2s;
-        animation: notif-fadein 0.4s;
-    }
-    @keyframes notif-fadein {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: none; }
-    }
-    .notification-item .btn-mark-as-read {
-        font-size: 1em;
-        width: 22px;
-        height: 22px;
-        margin-left: 6px;
-        margin-top: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f3f3f3;
-        border-radius: 50%;
-        transition: background 0.2s, color 0.2s, transform 0.1s;
-        border: none;
-    }
-    .notification-item .btn-mark-as-read:hover {
-        background: var(--primary-color);
-        color: #fff;
-        transform: scale(1.08);
-    }
-    .notification-item .btn-mark-as-read i {
-        font-size: 1em;
-    }
-    .notification-item .content p {
-        font-size: 0.97em;
-        margin-bottom: 2px;
-        word-break: break-word;
-    }
-    .notification-item .content time {
-        font-size: 0.85em;
-        color: var(--notification-time-color);
-        margin-top: 1px;
-        display: block;
-    }
-    .notification-item hr {
-        margin: 7px 0 0 0;
-        border: none;
-        border-top: 1px solid var(--notification-item-border);
-        width: 100%;
-    }
-    .no-notifications, .notif-empty {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 1em;
-        padding: 32px 0 16px 0;
-        opacity: 0.9;
-        gap: 10px;
-        text-align: center;
-        animation: notif-fadein 0.5s;
-    }
-    .no-notifications .icon, .notif-empty-icon {
-        font-size: 2em;
-        color: var(--primary-color);
-        opacity: 0.7;
-        margin-bottom: 7px;
-        filter: drop-shadow(0 2px 8px #bb86fc44);
-        transition: color 0.2s, opacity 0.2s;
-    }
-    .no-notifications .notif-empty-title {
-        font-size: 1.08em;
-        font-weight: 700;
-        color: var(--text-color);
-    }
-    .no-notifications .notif-empty-desc {
-        font-size: 0.97em;
-        color: #aaa;
-        margin-top: 2px;
+    h1, .h3 {
+        font-size: 1.1em !important;
+        margin-bottom: 8px !important;
     }
 }
-/* --- Конец нового стиля уведомлений --- */
 
 /* Левая панель фильтров */
 .filter-panel {
@@ -512,7 +351,7 @@ body {
     .filter-group input:checked + label {
         color: var(--tab-active-bg);
     }
-
+    
 /* Основная область уведомлений */
 .notification-content {
     flex: 1;
@@ -554,13 +393,6 @@ body {
     color: var(--text-color);
     border: 1px solid var(--search-bar-border);
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-/* Стиль для блока с информацией о пользователе */
-#userInfo {
-    background-color: var(--navbar-color); /* Используем переменную */
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Стиль для баннера */
@@ -749,515 +581,6 @@ textarea {
         transform: scale(1.05);
     }
 
-/* Общие стили для элементов профиля */
-.card {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--search-bar-border);
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-/* Стиль для блока с информацией о пользователе */
-#userInfo {
-    background-color: var(--navbar-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* Кнопка настроек */
-.btn-light {
-    background-color: var(--button-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-    .btn-light:hover {
-        background-color: var(--button-hover-color);
-    }
-
-/* Стиль для баннера */
-#banner {
-    background-image: url('@Model.user.you_background');
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    height: 400px;
-    border-radius: 15px;
-    transition: background-color 0.3s ease, filter 0.3s ease;
-}
-
-/* Тексты и ссылки */
-a {
-    color: var(--link-color);
-    transition: color 0.3s ease;
-}
-
-/* Элементы списков (темы, комментарии) */
-.list-group-item {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--search-bar-border);
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-    .list-group-item:hover {
-        color: var(--text-color);
-        background-color: var(--navbar-color);
-    }
-
-/* Иконки */
-.bi {
-    color: var(--secondary-color);
-    transition: color 0.3s ease;
-}
-
-    .bi:hover {
-        color: var(--primary-color);
-    }
-
-/* Навигационные вкладки */
-.nav-tabs .nav-link {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--search-bar-border);
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-    .nav-tabs .nav-link.active {
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        border-color: var(--primary-color);
-    }
-
-.btn-mark-as-read {
-    background-color: #4CAF50;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-    .btn-mark-as-read i {
-        font-size: 10px; /* Размер иконки */
-    }
-
-
-/* From Uiverse.io by KSAplay */
-.containerss input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-.containerss {
-    position: relative;
-    cursor: pointer;
-    font-size: 15px;
-    width: 30px;
-    height: 25px;
-    user-select: none;
-    border: 5px solid var(--text-color);
-    display: block;
-}
-
-.checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-    .checkmark:after {
-        content: '';
-        position: absolute;
-        top: 25%;
-        left: 25%;
-        background-color: white;
-        width: 50%;
-        height: 50%;
-        transform: scale(0);
-        transition: .1s ease;
-        background: var(--text-color);
-    }
-
-.containerss input:checked ~ .checkmark:after {
-    transform: scale(1);
-    background: var(--text-color);
-}
-
-.read-unread-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.align-content-center {
-    font-size: 14px;
-    font-weight: normal;
-    color: var(--text-color);
-    display: inline-block;
-    text-align: center;
-}
-
-
-
-div[style*="height: 65px;"] {
-    display: none;
-}
-
-div[style*="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: #202020; margin: 0px; padding: 0px;"] {
-    display: none !important;
-}
-
-center {
-    display: none !important;
-}
-
-/* Список уведомлений */
-.notification-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background-color: var(--filter-panel-bg);
-    border-radius: 8px;
-    padding: 20px;
-    overflow-y: auto;
-    max-height: 70vh;
-}
-
-/* Modify the notification-item layout */
-.notification-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Keep items aligned to the left */
-    gap: 10px; /* Add a small gap between elements */
-    padding: 10px;
-    border: 1px solid var(--notification-item-border);
-    border-radius: 8px;
-    background-color: var(--notification-item-bg);
-    transition: transform 0.2s, background-color 0.3s;
-}
-
-    /* Keep the button at the bottom of the notification item */
-    .notification-item form {
-        margin-top: auto; /* Push the button to the bottom */
-    }
-
-/* Keep the read/unread filter toggle styling */
-.read-unread-toggle {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-.notification-item:hover {
-    transform: scale(1.02);
-    background-color: var(--notification-hover-bg);
-}
-
-
-/* Button style for 'Mark as Read' */
-.btn-mark-as-read {
-    width: 30px; /* Make the button square by setting width and height to the same value */
-    height: 30px; /* Adjust to make the button square */
-    padding: 0; /* Remove padding, the width/height will control the size */
-    font-size: 14px; /* Increase font size for better visibility */
-    color: #fff;
-    background: linear-gradient(145deg, #6c63ff, #a0a1ff);
-    border: none;
-    border-radius: 10px; /* Slightly rounded corners for a smooth square look */
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    display: flex;
-    align-items: center; /* Center the content vertically */
-    justify-content: center; /* Center the content horizontally */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-    .btn-mark-as-read i {
-        font-size: 14px; /* Adjust icon size to fit inside the button */
-    }
-
-    /* Focus effect */
-    .btn-mark-as-read:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 102, 255, 0.6);
-    }
-
-    /* Active state when clicked */
-    .btn-mark-as-read:active {
-        background: linear-gradient(145deg, #4e4aff, #6c63ff);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transform: scale(1.05);
-    }
-
-
-
-/* Мобильные стили */
-@media (max-width: 768px) {
-    /* Общие стили */
-    body {
-        background-color: #1a1a1b;
-        color: var(--text-color);
-    }
-
-    /* Контейнер профиля */
-    .card {
-        background-color: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* Убираем кнопку сужения */
-    #collapseBtn {
-        display: none !important;
-    }
-
-    /* Баннер */
-    #banner {
-        height: 200px !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        position: relative;
-        background-position: center;
-        background-size: cover;
-    }
-
-    /* Информация о пользователе */
-    #userInfo {
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent) !important;
-        padding: 20px !important;
-        color: #fff !important;
-    }
-
-    #userInfo img {
-        width: 80px !important;
-        height: 80px !important;
-        border-radius: 50% !important;
-        border: 2px solid #fff !important;
-    }
-
-    #userInfo h2 {
-        color: #fff !important;
-        font-size: 24px !important;
-        margin: 0 !important;
-    }
-
-    /* Вкладки в профиле */
-    .nav-tabs {
-        display: flex !important;
-        background-color: #1a1a1b !important;
-        padding: 10px !important;
-        gap: 10px !important;
-        border: none !important;
-        overflow-x: auto !important;
-        scrollbar-width: none !important;
-        white-space: nowrap !important;
-        flex-wrap: nowrap !important;
-        margin: 0 -10px !important;
-    }
-
-    .nav-tabs::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    .nav-tabs .nav-item {
-        flex: 0 0 auto !important;
-        margin: 0 !important;
-    }
-
-    .nav-tabs .nav-link {
-        background-color: #272729 !important;
-        color: #fff !important;
-        border: none !important;
-        border-radius: 20px !important;
-        padding: 8px 16px !important;
-        font-size: 14px !important;
-        white-space: nowrap !important;
-        min-width: max-content !important;
-        display: inline-block !important;
-        text-align: center !important;
-    }
-
-    .nav-tabs .nav-link span {
-        display: inline-block !important;
-        color: #fff !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-
-    .nav-tabs .nav-link.active {
-        background-color: var(--primary-color) !important;
-        color: #fff !important;
-    }
-
-    .nav-tabs .nav-link.active span {
-        color: #fff !important;
-    }
-
-    /* Контент вкладок */
-    .tab-content {
-        padding: 15px !important;
-        margin-top: 10px !important;
-    }
-
-    .tab-pane {
-        background-color: transparent !important;
-    }
-
-    /* Настройки профиля */
-    .settings-container {
-        padding: 0 !important;
-    }
-
-    /* Заголовок настроек */
-    .settings-header {
-        padding: 15px !important;
-        background-color: #1a1a1b !important;
-        border-bottom: 1px solid #343536 !important;
-    }
-
-    .settings-header h3 {
-        color: #fff !important;
-        font-size: 18px !important;
-        margin: 0 !important;
-    }
-
-    /* Навигация настроек */
-    .settings-nav {
-        display: flex !important;
-        padding: 10px !important;
-        gap: 10px !important;
-        background-color: #1a1a1b !important;
-        overflow-x: auto !important;
-        scrollbar-width: none !important;
-    }
-
-    .settings-nav::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    .settings-nav-item {
-        flex: 0 0 auto !important;
-        padding: 8px 16px !important;
-        background-color: #272729 !important;
-        color: #fff !important;
-        border-radius: 20px !important;
-        font-size: 14px !important;
-        white-space: nowrap !important;
-        border: none !important;
-    }
-
-    .settings-nav-item.active {
-        background-color: var(--primary-color) !important;
-    }
-
-    /* Контент настроек */
-    .settings-content {
-        padding: 15px !important;
-    }
-
-    .settings-section {
-        background-color: #272729 !important;
-        border-radius: 12px !important;
-        padding: 15px !important;
-        margin-bottom: 15px !important;
-    }
-
-    .settings-section h4 {
-        color: #fff !important;
-        font-size: 16px !important;
-        margin-bottom: 15px !important;
-    }
-
-    /* Формы в настройках */
-    .form-control,
-    .form-select {
-        background-color: #1a1a1b !important;
-        border: 1px solid #343536 !important;
-        color: #fff !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
-        margin-bottom: 10px !important;
-    }
-
-    /* Кнопки в настройках */
-    .btn-primary {
-        background-color: var(--primary-color) !important;
-        border: none !important;
-        width: 100% !important;
-        padding: 12px !important;
-        border-radius: 8px !important;
-        margin-top: 10px !important;
-    }
-}
-
-
-.avatar-block, .banner-block {
-    text-align: left;
-    margin-bottom: 2em;
-    display: flex;
-    align-items: center;
-}
-
-    .avatar-block .avatar-wrapper, .banner-block .banner-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .avatar-block img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 50%;
-        box-shadow: 0 0 12px #0006;
-        background: #232323;
-        border: 2px solid #444;
-        margin-right: 18px;
-        transition: box-shadow 0.2s;
-    }
-
-    .banner-block img {
-        width: 240px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 14px;
-        box-shadow: 0 0 12px #0006;
-        background: #232323;
-        border: 2px solid #444;
-        margin-right: 18px;
-        transition: box-shadow 0.2s;
-    }
-
-    .avatar-block label, .banner-block label {
-        font-weight: 500;
-        color: var(--text-color);
-        font-size: 1rem;
-        margin-right: 18px;
-        min-width: 70px;
-    }
-
-    .avatar-block .btn, .banner-block .btn {
-        opacity: 0.85;
-        font-size: 0.95em;
-        padding: 2px 12px;
-        border-radius: 12px;
-    }
 /* Стили для crop-изображений в модалках */
 .cropper-modal-avatar .modal-dialog {
     max-width: 420px;
@@ -1428,30 +751,65 @@ center {
 
 /* Мобильные стили */
 @media (max-width: 768px) {
-    /* Вкладки профиля */
+    html, body {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    .card,
+    .notification-item,
+    .notif-row,
+    .notif-main,
+    .notif-date,
+    .notif-tabs,
+    .notif-tab,
+    .notif-topbar,
+    .notif-title,
+    .notif-switch-row,
+    .form-control,
+    .btn {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
     .nav-tabs {
-        gap: 8px;
-        margin: 0 -10px 15px -10px;
-        padding: 0 10px;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 8px !important;
+        margin: 0 -10px 15px -10px !important;
+        padding: 0 10px !important;
+        scrollbar-width: none !important;
+        background: none !important;
+        min-height: 48px !important;
     }
-
-    .nav-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
     .nav-tabs .nav-item {
-        flex: 0 0 auto;
-        min-width: auto;
+        flex: 0 0 auto !important;
+        min-width: 100px !important;
+        display: block !important;
     }
-
     .nav-tabs .nav-link {
-        padding: 8px 16px;
-        font-size: 14px;
-        white-space: nowrap;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: var(--text-color) !important;
+        background: var(--background-color) !important;
+        border: 1px solid var(--search-bar-border) !important;
+        border-radius: 8px !important;
+        font-size: 15px !important;
+        min-width: 100px !important;
+        min-height: 40px !important;
+        padding: 8px 16px !important;
+        opacity: 1 !important;
+        position: static !important;
+        z-index: 1 !important;
+        white-space: nowrap !important;
+        box-shadow: none !important;
+    }
+    .nav-tabs .nav-link.active {
+        background: var(--primary-color) !important;
+        color: var(--tab-active-text-color) !important;
+        border-color: var(--primary-color) !important;
     }
 
     /* Настройки профиля */
@@ -1528,6 +886,22 @@ center {
 
     .modal-body {
         padding: 15px;
+    }
+
+    .bottom-nav {
+        background-color: var(--mobile-nav-bg) !important;
+    }
+
+    #banner {
+        width: 100vw !important;
+        height: 200px !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        left: 50%;
+        transform: translateX(-50%);
+        background-position: center;
+        background-size: cover;
+        display: block;
     }
 }
 
@@ -1647,6 +1021,7 @@ center {
         background: none;
         border-radius: 0;
         gap: 0;
+        max-width: auto;
         min-height: 120px;
     }
     .notif-empty {
@@ -1677,4 +1052,54 @@ center {
         color: #aaa;
         margin-top: 2px;
     }
+}
+
+/* Десктопные стили для аватара и баннера */
+.avatar-block img, .avatar-preview {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--avatar-border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: var(--background-color);
+    display: block;
+    margin: 0 0 10px 0;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.avatar-block img:hover, .avatar-preview:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 16px rgba(187,134,252,0.15);
+}
+.banner-block img {
+    width: 100%;
+    max-width: 400px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid var(--avatar-border-color);
+    background: var(--background-color);
+    margin-bottom: 10px;
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.banner-block img:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 16px rgba(187,134,252,0.10);
+}
+.avatar-block .btn, .banner-block .btn {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 15px;
+    border-radius: 10px;
+    padding: 4px 18px;
+    background: var(--button-color);
+    color: var(--text-color);
+    border: none;
+    transition: background 0.2s, color 0.2s;
+}
+.avatar-block .btn:hover, .banner-block .btn:hover {
+    background: var(--primary-color);
+    color: var(--tab-active-text-color);
 }

@@ -5,9 +5,6 @@
 
 @{
     int? currentUserId = HttpContextAccessor.HttpContext?.Session.GetInt32("ID");
-
-    // Отладка: вывести текущий ID пользователя
-    Console.WriteLine($"Current User ID: {currentUserId}");
 }
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -49,8 +46,8 @@
                     @foreach (var notification in Model?.Where(n => n.id_users == currentUserId) ?? Enumerable.Empty<notification>())
                     {
                         <div class="notification-item @(notification.read ? "read" : "unread")" style="display: @(notification.read ? "none" : "block")">
-                            <div>
-                                <p>
+                            <div class="notif-row">
+                                <span class="notif-main">
                                     <strong>@notification.from_to</strong>
                                     @if (notification.type == "Ответы")
                                     {
@@ -64,12 +61,10 @@
                                         <span>отправил(а) сообщение:</span>
                                         <span>"@notification.message"</span>
                                     }
-                                </p>
-                                <div style="text-align: left;">
-                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
-                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
-                                </div>
-
+                                </span>
+                                <span class="notif-date">
+                                    @notification.created_at.ToString("dd.MM.yyyy HH:mm")
+                                </span>
                             </div>
                             <hr />
                             @if (!notification.read)
@@ -89,15 +84,14 @@
                     @foreach (var notification in Model?.Where(n => n.id_users == currentUserId && n.type == "Системное") ?? Enumerable.Empty<notification>())
                     {
                         <div class="notification-item @(notification.read ? "read" : "unread")" style="display: @(notification.read ? "none" : "block")">
-                            <div>
-                                <p>
+                            <div class="notif-row">
+                                <span class="notif-main">
                                     <strong>@notification.from_to</strong> отправил(а) сообщение:
                                     <span>"@notification.message"</span>
-                                </p>
-                                <div style="text-align: left;">
-                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
-                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
-                                </div>
+                                </span>
+                                <span class="notif-date">
+                                    @notification.created_at.ToString("dd.MM.yyyy HH:mm")
+                                </span>
                             </div>
                             <hr />
                             @if (!notification.read)
@@ -117,17 +111,16 @@
                     @foreach (var notification in Model?.Where(n => n.id_users == currentUserId && n.type == "Ответы") ?? Enumerable.Empty<notification>())
                     {
                         <div class="notification-item @(notification.read ? "read" : "unread")" style="display: @(notification.read ? "none" : "block")">
-                            <div>
-                                <p>
+                            <div class="notif-row">
+                                <span class="notif-main">
                                     <strong>@notification.from_to</strong> ответил(а) на ваш комментарий:
                                     <a href="/Details/@notification.message" class="notification-link" style="text-decoration: none; color: var(--primary-color)">
                                         Перейти к ответу
                                     </a>
-                                </p>
-                                <div style="text-align: left;">
-                                    <div>@notification.created_at.ToString("dd.MM.yyyy")</div>
-                                    <div style="color: #666;">@notification.created_at.ToString("HH:mm")</div>
-                                </div>
+                                </span>
+                                <span class="notif-date">
+                                    @notification.created_at.ToString("dd.MM.yyyy HH:mm")
+                                </span>
                             </div>
                             <hr />
                             @if (!notification.read)
@@ -150,7 +143,7 @@
         </section>
     </main>
 </div>
-
+ 
  <script>
     // Переключение между вкладками типов уведомлений
     document.getElementById('allTab').addEventListener('click', function() {

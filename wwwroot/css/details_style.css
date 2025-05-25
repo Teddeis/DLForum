@@ -954,3 +954,106 @@ center {
 .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .replies-list > .reply-wrapper > .replies-list > .reply-wrapper {
     display: none !important;
 }
+
+@media (max-width: 768px) {
+    .create-topic-page .main-content {
+        padding: 8px 0 80px 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        max-width: 100vw !important;
+        width: 100vw !important;
+    }
+    .create-topic-page .card {
+        border-radius: 12px !important;
+        margin: 10px 8px !important;
+        padding: 12px 8px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .create-topic-page .title {
+        font-size: 20px !important;
+        margin-bottom: 8px !important;
+        padding: 0 4px !important;
+        text-align: left !important;
+        word-break: break-word;
+    }
+    .create-topic-page .category-badge {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 8px !important;
+        margin: 10px 0 10px 0 !important;
+        padding: 2px 0 2px 2px !important;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+    }
+    .create-topic-page .category-tag {
+        font-size: 13px !important;
+        padding: 7px 16px !important;
+        border-radius: 16px !important;
+        margin: 0 2px 6px 0 !important;
+        white-space: nowrap !important;
+        min-width: 90px !important;
+        background: var(--button-color) !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--card-background) !important;
+        box-shadow: none !important;
+        transition: background 0.2s, color 0.2s;
+    }
+    .create-topic-page .category-tag.selected {
+        background: var(--primary-color) !important;
+        color: #fff !important;
+        border-color: var(--primary-color) !important;
+    }
+    .create-topic-page .tags-container {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 6px !important;
+        padding: 2px 0 2px 2px !important;
+        margin-bottom: 10px !important;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+    }
+    .create-topic-page .tag {
+        font-size: 13px !important;
+        padding: 7px 14px !important;
+        border-radius: 16px !important;
+        margin: 0 2px 6px 0 !important;
+        white-space: nowrap !important;
+        min-width: 70px !important;
+        background: var(--button-color) !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--card-background) !important;
+        box-shadow: none !important;
+    }
+    .create-topic-page .form-control, .create-topic-page textarea, .create-topic-page input[type="text"] {
+        font-size: 15px !important;
+        padding: 10px 12px !important;
+        border-radius: 10px !important;
+        margin-bottom: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .create-topic-page .btn, .create-topic-page .post-answer, .create-topic-page .delete-topic-btn {
+        width: 100% !important;
+        font-size: 16px !important;
+        padding: 12px 0 !important;
+        border-radius: 10px !important;
+        margin: 10px 0 0 0 !important;
+        box-sizing: border-box !important;
+    }
+    .create-topic-page .btn-setting {
+        width: 100% !important;
+        font-size: 16px !important;
+        padding: 12px 0 !important;
+        border-radius: 10px !important;
+        margin: 10px 0 0 0 !important;
+        box-sizing: border-box !important;
+    }
+    .create-topic-page .form-group {
+        margin-bottom: 12px !important;
+    }
+    .create-topic-page .content-info {
+        margin-bottom: 10px !important;
+        padding: 0 4px !important;
+    }
+}

@@ -1,11 +1,6 @@
-﻿using System.Xml.Linq;
-using Profile;
+﻿using Profile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Supabase.Gotrue;
-using DLForum.Models.Topic;
 using DLForum.Service;
 
 namespace DLForum.Controllers

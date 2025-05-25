@@ -21,7 +21,6 @@ public class SearchController : Controller
 
         try
         {
-            // Получаем только одобренные темы, содержащие поисковый запрос
             var response = await _client.From<Topic>()
                 .Where(t => t.Status == "true")
                 .Get();

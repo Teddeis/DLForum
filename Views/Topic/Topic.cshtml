@@ -10,72 +10,68 @@
 
 <body>
     <div class="container mt-5">
-        <div class="card p-4 shadow-sm">
-            <h3 class="mb-3">
-                Создание новой темы
-                <a asp-controller="home" asp-action="fullrules" class="rules-btn float-end">ПРАВИЛА</a>
-            </h3>
-            <form asp-action="CreateTopic" asp-controller="Topic" method="post">
-
-                <!-- Заголовок -->
-                <div class="mb-3">
-                    <input name="title" type="text" maxlength="500" class="editor-textarea form-control" placeholder="Заголовок" required>
-                </div>
-
-                <!-- Категории -->
-                <div class="mb-3">
-                    <label for="categories" class="form-label">Категории</label>
-                    <div id="categories-container" class="form-control p-3 d-flex flex-wrap gap-2">
-                        <!-- Готовые категории -->
-                        <span class="category-badge" data-value="Новости">Новости</span>
-                        <span class="category-badge" data-value="Технологии">Технологии</span>
-                        <span class="category-badge" data-value="Искусство">Искусство</span>
-                        <span class="category-badge" data-value="Наука">Наука</span>
-                        <span class="category-badge" data-value="Образование">Образование</span>
-                        <span class="category-badge" data-value="Развлечения">Развлечения</span>
-                        <span class="category-badge" data-value="Спорт">Спорт</span>
-                        <span class="category-badge" data-value="Музыка">Музыка</span>
-                        <span class="category-badge" data-value="Другое">Другое</span>
-
-                    </div>
-                    <input type="hidden" name="categories" id="categories-hidden" required/>
-                    <span id="categories-error" class="error-message"></span>
-                </div>
-
-                <!-- Теги -->
-                <div class="mb-3">
-                    <label for="categories" class="form-label">Теги</label>
-                    <div id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Введите тег" onkeydown="addTag(event)"></div>
-                    <div id="tags-list" class="mt-2">
-                        <!-- Сюда будут добавляться теги -->
-                    </div>
-                    <input type="hidden" id="tags-input" name="tags" required />
-                    <span id="tags-error" class="error-message"></span>
-                </div>
-
-
-                <!-- Панель инструментов для редактирования -->
-                <div class="editor-toolbar d-flex justify-content-start gap-2">
-                    <button type="button" class="toolbar-btn" onclick="execCommand('bold')"><b>Ж</b></button>
-                    <button type="button" class="toolbar-btn" onclick="execCommand('italic')"><i>К</i></button>
-                    <button type="button" class="toolbar-btn" onclick="execCommand('underline')"><u>П</u></button>
-                    <button type="button" class="toolbar-btn" onclick="execCommand('insertUnorderedList')">• Список</button>
-                </div>
-
-                <div name="content" style="min-height: 200px;" class="editor-textarea form-control mt-0 custom-editor" contenteditable="true" placeholder="Ваше сообщение" required onkeydown="checkContentLength(event)"></div>
-                <!-- Редактируемый контент -->
-
-                <textarea hidden name="content" id="ta" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></textarea>
-
-
-
-                <!-- Кнопка отправки -->
-                <div class="text-center mt-4">
-                    <!-- Измените кнопку отправки формы, чтобы она вызывала validateForm -->
-                    <input type="submit" class="btn btn-primary" onclick="return copyAndValidateForm()">
-                </div>
-            </form>
+        <div class="create-topic-header">
+            <span>Создание новой темы</span>
+            <a asp-controller="home" asp-action="fullrules" class="rules-btn float-end">ПРАВИЛА</a>
         </div>
+        <form asp-action="CreateTopic" asp-controller="Topic" method="post">
+            <div class="mb-3">
+                <input name="title" type="text" maxlength="500" class="editor-textarea form-control" placeholder="Заголовок" required>
+            </div>
+            <div class="mb-3">
+                <label for="categories" class="form-label">Категории</label>
+                <!-- Десктоп: badge-контейнер -->
+                <div id="categories-container" class="form-control p-3 d-flex flex-wrap gap-2">
+                    <span class="category-badge" data-value="Новости">Новости</span>
+                    <span class="category-badge" data-value="Технологии">Технологии</span>
+                    <span class="category-badge" data-value="Искусство">Искусство</span>
+                    <span class="category-badge" data-value="Наука">Наука</span>
+                    <span class="category-badge" data-value="Образование">Образование</span>
+                    <span class="category-badge" data-value="Развлечения">Развлечения</span>
+                    <span class="category-badge" data-value="Спорт">Спорт</span>
+                    <span class="category-badge" data-value="Музыка">Музыка</span>
+                    <span class="category-badge" data-value="Другое">Другое</span>
+                </div>
+                <!-- Мобильный dropdown -->
+                <div class="category-select-block d-md-none">
+                    <button type="button" class="category-dropdown-btn" id="categoryDropdownBtn">
+                        <span id="selectedCategory">Категории</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="category-dropdown-list" id="categoryDropdownList" style="display:none;">
+                        <button type="button" class="category-dropdown-item" data-value="Новости">Новости</button>
+                        <button type="button" class="category-dropdown-item" data-value="Технологии">Технологии</button>
+                        <button type="button" class="category-dropdown-item" data-value="Искусство">Искусство</button>
+                        <button type="button" class="category-dropdown-item" data-value="Наука">Наука</button>
+                        <button type="button" class="category-dropdown-item" data-value="Образование">Образование</button>
+                        <button type="button" class="category-dropdown-item" data-value="Развлечения">Развлечения</button>
+                        <button type="button" class="category-dropdown-item" data-value="Спорт">Спорт</button>
+                        <button type="button" class="category-dropdown-item" data-value="Музыка">Музыка</button>
+                        <button type="button" class="category-dropdown-item" data-value="Другое">Другое</button>
+                    </div>
+                </div>
+                <input type="hidden" name="categories" id="categories-hidden" required/>
+                <span id="categories-error" class="error-message"></span>
+            </div>
+            <div class="mb-3">
+                <label for="categories" class="form-label">Теги</label>
+                <div id="editor" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Введите тег" onkeydown="addTag(event)"></div>
+                <div id="tags-list" class="mt-2"></div>
+                <input type="hidden" id="tags-input" name="tags" required />
+                <span id="tags-error" class="error-message"></span>
+            </div>
+            <div class="editor-toolbar d-flex justify-content-start gap-2">
+                <button type="button" class="toolbar-btn" onclick="execCommand('bold')"><b>Ж</b></button>
+                <button type="button" class="toolbar-btn" onclick="execCommand('italic')"><i>К</i></button>
+                <button type="button" class="toolbar-btn" onclick="execCommand('underline')"><u>П</u></button>
+                <button type="button" class="toolbar-btn" onclick="execCommand('insertUnorderedList')">• Список</button>
+            </div>
+            <div name="content" style="min-height: 200px;" class="editor-textarea form-control mt-0 custom-editor" contenteditable="true" placeholder="Ваше сообщение" required onkeydown="checkContentLength(event)"></div>
+            <textarea hidden name="content" id="ta" class="editor-textarea form-control mt-0" contenteditable="true" placeholder="Ваше сообщение"></textarea>
+            <div class="text-center mt-4">
+                <input type="submit" class="btn btn-primary" onclick="return copyAndValidateForm()">
+            </div>
+        </form>
     </div>
 
 
@@ -149,28 +145,61 @@
 
     <!-- Основные скрипты-->
     <script>
-        const categoryBadges = document.querySelectorAll('.category-badge');
-        const categoriesHidden = document.getElementById('categories-hidden');
+        // --- JS для мультивыбора только на мобильных ---
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
         let selectedCategories = [];
-
-        categoryBadges.forEach(badge => {
-            badge.addEventListener('click', () => {
-                const category = badge.getAttribute('data-value');
-
-                if (selectedCategories.includes(category)) {
-                    // Удаляем из выбранных
-                    selectedCategories = selectedCategories.filter(cat => cat !== category);
-                    badge.classList.remove('selected');
-                } else {
-                    // Добавляем в выбранные
-                    selectedCategories.push(category);
-                    badge.classList.add('selected');
-                }
-
-                // Обновляем скрытое поле
-                categoriesHidden.value = selectedCategories.join(',');
+        if (isMobile()) {
+            const dropdownBtn = document.getElementById('categoryDropdownBtn');
+            const dropdownList = document.getElementById('categoryDropdownList');
+            const selectedCategory = document.getElementById('selectedCategory');
+            const categoriesHidden = document.getElementById('categories-hidden');
+            dropdownBtn.onclick = function() {
+                dropdownList.style.display = (dropdownList.style.display === 'block') ? 'none' : 'block';
+            };
+            dropdownList.querySelectorAll('.category-dropdown-item').forEach(btn => {
+                btn.onclick = function() {
+                    const value = this.getAttribute('data-value');
+                    if (selectedCategories.includes(value)) {
+                        selectedCategories = selectedCategories.filter(cat => cat !== value);
+                        this.classList.remove('active');
+                    } else {
+                        selectedCategories.push(value);
+                        this.classList.add('active');
+                    }
+                    if (selectedCategories.length > 0) {
+                        selectedCategory.textContent = 'Категории: ' + selectedCategories.join(', ');
+                    } else {
+                        selectedCategory.textContent = 'Категории';
+                    }
+                    categoriesHidden.value = selectedCategories.join(',');
+                };
             });
-        });
+            window.addEventListener('click', function(e) {
+                if (!dropdownBtn.contains(e.target) && !dropdownList.contains(e.target)) {
+                    dropdownList.style.display = 'none';
+                }
+            });
+        } else {
+            // Десктоп: стандартный badge multi-select
+            const categoryBadges = document.querySelectorAll('.category-badge');
+            const categoriesHidden = document.getElementById('categories-hidden');
+            let selectedCategories = [];
+            categoryBadges.forEach(badge => {
+                badge.addEventListener('click', () => {
+                    const category = badge.getAttribute('data-value');
+                    if (selectedCategories.includes(category)) {
+                        selectedCategories = selectedCategories.filter(cat => cat !== category);
+                        badge.classList.remove('selected');
+                    } else {
+                        selectedCategories.push(category);
+                        badge.classList.add('selected');
+                    }
+                    categoriesHidden.value = selectedCategories.join(',');
+                });
+            });
+        }
     </script>
 
     <script>

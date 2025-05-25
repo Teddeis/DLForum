@@ -10,6 +10,7 @@
     --link-color: #007bff;
     --button-color: #f8f9fa;
     --button-hover-color: #e9ecef;
+    --mobile-nav-bg: #ffffff;
 }
 
 /* Темная тема */
@@ -24,6 +25,7 @@
     --link-color: #4f9eed;
     --button-color: #272729;
     --button-hover-color: #3d3d3d;
+    --mobile-nav-bg: #1a1a1b;
 }
 
 .custom-toast-error {
@@ -79,25 +81,25 @@
         }
 
 html {
-  font-size: 14px;
-  position: relative;
-  min-height: 100%;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 body {
-  margin-bottom: 60px;
-  background-color: var(--background-color);
-  color: var(--text-color);
+    margin-bottom: 60px;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Скрытие рекламных блоков */
@@ -120,7 +122,7 @@ center {
     .navbar-brand .full-name {
         display: inline;
     }
-    
+
     .navbar-brand .short-name {
         display: none;
     }
@@ -136,19 +138,19 @@ center {
     padding: 0.5rem 0;
 }
 
-.navbar-brand:hover {
-    color: var(--text-color) !important;
-}
+    .navbar-brand:hover {
+        color: var(--text-color) !important;
+    }
 
-/* Полное название сайта */
-.navbar-brand .full-name {
-    display: inline;
-}
+    /* Полное название сайта */
+    .navbar-brand .full-name {
+        display: inline;
+    }
 
-/* Короткое название сайта */
-.navbar-brand .short-name {
-    display: none;
-}
+    /* Короткое название сайта */
+    .navbar-brand .short-name {
+        display: none;
+    }
 
 /* Медиа-запрос для мобильных устройств */
 @media screen and (max-width: 768px) {
@@ -157,13 +159,13 @@ center {
         padding: 0.25rem 0 !important;
     }
 
-    .navbar-brand .full-name {
-        display: none !important;
-    }
+        .navbar-brand .full-name {
+            display: none !important;
+        }
 
-    .navbar-brand .short-name {
-        display: inline !important;
-    }
+        .navbar-brand .short-name {
+            display: inline !important;
+        }
 
     .navbar {
         min-height: 50px !important;
@@ -196,11 +198,11 @@ center {
         gap: 0.25rem;
     }
 
-    .user-actions .btn {
-        height: 35px;
-        padding: 0.25rem 0.5rem;
-        font-size: 14px;
-    }
+        .user-actions .btn {
+            height: 35px;
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+        }
 
     .card.bg-dark {
         background-color: #1a1a1b !important;
@@ -214,10 +216,10 @@ center {
         padding: 0.5rem;
     }
 
-    .btn-dark:hover,
-    .btn-dark:focus {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+        .btn-dark:hover,
+        .btn-dark:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
     .btn-outline-light {
         background-color: transparent;
@@ -227,19 +229,19 @@ center {
         font-size: 0.9rem;
     }
 
-    .btn-outline-light:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-    }
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
 
     #mobileCategoriesDropdown {
         margin-top: 0.5rem !important;
     }
 
-    #mobileCategoriesDropdown .btn i {
-        width: 20px;
-        text-align: center;
-    }
+        #mobileCategoriesDropdown .btn i {
+            width: 20px;
+            text-align: center;
+        }
 }
 
 /* Навигационная панель */
@@ -274,15 +276,15 @@ center {
     align-items: center;
 }
 
-.user-actions .btn {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 14px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+    .user-actions .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 14px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
 /* Боковое меню */
 .nav-menu {
@@ -311,15 +313,15 @@ center {
     transition: background-color 0.2s;
 }
 
-.menu-link:hover {
-    background-color: var(--hover-bg);
-    color: var(--text-color);
-}
+    .menu-link:hover {
+        background-color: var(--hover-bg);
+        color: var(--text-color);
+    }
 
-.menu-link:focus {
-    outline: none;
-    box-shadow: none;
-}
+    .menu-link:focus {
+        outline: none;
+        box-shadow: none;
+    }
 
 /* Категории */
 .categories-menu {
@@ -343,18 +345,18 @@ center {
     border-radius: 8px;
 }
 
-.category-item:hover {
-    opacity: 1;
-    background-color: var(--hover-bg);
-}
+    .category-item:hover {
+        opacity: 1;
+        background-color: var(--hover-bg);
+    }
 
-/* Иконки */
-.menu-link i,
-.category-item i {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-}
+    /* Иконки */
+    .menu-link i,
+    .category-item i {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
 
 /* Анимация стрелки */
 .categories-toggle .bi-chevron-down {
@@ -385,11 +387,11 @@ center {
         font-size: 14px;
     }
 
-    .menu-link i,
-    .category-item i {
-        font-size: 16px;
-        width: 20px;
-    }
+        .menu-link i,
+        .category-item i {
+            font-size: 16px;
+            width: 20px;
+        }
 }
 
 /* Убираем стандартные стили Bootstrap */
@@ -397,7 +399,7 @@ center {
     background: none !important;
 }
 
-.nav-link.active, 
+.nav-link.active,
 .nav-link:active,
 .nav-link:focus,
 button:active,
@@ -413,10 +415,10 @@ button:focus {
     color: #fff;
 }
 
-[data-theme="dark"] .menu-link:hover,
-[data-theme="dark"] .category-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
+    [data-theme="dark"] .menu-link:hover,
+    [data-theme="dark"] .category-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
 
 /* Убираем лишние границы и фон */
 .card.bg-transparent {
@@ -425,4 +427,13 @@ button:focus {
 
 .nav-item:last-child .nav-link {
     margin-bottom: 0;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .container {
+    border: none !important;
+}
+
+[data-theme="dark"] .nav-menu {
+    border: none !important;
 }
