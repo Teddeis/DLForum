@@ -607,19 +607,22 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 220px;
+    min-height: 200px;
+    max-height: 80vh;
     background: var(--background-color);
     border-radius: 12px;
+    padding: 15px;
+    overflow: hidden;
 }
 
 .cropper-modal-avatar img {
-    width: 100%;
-    height: 180px;
+    display: block;
     max-width: 100%;
-    max-height: 180px;
+    height: auto;
+    max-height: calc(80vh - 30px);
     object-fit: contain;
     border-radius: 10px;
-    box-shadow: 0 0 16px #0008;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
     background: var(--background-color);
 }
 
@@ -648,16 +651,19 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 320px;
+    min-height: 300px;
+    max-height: 80vh;
     background: var(--background-color);
     border-radius: 12px;
+    padding: 15px;
+    overflow: hidden;
 }
 
 .cropper-modal-banner img {
-    width: 100%;
-    height: 260px;
+    display: block;
     max-width: 100%;
-    max-height: 260px;
+    height: auto;
+    max-height: calc(80vh - 30px);
     object-fit: contain;
     border-radius: 10px;
     box-shadow: 0 0 16px #0008;
@@ -847,12 +853,32 @@ textarea {
         gap: 10px;
     }
 
+    /* Изображения в блоках аватара и баннера (общие стили) */
     .avatar-block img,
     .banner-block img {
-        width: 100%;
-        max-width: 200px;
         margin-right: 0;
         margin-bottom: 10px;
+    }
+
+    /* Конкретные стили для изображения предпросмотра аватара на мобильных */
+    .avatar-preview {
+        width: 100px !important;
+        height: 100px !important;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid var(--avatar-border-color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    /* Конкретные стили для изображения предпросмотра баннера на мобильных */
+    .banner-preview {
+        width: 100% !important;
+        height: auto !important;
+        max-width: none !important;
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 2px solid var(--avatar-border-color);
     }
 
     .avatar-block .btn,
@@ -882,26 +908,200 @@ textarea {
     /* Модальные окна */
     .modal-dialog {
         margin: 10px;
+        z-index: 1051;
     }
 
     .modal-body {
         padding: 15px;
+        padding-bottom: 60px;
+    }
+
+    /* Стили для футера модальных окон на мобильных */
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .modal-footer .btn {
+        flex: none;
+        width: 48% !important;
+        margin: 0;
+        display: block;
+        box-sizing: border-box;
     }
 
     .bottom-nav {
         background-color: var(--mobile-nav-bg) !important;
+        z-index: 1000; 
     }
 
-    #banner {
+    /* Правило для скрытия нижнего меню, когда открыто модальное окно */
+    .bottom-nav.hidden-on-modal-open {
+        display: none !important;
+    }
+
+    /* Родительский контейнер баннера */
+    .d-flex.justify-content-center.align-items-center > .card#banner {
         width: 100vw !important;
         height: 200px !important;
         border-radius: 0 !important;
         margin: 0 !important;
-        left: 50%;
-        transform: translateX(-50%);
-        background-position: center;
-        background-size: cover;
-        display: block;
+        background-image: none !important;
+        background-position: center !important;
+        background-size: cover !important;
+    }
+
+    /* Стили для изображения баннера на мобильных */
+    .banner-mobile-img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 0 !important;
+    }
+
+    /* Скрываем кнопку сужения на мобильных */
+    #collapseBtn {
+        display: none !important;
+    }
+
+    /* Модальные окна для кроппера */
+    .cropper-modal-avatar .modal-dialog,
+    .cropper-modal-banner .modal-dialog {
+        z-index: 1051;
+    }
+
+    .cropper-modal-avatar .modal-body {
+        min-height: 150px;
+        max-height: 70vh;
+        padding: 10px;
+        padding-bottom: 60px;
+    }
+
+    .cropper-modal-avatar img {
+        max-height: calc(70vh - 20px);
+    }
+
+    /* Уточняем мобильные стили для модального окна обрезки баннера */
+     .cropper-modal-banner .modal-body {
+        min-height: 200px;
+        max-height: 70vh;
+        padding: 10px;
+        padding-bottom: 60px;
+    }
+
+     .cropper-modal-banner img {
+        max-height: calc(70vh - 20px);
+     }
+
+    /* Общие стили для модального окна Bootstrap */
+    .modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 100000 !important;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7) !important;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+        z-index: 100001 !important;
+        position: relative;
+    }
+
+    .modal-content {
+        position: relative;
+        z-index: 100002 !important;
+    }
+
+    .bottom-nav {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background-color: var(--mobile-nav-bg) !important;
+        z-index: 1000 !important;
+    }
+
+    .bottom-nav.hidden-on-modal-open {
+        display: none !important;
+    }
+
+    /* Добавляем или корректируем z-index для затемняющего фона модального окна */
+    .modal-backdrop {
+        z-index: 99999 !important;
+        background-color: rgba(0, 0, 0, 0.7) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .notification-item {
+        width: 94vw;
+        min-width: 0;
+        margin: 8px auto;
+        padding: 14px 12px 10px 14px;
+        border-radius: 16px;
+        font-size: 1em;
+        box-sizing: border-box;
+        box-shadow: 0 8px 32px 0 rgba(187,134,252,0.13), 0 1.5px 6px rgba(0,0,0,0.10);
+        background: var(--card-bg);
+    }
+    .notif-row {
+        gap: 2px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    .notif-main, .notif-date {
+        font-size: 0.93em !important;
+        margin: 0 !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .tabs {
+        gap: 2px !important;
+        margin-bottom: 6px !important;
+        width: 80vw !important;
+        min-width: 0 !important;
+    }
+    .tab {
+        padding: 4px 7px !important;
+        font-size: 0.93em !important;
+        border-radius: 5px !important;
+        min-width: 0 !important;
+        width: auto;
+        box-sizing: border-box;
+    }
+    .read-unread-toggle {
+        margin: 6px 0 0 0 !important;
+        width: 100vw !important;
+        min-width: 0 !important;
+    }
+    .containerss {
+        padding-top: 16px !important;
+        padding-left: 14px !important;
+        font-size: 0.93em !important;
+    }
+    .checkmark {
+        height: 16px !important;
+        width: 16px !important;
+        border-radius: 4px !important;
+    }
+    .btn-mark-as-read {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.93em !important;
+        margin-top: 0 !important;
+    }
+    h1, .h3 {
+        font-size: 1.1em !important;
+        margin-bottom: 8px !important;
     }
 }
 
@@ -1103,3 +1303,27 @@ textarea {
     background: var(--primary-color);
     color: var(--tab-active-text-color);
 }
+
+/* Custom class for rounded semi-square with button color */
+.rounded-semi-square-button-color {
+    /*background-color: var(--button-color); /* Цвет как у кнопки настроек */
+    background-color: var(--background-color); /* Цвет фона из темы, в темной теме будет темным */
+    border-radius: 25px; /* Увеличенный радиус для сильного скругления */
+    padding: 10px 20px; /* Увеличим отступы для лучшего вида */
+    display: inline-flex; /* Используем flexbox для выравнивания содержимого (аватар, текст) */
+    align-items: center; /* Выравнивание элементов по центру вертикали */
+    color: var(--text-color);
+    text-align: left; /* Выравнивание текста по левому краю */
+    gap: 15px; /* Добавим промежуток между аватаром и текстом */
+}
+/* Добавляем или корректируем z-index для затемняющего фона модального окна */
+.modal-backdrop {
+    z-index: 1050 !important;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для баннера на мобильных */
+.banner-mobile-img {
+    display: none; /* Скрываем по умолчанию на больших экранах */
+}
+

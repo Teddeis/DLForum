@@ -191,6 +191,7 @@
     .cropper-view-box,
     .cropper-face {
         border-radius: 50%;
+        background-color: var(--background-color) !important;
     }
 
     .cropper-modal {
@@ -276,6 +277,7 @@ function handleImageSelect(input, isAvatar) {
                     autoCropArea: 1,
                     restore: false,
                     guides: true,
+                    background: false,
                     center: true,
                     highlight: false,
                     cropBoxMovable: true,
@@ -292,8 +294,8 @@ function cropImage(isAvatar) {
     if (!cropper) return;
     
     const canvas = cropper.getCroppedCanvas({
-        width: isAvatar ? 300 : 1050,
-        height: isAvatar ? 300 : 300
+        width: isAvatar ? 150 : 600,
+        height: isAvatar ? 150 : 171
     });
     
     // Обновляем превью

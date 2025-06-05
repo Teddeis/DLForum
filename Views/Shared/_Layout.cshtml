@@ -275,19 +275,19 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body p-0">
-            <a href="/profile" class="profile-menu-profile d-flex align-items-center mt-3">
+            <a href="/profile" class="profile-menu-item" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 15px; display: flex; align-items: center; gap: 10px; color: var(--text-color);">
                 <img src="@HttpContextAccessor.HttpContext.Session.GetString("AvatarUrl")" alt="Avatar" class="profile-menu-avatar">
                 <div class="profile-menu-username fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
                 <i class="bi bi-chevron-right ms-auto"></i>
             </a>
             <div class="profile-menu-list">
-                <a href="/settings" class="profile-menu-item d-flex align-items-center">
+                <a href="/settings" class="profile-menu-item" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 15px; display: flex; align-items: center; gap: 10px; color: var(--text-color);">
                     <i class="bi bi-gear"></i>
                     <span>Настройки</span>
                     <i class="bi bi-chevron-right ms-auto"></i>
                 </a>
-                <form asp-controller="account" asp-action="Logout" method="post" style="margin:0;padding:0;border:0;background:none;">
-                    <button type="submit" class="profile-menu-item logout">
+                <form asp-controller="account" asp-action="Logout" method="post" style="margin: 0;">
+                    <button type="submit" class="profile-menu-item" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 15px; display: flex; align-items: center; gap: 10px; color: var(--text-color);">
                         <i class="bi bi-box-arrow-right"></i>
                         <span>Выход</span>
                         <i class="bi bi-chevron-right ms-auto"></i>
@@ -296,5 +296,21 @@
             </div>
       </div>
     </div>
+
+    <script>
+        // JavaScript для обработки клика по ссылке "Выход"
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.querySelector('.profile-menu-item.logout');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(event) {
+                    event.preventDefault(); // Предотвращаем переход по ссылке
+                    const form = logoutLink.closest('form');
+                    if (form) {
+                        form.submit(); // Отправляем форму выхода
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
